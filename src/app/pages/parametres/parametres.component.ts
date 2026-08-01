@@ -5,6 +5,7 @@ import { ButtonComponent } from '../../shared/components/ui/button/button.compon
 import { LabelComponent } from '../../shared/components/form/label/label.component';
 import { InputFieldComponent } from '../../shared/components/form/input/input-field.component';
 import { ProfileService } from '../../core/services/profile.service';
+import { SupabaseService } from '../../core/services/supabase.service';
 
 @Component({
   selector: 'app-parametres',
@@ -19,6 +20,7 @@ export class ParametresComponent {
 
   constructor(
     private readonly profileService: ProfileService,
+    private readonly supabaseService: SupabaseService,
     private readonly router: Router
   ) {
     effect(() => {
@@ -56,7 +58,8 @@ export class ParametresComponent {
       });
   }
 
-  logout(): void {
+  async logout(): Promise<void> {
+    await this.supabaseService.signOut();
     this.router.navigate(['/signin']);
   }
 }

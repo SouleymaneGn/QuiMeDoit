@@ -26,6 +26,7 @@
     "@fullcalendar/interaction": "^6.1.20",
     "@fullcalendar/timegrid": "^6.1.20",
     "@popperjs/core": "^2.11.8",
+    "@supabase/supabase-js": "^2.111.0",
     "@tailwindcss/oxide-win32-x64-msvc": "^4.3.3",
     "@tailwindcss/postcss": "^4.1.11",
     "@types/prismjs": "^1.26.5",

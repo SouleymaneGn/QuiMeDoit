@@ -9,11 +9,13 @@ import { CustomerDetailComponent } from './pages/customer-detail/customer-detail
 import { ParametresComponent } from './pages/parametres/parametres.component';
 import { PaymentsComponent } from './pages/payments/payments.component';
 import { ProfileComponent } from './pages/profile/profile.component';
+import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
   {
     path:'',
     component:AppLayoutComponent,
+    canActivate: [authGuard],
     children:[
       {
         path: '',
@@ -52,12 +54,12 @@ export const routes: Routes = [
   {
     path:'signin',
     component:SignInComponent,
-    title:'Angular Sign In Dashboard | TailAdmin - Angular Admin Dashboard Template'
+    title:'Connexion | iziCarnet'
   },
   {
     path:'signup',
     component:SignUpComponent,
-    title:'Angular Sign Up Dashboard | TailAdmin - Angular Admin Dashboard Template'
+    title:'Créer un compte | iziCarnet'
   },
   // error pages
   {
