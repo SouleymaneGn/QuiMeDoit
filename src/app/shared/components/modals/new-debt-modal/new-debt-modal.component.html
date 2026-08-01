@@ -1,0 +1,42 @@
+<app-modal [isOpen]="isOpen" (close)="onClose()" className="max-w-md m-4">
+  <div class="p-6">
+    <h4 class="mb-6 text-lg font-semibold text-gray-800 dark:text-white/90">Nouvelle dette</h4>
+
+    <div class="mb-4">
+      <app-label for="debt-customer">Client</app-label>
+      <app-select
+        id="debt-customer"
+        [options]="customerOptions()"
+        placeholder="Sélectionner un client"
+        [value]="customerId()"
+        (valueChange)="onCustomerChange($event)"
+      />
+    </div>
+
+    <div class="mb-4">
+      <app-label for="debt-label">Libellé</app-label>
+      <app-input-field
+        id="debt-label"
+        placeholder="Ex: Ciment + fer"
+        [value]="label()"
+        (valueChange)="onLabelChange($event)"
+      />
+    </div>
+
+    <div class="mb-6">
+      <app-label for="debt-amount">Montant (GNF)</app-label>
+      <app-input-field
+        id="debt-amount"
+        type="number"
+        placeholder="0"
+        [value]="amount()"
+        (valueChange)="onAmountChange($event)"
+      />
+    </div>
+
+    <div class="flex justify-end gap-3">
+      <app-button variant="outline" (btnClick)="onClose()">Annuler</app-button>
+      <app-button [disabled]="!canSubmit() || submitting()" (btnClick)="submit()">Enregistrer</app-button>
+    </div>
+  </div>
+</app-modal>
