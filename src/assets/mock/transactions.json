@@ -1,0 +1,1541 @@
+[
+  {
+    "id": "txn-0147",
+    "customerId": "cust-024",
+    "type": "DEBT",
+    "label": "Boissons gazeuses x24",
+    "amount": 508000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-05-05T12:38:00.000Z"
+  },
+  {
+    "id": "txn-0038",
+    "customerId": "cust-010",
+    "type": "DEBT",
+    "label": "Lait en poudre (carton)",
+    "amount": 333000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-05-07T14:35:00.000Z"
+  },
+  {
+    "id": "txn-0023",
+    "customerId": "cust-008",
+    "type": "DEBT",
+    "label": "Boissons gazeuses x24",
+    "amount": 695000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-05-08T17:31:00.000Z"
+  },
+  {
+    "id": "txn-0148",
+    "customerId": "cust-024",
+    "type": "DEBT",
+    "label": "Tôles ondulées",
+    "amount": 419000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-05-09T16:04:00.000Z"
+  },
+  {
+    "id": "txn-0131",
+    "customerId": "cust-022",
+    "type": "DEBT",
+    "label": "Sac de sucre 25kg",
+    "amount": 471000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-05-11T15:35:00.000Z"
+  },
+  {
+    "id": "txn-0088",
+    "customerId": "cust-016",
+    "type": "DEBT",
+    "label": "Peinture 5L",
+    "amount": 403000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-05-13T08:54:00.000Z"
+  },
+  {
+    "id": "txn-0132",
+    "customerId": "cust-022",
+    "type": "DEBT",
+    "label": "Boissons gazeuses x24",
+    "amount": 92000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-05-16T09:49:00.000Z"
+  },
+  {
+    "id": "txn-0020",
+    "customerId": "cust-007",
+    "type": "DEBT",
+    "label": "Riz 50kg",
+    "amount": 556000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-05-16T15:07:00.000Z"
+  },
+  {
+    "id": "txn-0054",
+    "customerId": "cust-012",
+    "type": "DEBT",
+    "label": "Huile végétale 20L",
+    "amount": 466000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-05-16T17:08:00.000Z"
+  },
+  {
+    "id": "txn-0047",
+    "customerId": "cust-011",
+    "type": "DEBT",
+    "label": "Farine de blé 50kg",
+    "amount": 744000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-05-17T10:54:00.000Z"
+  },
+  {
+    "id": "txn-0055",
+    "customerId": "cust-012",
+    "type": "DEBT",
+    "label": "Ampoules et fournitures électriques",
+    "amount": 502000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-05-20T17:06:00.000Z"
+  },
+  {
+    "id": "txn-0149",
+    "customerId": "cust-024",
+    "type": "DEBT",
+    "label": "Batterie de moto",
+    "amount": 539000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-05-21T10:39:00.000Z"
+  },
+  {
+    "id": "txn-0039",
+    "customerId": "cust-010",
+    "type": "DEBT",
+    "label": "Sac de sucre 25kg",
+    "amount": 583000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-05-21T12:23:00.000Z"
+  },
+  {
+    "id": "txn-0040",
+    "customerId": "cust-010",
+    "type": "DEBT",
+    "label": "Gaz butane 12kg",
+    "amount": 371000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-05-21T17:51:00.000Z"
+  },
+  {
+    "id": "txn-0089",
+    "customerId": "cust-016",
+    "type": "DEBT",
+    "label": "Farine de blé 50kg",
+    "amount": 343000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-05-22T10:16:00.000Z"
+  },
+  {
+    "id": "txn-0048",
+    "customerId": "cust-011",
+    "type": "DEBT",
+    "label": "Casque de moto",
+    "amount": 35000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-05-24T13:13:00.000Z"
+  },
+  {
+    "id": "txn-0070",
+    "customerId": "cust-014",
+    "type": "DEBT",
+    "label": "Boissons gazeuses x24",
+    "amount": 387000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-05-25T17:45:00.000Z"
+  },
+  {
+    "id": "txn-0029",
+    "customerId": "cust-009",
+    "type": "DEBT",
+    "label": "Huile végétale 20L",
+    "amount": 514000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-05-27T08:33:00.000Z"
+  },
+  {
+    "id": "txn-0014",
+    "customerId": "cust-006",
+    "type": "DEBT",
+    "label": "Semences agricoles",
+    "amount": 794000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-05-27T15:06:00.000Z"
+  },
+  {
+    "id": "txn-0071",
+    "customerId": "cust-014",
+    "type": "DEBT",
+    "label": "Boissons gazeuses x24",
+    "amount": 734000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-05-28T11:25:00.000Z"
+  },
+  {
+    "id": "txn-0049",
+    "customerId": "cust-011",
+    "type": "DEBT",
+    "label": "Sac de sucre 25kg",
+    "amount": 427000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-05-29T15:10:00.000Z"
+  },
+  {
+    "id": "txn-0030",
+    "customerId": "cust-009",
+    "type": "DEBT",
+    "label": "Sac de charbon",
+    "amount": 425000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-05-31T10:49:00.000Z"
+  },
+  {
+    "id": "txn-0056",
+    "customerId": "cust-012",
+    "type": "DEBT",
+    "label": "Gaz butane 12kg",
+    "amount": 617000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-06-01T14:11:00.000Z"
+  },
+  {
+    "id": "txn-0124",
+    "customerId": "cust-021",
+    "type": "DEBT",
+    "label": "Riz 50kg",
+    "amount": 584000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-06-03T10:02:00.000Z"
+  },
+  {
+    "id": "txn-0015",
+    "customerId": "cust-006",
+    "type": "DEBT",
+    "label": "Câbles électriques",
+    "amount": 468000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-06-04T14:03:00.000Z"
+  },
+  {
+    "id": "txn-0008",
+    "customerId": "cust-005",
+    "type": "DEBT",
+    "label": "Pagne bazin",
+    "amount": 233000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-06-06T08:05:00.000Z"
+  },
+  {
+    "id": "txn-0133",
+    "customerId": "cust-022",
+    "type": "DEBT",
+    "label": "Sac de sucre 25kg",
+    "amount": 46000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-06-06T11:35:00.000Z"
+  },
+  {
+    "id": "txn-0095",
+    "customerId": "cust-017",
+    "type": "DEBT",
+    "label": "Ciment + fer",
+    "amount": 685000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-06-07T14:23:00.000Z"
+  },
+  {
+    "id": "txn-0041",
+    "customerId": "cust-010",
+    "type": "DEBT",
+    "label": "Batterie de moto",
+    "amount": 733000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-06-07T15:31:00.000Z"
+  },
+  {
+    "id": "txn-0031",
+    "customerId": "cust-009",
+    "type": "DEBT",
+    "label": "Batterie de moto",
+    "amount": 245000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-06-07T16:18:00.000Z"
+  },
+  {
+    "id": "txn-0009",
+    "customerId": "cust-005",
+    "type": "DEBT",
+    "label": "Téléphone Tecno Spark",
+    "amount": 667000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-06-08T16:39:00.000Z"
+  },
+  {
+    "id": "txn-0050",
+    "customerId": "cust-011",
+    "type": "DEBT",
+    "label": "Casque de moto",
+    "amount": 291000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-06-11T09:00:00.000Z"
+  },
+  {
+    "id": "txn-0042",
+    "customerId": "cust-010",
+    "type": "DEBT",
+    "label": "Lait en poudre (carton)",
+    "amount": 571000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-06-13T14:02:00.000Z"
+  },
+  {
+    "id": "txn-0024",
+    "customerId": "cust-008",
+    "type": "DEBT",
+    "label": "Ampoules et fournitures électriques",
+    "amount": 142000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-06-14T15:25:00.000Z"
+  },
+  {
+    "id": "txn-0072",
+    "customerId": "cust-014",
+    "type": "DEBT",
+    "label": "Farine de blé 50kg",
+    "amount": 679000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-06-15T18:42:00.000Z"
+  },
+  {
+    "id": "txn-0001",
+    "customerId": "cust-004",
+    "type": "DEBT",
+    "label": "Câbles électriques",
+    "amount": 582000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-06-16T18:28:00.000Z"
+  },
+  {
+    "id": "txn-0002",
+    "customerId": "cust-004",
+    "type": "DEBT",
+    "label": "Casque de moto",
+    "amount": 492000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-06-17T09:45:00.000Z"
+  },
+  {
+    "id": "txn-0125",
+    "customerId": "cust-021",
+    "type": "DEBT",
+    "label": "Téléphone Tecno Spark",
+    "amount": 309000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-06-19T14:35:00.000Z"
+  },
+  {
+    "id": "txn-0051",
+    "customerId": "cust-011",
+    "type": "PAYMENT",
+    "label": "Versement partiel",
+    "amount": 308000,
+    "paymentMethod": "ORANGE_MONEY",
+    "createdAt": "2026-06-20T13:08:00.000Z"
+  },
+  {
+    "id": "txn-0150",
+    "customerId": "cust-024",
+    "type": "DEBT",
+    "label": "Câbles électriques",
+    "amount": 68000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-06-20T15:33:00.000Z"
+  },
+  {
+    "id": "txn-0099",
+    "customerId": "cust-018",
+    "type": "DEBT",
+    "label": "Batterie de moto",
+    "amount": 459000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-06-21T14:55:00.000Z"
+  },
+  {
+    "id": "txn-0016",
+    "customerId": "cust-006",
+    "type": "DEBT",
+    "label": "Semences agricoles",
+    "amount": 42000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-06-21T18:03:00.000Z"
+  },
+  {
+    "id": "txn-0138",
+    "customerId": "cust-023",
+    "type": "DEBT",
+    "label": "Farine de blé 50kg",
+    "amount": 672000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-06-22T08:38:00.000Z"
+  },
+  {
+    "id": "txn-0151",
+    "customerId": "cust-024",
+    "type": "DEBT",
+    "label": "Sac de sucre 25kg",
+    "amount": 736000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-06-22T12:41:00.000Z"
+  },
+  {
+    "id": "txn-0025",
+    "customerId": "cust-008",
+    "type": "DEBT",
+    "label": "Casque de moto",
+    "amount": 693000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-06-22T14:00:00.000Z"
+  },
+  {
+    "id": "txn-0052",
+    "customerId": "cust-011",
+    "type": "PAYMENT",
+    "label": "Paiement dette",
+    "amount": 275000,
+    "paymentMethod": "MOBILE_MONEY",
+    "createdAt": "2026-06-23T16:30:00.000Z"
+  },
+  {
+    "id": "txn-0057",
+    "customerId": "cust-012",
+    "type": "DEBT",
+    "label": "Tôles ondulées",
+    "amount": 661000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-06-24T17:21:00.000Z"
+  },
+  {
+    "id": "txn-0032",
+    "customerId": "cust-009",
+    "type": "DEBT",
+    "label": "Semences agricoles",
+    "amount": 720000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-06-26T13:39:00.000Z"
+  },
+  {
+    "id": "txn-0058",
+    "customerId": "cust-012",
+    "type": "DEBT",
+    "label": "Batterie de moto",
+    "amount": 130000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-06-26T15:49:00.000Z"
+  },
+  {
+    "id": "txn-0158",
+    "customerId": "cust-025",
+    "type": "DEBT",
+    "label": "Pâtes alimentaires (carton)",
+    "amount": 481000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-06-27T15:05:00.000Z"
+  },
+  {
+    "id": "txn-0134",
+    "customerId": "cust-022",
+    "type": "DEBT",
+    "label": "Ciment + fer",
+    "amount": 602000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-06-28T15:14:00.000Z"
+  },
+  {
+    "id": "txn-0043",
+    "customerId": "cust-010",
+    "type": "DEBT",
+    "label": "Semences agricoles",
+    "amount": 625000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-06-28T15:49:00.000Z"
+  },
+  {
+    "id": "txn-0139",
+    "customerId": "cust-023",
+    "type": "DEBT",
+    "label": "Pièces détachées moto",
+    "amount": 772000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-06-29T11:33:00.000Z"
+  },
+  {
+    "id": "txn-0109",
+    "customerId": "cust-019",
+    "type": "DEBT",
+    "label": "Sac de charbon",
+    "amount": 154000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-06-29T17:37:00.000Z"
+  },
+  {
+    "id": "txn-0100",
+    "customerId": "cust-018",
+    "type": "DEBT",
+    "label": "Ampoules et fournitures électriques",
+    "amount": 671000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-06-30T14:06:00.000Z"
+  },
+  {
+    "id": "txn-0110",
+    "customerId": "cust-019",
+    "type": "DEBT",
+    "label": "Charge de brique",
+    "amount": 233000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-06-30T16:32:00.000Z"
+  },
+  {
+    "id": "txn-0135",
+    "customerId": "cust-022",
+    "type": "DEBT",
+    "label": "Pâtes alimentaires (carton)",
+    "amount": 728000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-07-02T09:48:00.000Z"
+  },
+  {
+    "id": "txn-0003",
+    "customerId": "cust-004",
+    "type": "DEBT",
+    "label": "Riz 50kg",
+    "amount": 257000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-07-03T08:29:00.000Z"
+  },
+  {
+    "id": "txn-0090",
+    "customerId": "cust-016",
+    "type": "DEBT",
+    "label": "Boissons gazeuses x24",
+    "amount": 37000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-07-04T11:25:00.000Z"
+  },
+  {
+    "id": "txn-0114",
+    "customerId": "cust-020",
+    "type": "DEBT",
+    "label": "Savon en gros",
+    "amount": 795000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-07-04T17:32:00.000Z"
+  },
+  {
+    "id": "txn-0116",
+    "customerId": "cust-020",
+    "type": "DEBT",
+    "label": "Pagne bazin",
+    "amount": 317000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-07-06T09:23:00.000Z"
+  },
+  {
+    "id": "txn-0115",
+    "customerId": "cust-020",
+    "type": "DEBT",
+    "label": "Gaz butane 12kg",
+    "amount": 777000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-07-06T09:49:00.000Z"
+  },
+  {
+    "id": "txn-0101",
+    "customerId": "cust-018",
+    "type": "DEBT",
+    "label": "Téléphone Tecno Spark",
+    "amount": 754000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-07-06T16:35:00.000Z"
+  },
+  {
+    "id": "txn-0073",
+    "customerId": "cust-014",
+    "type": "DEBT",
+    "label": "Casque de moto",
+    "amount": 263000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-07-07T12:58:00.000Z"
+  },
+  {
+    "id": "txn-0053",
+    "customerId": "cust-011",
+    "type": "PAYMENT",
+    "label": "Solde du mois",
+    "amount": 129000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-07-07T14:57:00.000Z"
+  },
+  {
+    "id": "txn-0079",
+    "customerId": "cust-015",
+    "type": "DEBT",
+    "label": "Huile végétale 20L",
+    "amount": 205000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-07-07T15:35:00.000Z"
+  },
+  {
+    "id": "txn-0165",
+    "customerId": "cust-026",
+    "type": "DEBT",
+    "label": "Sac de sucre 25kg",
+    "amount": 240000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-07-07T18:12:00.000Z"
+  },
+  {
+    "id": "txn-0166",
+    "customerId": "cust-026",
+    "type": "DEBT",
+    "label": "Sac de sucre 25kg",
+    "amount": 492000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-07-08T09:48:00.000Z"
+  },
+  {
+    "id": "txn-0140",
+    "customerId": "cust-023",
+    "type": "DEBT",
+    "label": "Téléphone Tecno Spark",
+    "amount": 762000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-07-08T09:53:00.000Z"
+  },
+  {
+    "id": "txn-0091",
+    "customerId": "cust-016",
+    "type": "DEBT",
+    "label": "Savon en gros",
+    "amount": 347000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-07-08T11:13:00.000Z"
+  },
+  {
+    "id": "txn-0141",
+    "customerId": "cust-023",
+    "type": "DEBT",
+    "label": "Sac de charbon",
+    "amount": 440000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-07-09T09:22:00.000Z"
+  },
+  {
+    "id": "txn-0159",
+    "customerId": "cust-025",
+    "type": "DEBT",
+    "label": "Pagne bazin",
+    "amount": 490000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-07-09T13:49:00.000Z"
+  },
+  {
+    "id": "txn-0117",
+    "customerId": "cust-020",
+    "type": "DEBT",
+    "label": "Riz 50kg",
+    "amount": 620000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-07-10T10:06:00.000Z"
+  },
+  {
+    "id": "txn-0021",
+    "customerId": "cust-007",
+    "type": "DEBT",
+    "label": "Ventilateur",
+    "amount": 454000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-07-10T10:55:00.000Z"
+  },
+  {
+    "id": "txn-0044",
+    "customerId": "cust-010",
+    "type": "DEBT",
+    "label": "Matériel de construction",
+    "amount": 480000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-07-10T12:25:00.000Z"
+  },
+  {
+    "id": "txn-0136",
+    "customerId": "cust-022",
+    "type": "DEBT",
+    "label": "Ampoules et fournitures électriques",
+    "amount": 444000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-07-10T16:20:00.000Z"
+  },
+  {
+    "id": "txn-0152",
+    "customerId": "cust-024",
+    "type": "DEBT",
+    "label": "Matériel de construction",
+    "amount": 537000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-07-12T12:39:00.000Z"
+  },
+  {
+    "id": "txn-0102",
+    "customerId": "cust-018",
+    "type": "DEBT",
+    "label": "Ciment + fer",
+    "amount": 105000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-07-13T10:03:00.000Z"
+  },
+  {
+    "id": "txn-0080",
+    "customerId": "cust-015",
+    "type": "DEBT",
+    "label": "Câbles électriques",
+    "amount": 787000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-07-13T10:55:00.000Z"
+  },
+  {
+    "id": "txn-0096",
+    "customerId": "cust-017",
+    "type": "DEBT",
+    "label": "Ventilateur",
+    "amount": 332000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-07-13T16:54:00.000Z"
+  },
+  {
+    "id": "txn-0045",
+    "customerId": "cust-010",
+    "type": "DEBT",
+    "label": "Savon en gros",
+    "amount": 211000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-07-14T08:39:00.000Z"
+  },
+  {
+    "id": "txn-0062",
+    "customerId": "cust-013",
+    "type": "DEBT",
+    "label": "Gaz butane 12kg",
+    "amount": 165000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-07-14T09:04:00.000Z"
+  },
+  {
+    "id": "txn-0103",
+    "customerId": "cust-018",
+    "type": "DEBT",
+    "label": "Lait en poudre (carton)",
+    "amount": 696000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-07-14T14:29:00.000Z"
+  },
+  {
+    "id": "txn-0142",
+    "customerId": "cust-023",
+    "type": "DEBT",
+    "label": "Câbles électriques",
+    "amount": 558000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-07-15T08:56:00.000Z"
+  },
+  {
+    "id": "txn-0074",
+    "customerId": "cust-014",
+    "type": "DEBT",
+    "label": "Pâtes alimentaires (carton)",
+    "amount": 578000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-07-15T11:54:00.000Z"
+  },
+  {
+    "id": "txn-0118",
+    "customerId": "cust-020",
+    "type": "DEBT",
+    "label": "Câbles électriques",
+    "amount": 153000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-07-16T10:31:00.000Z"
+  },
+  {
+    "id": "txn-0081",
+    "customerId": "cust-015",
+    "type": "DEBT",
+    "label": "Boissons gazeuses x24",
+    "amount": 550000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-07-16T14:09:00.000Z"
+  },
+  {
+    "id": "txn-0104",
+    "customerId": "cust-018",
+    "type": "DEBT",
+    "label": "Gaz butane 12kg",
+    "amount": 582000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-07-17T09:53:00.000Z"
+  },
+  {
+    "id": "txn-0167",
+    "customerId": "cust-026",
+    "type": "DEBT",
+    "label": "Sac de sucre 25kg",
+    "amount": 514000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-07-17T11:26:00.000Z"
+  },
+  {
+    "id": "txn-0119",
+    "customerId": "cust-020",
+    "type": "DEBT",
+    "label": "Farine de blé 50kg",
+    "amount": 569000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-07-18T09:04:00.000Z"
+  },
+  {
+    "id": "txn-0022",
+    "customerId": "cust-007",
+    "type": "PAYMENT",
+    "label": "Acompte",
+    "amount": 1010000,
+    "paymentMethod": "MOBILE_MONEY",
+    "createdAt": "2026-07-18T12:50:00.000Z"
+  },
+  {
+    "id": "txn-0059",
+    "customerId": "cust-012",
+    "type": "DEBT",
+    "label": "Tissu wax (6 mètres)",
+    "amount": 222000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-07-18T16:07:00.000Z"
+  },
+  {
+    "id": "txn-0033",
+    "customerId": "cust-009",
+    "type": "DEBT",
+    "label": "Huile végétale 20L",
+    "amount": 167000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-07-19T12:49:00.000Z"
+  },
+  {
+    "id": "txn-0111",
+    "customerId": "cust-019",
+    "type": "DEBT",
+    "label": "Farine de blé 50kg",
+    "amount": 342000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-07-19T13:11:00.000Z"
+  },
+  {
+    "id": "txn-0082",
+    "customerId": "cust-015",
+    "type": "DEBT",
+    "label": "Ventilateur",
+    "amount": 582000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-07-19T13:36:00.000Z"
+  },
+  {
+    "id": "txn-0063",
+    "customerId": "cust-013",
+    "type": "DEBT",
+    "label": "Câbles électriques",
+    "amount": 728000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-07-19T13:37:00.000Z"
+  },
+  {
+    "id": "txn-0075",
+    "customerId": "cust-014",
+    "type": "DEBT",
+    "label": "Sac de charbon",
+    "amount": 615000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-07-20T12:06:00.000Z"
+  },
+  {
+    "id": "txn-0160",
+    "customerId": "cust-025",
+    "type": "DEBT",
+    "label": "Huile végétale 20L",
+    "amount": 532000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-07-20T14:59:00.000Z"
+  },
+  {
+    "id": "txn-0083",
+    "customerId": "cust-015",
+    "type": "DEBT",
+    "label": "Tôles ondulées",
+    "amount": 126000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-07-20T16:47:00.000Z"
+  },
+  {
+    "id": "txn-0126",
+    "customerId": "cust-021",
+    "type": "DEBT",
+    "label": "Semences agricoles",
+    "amount": 690000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-07-21T08:04:00.000Z"
+  },
+  {
+    "id": "txn-0064",
+    "customerId": "cust-013",
+    "type": "DEBT",
+    "label": "Sac de sucre 25kg",
+    "amount": 80000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-07-21T08:19:00.000Z"
+  },
+  {
+    "id": "txn-0168",
+    "customerId": "cust-026",
+    "type": "DEBT",
+    "label": "Batterie de moto",
+    "amount": 374000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-07-21T12:07:00.000Z"
+  },
+  {
+    "id": "txn-0017",
+    "customerId": "cust-006",
+    "type": "DEBT",
+    "label": "Ciment + fer",
+    "amount": 83000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-07-21T13:11:00.000Z"
+  },
+  {
+    "id": "txn-0046",
+    "customerId": "cust-010",
+    "type": "PAYMENT",
+    "label": "Règlement",
+    "amount": 2079000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-07-22T13:32:00.000Z"
+  },
+  {
+    "id": "txn-0084",
+    "customerId": "cust-015",
+    "type": "DEBT",
+    "label": "Gaz butane 12kg",
+    "amount": 90000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-07-22T18:52:00.000Z"
+  },
+  {
+    "id": "txn-0161",
+    "customerId": "cust-025",
+    "type": "DEBT",
+    "label": "Sac de charbon",
+    "amount": 285000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-07-23T09:05:00.000Z"
+  },
+  {
+    "id": "txn-0092",
+    "customerId": "cust-016",
+    "type": "DEBT",
+    "label": "Riz 50kg",
+    "amount": 539000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-07-23T13:00:00.000Z"
+  },
+  {
+    "id": "txn-0065",
+    "customerId": "cust-013",
+    "type": "DEBT",
+    "label": "Tôles ondulées",
+    "amount": 512000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-07-23T14:04:00.000Z"
+  },
+  {
+    "id": "txn-0105",
+    "customerId": "cust-018",
+    "type": "DEBT",
+    "label": "Casque de moto",
+    "amount": 508000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-07-23T14:43:00.000Z"
+  },
+  {
+    "id": "txn-0097",
+    "customerId": "cust-017",
+    "type": "DEBT",
+    "label": "Savon en gros",
+    "amount": 55000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-07-23T17:27:00.000Z"
+  },
+  {
+    "id": "txn-0112",
+    "customerId": "cust-019",
+    "type": "PAYMENT",
+    "label": "Solde du mois",
+    "amount": 283000,
+    "paymentMethod": "MOBILE_MONEY",
+    "createdAt": "2026-07-24T10:21:00.000Z"
+  },
+  {
+    "id": "txn-0120",
+    "customerId": "cust-020",
+    "type": "DEBT",
+    "label": "Farine de blé 50kg",
+    "amount": 342000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-07-24T13:25:00.000Z"
+  },
+  {
+    "id": "txn-0066",
+    "customerId": "cust-013",
+    "type": "DEBT",
+    "label": "Téléphone Tecno Spark",
+    "amount": 694000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-07-24T14:23:00.000Z"
+  },
+  {
+    "id": "txn-0067",
+    "customerId": "cust-013",
+    "type": "DEBT",
+    "label": "Ampoules et fournitures électriques",
+    "amount": 141000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-07-24T14:40:00.000Z"
+  },
+  {
+    "id": "txn-0026",
+    "customerId": "cust-008",
+    "type": "DEBT",
+    "label": "Farine de blé 50kg",
+    "amount": 203000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-07-24T15:11:00.000Z"
+  },
+  {
+    "id": "txn-0121",
+    "customerId": "cust-020",
+    "type": "DEBT",
+    "label": "Pagne bazin",
+    "amount": 196000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-07-24T15:25:00.000Z"
+  },
+  {
+    "id": "txn-0106",
+    "customerId": "cust-018",
+    "type": "DEBT",
+    "label": "Ampoules et fournitures électriques",
+    "amount": 763000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-07-25T10:33:00.000Z"
+  },
+  {
+    "id": "txn-0162",
+    "customerId": "cust-025",
+    "type": "DEBT",
+    "label": "Ampoules et fournitures électriques",
+    "amount": 527000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-07-25T17:00:00.000Z"
+  },
+  {
+    "id": "txn-0163",
+    "customerId": "cust-025",
+    "type": "DEBT",
+    "label": "Tôles ondulées",
+    "amount": 729000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-07-26T08:05:00.000Z"
+  },
+  {
+    "id": "txn-0143",
+    "customerId": "cust-023",
+    "type": "DEBT",
+    "label": "Pièces détachées moto",
+    "amount": 76000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-07-26T12:07:00.000Z"
+  },
+  {
+    "id": "txn-0018",
+    "customerId": "cust-006",
+    "type": "PAYMENT",
+    "label": "Versement partiel",
+    "amount": 855000,
+    "paymentMethod": "ORANGE_MONEY",
+    "createdAt": "2026-07-26T14:58:00.000Z"
+  },
+  {
+    "id": "txn-0107",
+    "customerId": "cust-018",
+    "type": "PAYMENT",
+    "label": "Paiement dette",
+    "amount": 734000,
+    "paymentMethod": "ORANGE_MONEY",
+    "createdAt": "2026-07-26T17:34:00.000Z"
+  },
+  {
+    "id": "txn-0145",
+    "customerId": "cust-023",
+    "type": "PAYMENT",
+    "label": "Solde du mois",
+    "amount": 17000,
+    "paymentMethod": "ORANGE_MONEY",
+    "createdAt": "2026-07-26T18:26:00.000Z"
+  },
+  {
+    "id": "txn-0153",
+    "customerId": "cust-024",
+    "type": "DEBT",
+    "label": "Gaz butane 12kg",
+    "amount": 799000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-07-26T18:49:00.000Z"
+  },
+  {
+    "id": "txn-0129",
+    "customerId": "cust-021",
+    "type": "PAYMENT",
+    "label": "Acompte",
+    "amount": 66000,
+    "paymentMethod": "ORANGE_MONEY",
+    "createdAt": "2026-07-27T08:55:00.000Z"
+  },
+  {
+    "id": "txn-0164",
+    "customerId": "cust-025",
+    "type": "PAYMENT",
+    "label": "Paiement dette",
+    "amount": 1674000,
+    "paymentMethod": "ORANGE_MONEY",
+    "createdAt": "2026-07-27T12:24:00.000Z"
+  },
+  {
+    "id": "txn-0169",
+    "customerId": "cust-026",
+    "type": "DEBT",
+    "label": "Gaz butane 12kg",
+    "amount": 109000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-07-27T12:38:00.000Z"
+  },
+  {
+    "id": "txn-0127",
+    "customerId": "cust-021",
+    "type": "DEBT",
+    "label": "Farine de blé 50kg",
+    "amount": 400000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-07-27T14:14:00.000Z"
+  },
+  {
+    "id": "txn-0128",
+    "customerId": "cust-021",
+    "type": "PAYMENT",
+    "label": "Règlement",
+    "amount": 400000,
+    "paymentMethod": "ORANGE_MONEY",
+    "createdAt": "2026-07-27T14:26:00.000Z"
+  },
+  {
+    "id": "txn-0093",
+    "customerId": "cust-016",
+    "type": "DEBT",
+    "label": "Peinture 5L",
+    "amount": 107000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-07-27T17:00:00.000Z"
+  },
+  {
+    "id": "txn-0069",
+    "customerId": "cust-013",
+    "type": "PAYMENT",
+    "label": "Avance sur commande",
+    "amount": 283000,
+    "paymentMethod": "ORANGE_MONEY",
+    "createdAt": "2026-07-27T17:02:00.000Z"
+  },
+  {
+    "id": "txn-0146",
+    "customerId": "cust-023",
+    "type": "PAYMENT",
+    "label": "Règlement",
+    "amount": 15000,
+    "paymentMethod": "ORANGE_MONEY",
+    "createdAt": "2026-07-28T11:18:00.000Z"
+  },
+  {
+    "id": "txn-0076",
+    "customerId": "cust-014",
+    "type": "DEBT",
+    "label": "Tissu wax (6 mètres)",
+    "amount": 715000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-07-28T14:04:00.000Z"
+  },
+  {
+    "id": "txn-0060",
+    "customerId": "cust-012",
+    "type": "DEBT",
+    "label": "Lait en poudre (carton)",
+    "amount": 129000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-07-28T16:01:00.000Z"
+  },
+  {
+    "id": "txn-0123",
+    "customerId": "cust-020",
+    "type": "PAYMENT",
+    "label": "Versement partiel",
+    "amount": 593000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-07-28T17:43:00.000Z"
+  },
+  {
+    "id": "txn-0078",
+    "customerId": "cust-014",
+    "type": "PAYMENT",
+    "label": "Solde du mois",
+    "amount": 85000,
+    "paymentMethod": "MOBILE_MONEY",
+    "createdAt": "2026-07-28T18:21:00.000Z"
+  },
+  {
+    "id": "txn-0144",
+    "customerId": "cust-023",
+    "type": "PAYMENT",
+    "label": "Solde du mois",
+    "amount": 65000,
+    "paymentMethod": "ORANGE_MONEY",
+    "createdAt": "2026-07-28T18:36:00.000Z"
+  },
+  {
+    "id": "txn-0004",
+    "customerId": "cust-004",
+    "type": "DEBT",
+    "label": "Riz 50kg",
+    "amount": 367000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-07-29T09:18:00.000Z"
+  },
+  {
+    "id": "txn-0010",
+    "customerId": "cust-005",
+    "type": "DEBT",
+    "label": "Semences agricoles",
+    "amount": 670000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-07-29T09:24:00.000Z"
+  },
+  {
+    "id": "txn-0034",
+    "customerId": "cust-009",
+    "type": "DEBT",
+    "label": "Ciment + fer",
+    "amount": 294000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-07-29T12:23:00.000Z"
+  },
+  {
+    "id": "txn-0077",
+    "customerId": "cust-014",
+    "type": "PAYMENT",
+    "label": "Paiement dette",
+    "amount": 171000,
+    "paymentMethod": "MOBILE_MONEY",
+    "createdAt": "2026-07-29T12:36:00.000Z"
+  },
+  {
+    "id": "txn-0154",
+    "customerId": "cust-024",
+    "type": "DEBT",
+    "label": "Matériel de construction",
+    "amount": 613000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-07-29T13:20:00.000Z"
+  },
+  {
+    "id": "txn-0130",
+    "customerId": "cust-021",
+    "type": "PAYMENT",
+    "label": "Avance sur commande",
+    "amount": 106000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-07-29T13:27:00.000Z"
+  },
+  {
+    "id": "txn-0085",
+    "customerId": "cust-015",
+    "type": "DEBT",
+    "label": "Câbles électriques",
+    "amount": 477000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-07-29T14:27:00.000Z"
+  },
+  {
+    "id": "txn-0037",
+    "customerId": "cust-009",
+    "type": "PAYMENT",
+    "label": "Versement partiel",
+    "amount": 438000,
+    "paymentMethod": "MOBILE_MONEY",
+    "createdAt": "2026-07-29T15:57:00.000Z"
+  },
+  {
+    "id": "txn-0155",
+    "customerId": "cust-024",
+    "type": "PAYMENT",
+    "label": "Avance sur commande",
+    "amount": 1417000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-07-30T10:30:00.000Z"
+  },
+  {
+    "id": "txn-0098",
+    "customerId": "cust-017",
+    "type": "PAYMENT",
+    "label": "Paiement dette",
+    "amount": 308000,
+    "paymentMethod": "MOBILE_MONEY",
+    "createdAt": "2026-07-30T11:08:00.000Z"
+  },
+  {
+    "id": "txn-0171",
+    "customerId": "cust-026",
+    "type": "PAYMENT",
+    "label": "Paiement dette",
+    "amount": 216000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-07-30T12:12:00.000Z"
+  },
+  {
+    "id": "txn-0113",
+    "customerId": "cust-019",
+    "type": "PAYMENT",
+    "label": "Avance sur commande",
+    "amount": 126000,
+    "paymentMethod": "MOBILE_MONEY",
+    "createdAt": "2026-07-30T13:13:00.000Z"
+  },
+  {
+    "id": "txn-0019",
+    "customerId": "cust-006",
+    "type": "PAYMENT",
+    "label": "Versement partiel",
+    "amount": 532000,
+    "paymentMethod": "ORANGE_MONEY",
+    "createdAt": "2026-07-30T14:47:00.000Z"
+  },
+  {
+    "id": "txn-0061",
+    "customerId": "cust-012",
+    "type": "PAYMENT",
+    "label": "Solde du mois",
+    "amount": 1790000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-07-30T16:40:00.000Z"
+  },
+  {
+    "id": "txn-0087",
+    "customerId": "cust-015",
+    "type": "PAYMENT",
+    "label": "Versement partiel",
+    "amount": 301000,
+    "paymentMethod": "MOBILE_MONEY",
+    "createdAt": "2026-07-30T16:48:00.000Z"
+  },
+  {
+    "id": "txn-0011",
+    "customerId": "cust-005",
+    "type": "PAYMENT",
+    "label": "Avance sur commande",
+    "amount": 935000,
+    "paymentMethod": "ORANGE_MONEY",
+    "createdAt": "2026-07-31T08:09:00.000Z"
+  },
+  {
+    "id": "txn-0028",
+    "customerId": "cust-008",
+    "type": "PAYMENT",
+    "label": "Solde du mois",
+    "amount": 1042000,
+    "paymentMethod": "ORANGE_MONEY",
+    "createdAt": "2026-07-31T08:24:00.000Z"
+  },
+  {
+    "id": "txn-0005",
+    "customerId": "cust-004",
+    "type": "PAYMENT",
+    "label": "Paiement dette",
+    "amount": 807000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-07-31T09:00:00.000Z"
+  },
+  {
+    "id": "txn-0013",
+    "customerId": "cust-005",
+    "type": "PAYMENT",
+    "label": "Solde du mois",
+    "amount": 412000,
+    "paymentMethod": "ORANGE_MONEY",
+    "createdAt": "2026-07-31T09:32:00.000Z"
+  },
+  {
+    "id": "txn-0157",
+    "customerId": "cust-024",
+    "type": "PAYMENT",
+    "label": "Versement partiel",
+    "amount": 641000,
+    "paymentMethod": "ORANGE_MONEY",
+    "createdAt": "2026-07-31T10:32:00.000Z"
+  },
+  {
+    "id": "txn-0006",
+    "customerId": "cust-004",
+    "type": "PAYMENT",
+    "label": "Versement partiel",
+    "amount": 445000,
+    "paymentMethod": "ORANGE_MONEY",
+    "createdAt": "2026-07-31T12:02:00.000Z"
+  },
+  {
+    "id": "txn-0007",
+    "customerId": "cust-004",
+    "type": "PAYMENT",
+    "label": "Solde du mois",
+    "amount": 446000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-07-31T13:32:00.000Z"
+  },
+  {
+    "id": "txn-0027",
+    "customerId": "cust-008",
+    "type": "PAYMENT",
+    "label": "Solde du mois",
+    "amount": 691000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-07-31T14:15:00.000Z"
+  },
+  {
+    "id": "txn-0036",
+    "customerId": "cust-009",
+    "type": "PAYMENT",
+    "label": "Solde du mois",
+    "amount": 285000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-07-31T14:51:00.000Z"
+  },
+  {
+    "id": "txn-0012",
+    "customerId": "cust-005",
+    "type": "PAYMENT",
+    "label": "Acompte",
+    "amount": 223000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-07-31T14:56:00.000Z"
+  },
+  {
+    "id": "txn-0170",
+    "customerId": "cust-026",
+    "type": "PAYMENT",
+    "label": "Paiement dette",
+    "amount": 101000,
+    "paymentMethod": "ORANGE_MONEY",
+    "createdAt": "2026-07-31T16:41:00.000Z"
+  },
+  {
+    "id": "txn-0108",
+    "customerId": "cust-018",
+    "type": "PAYMENT",
+    "label": "Avance sur commande",
+    "amount": 765000,
+    "paymentMethod": "ORANGE_MONEY",
+    "createdAt": "2026-08-01T08:11:00.000Z"
+  },
+  {
+    "id": "txn-0068",
+    "customerId": "cust-013",
+    "type": "PAYMENT",
+    "label": "Versement partiel",
+    "amount": 441000,
+    "paymentMethod": "ORANGE_MONEY",
+    "createdAt": "2026-08-01T08:29:00.000Z"
+  },
+  {
+    "id": "txn-0086",
+    "customerId": "cust-015",
+    "type": "PAYMENT",
+    "label": "Règlement",
+    "amount": 595000,
+    "paymentMethod": "MOBILE_MONEY",
+    "createdAt": "2026-08-01T10:56:00.000Z"
+  },
+  {
+    "id": "txn-0122",
+    "customerId": "cust-020",
+    "type": "PAYMENT",
+    "label": "Acompte",
+    "amount": 303000,
+    "paymentMethod": "MOBILE_MONEY",
+    "createdAt": "2026-08-01T14:39:00.000Z"
+  },
+  {
+    "id": "txn-0094",
+    "customerId": "cust-016",
+    "type": "PAYMENT",
+    "label": "Acompte",
+    "amount": 1230000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-08-01T15:10:00.000Z"
+  },
+  {
+    "id": "txn-0137",
+    "customerId": "cust-022",
+    "type": "PAYMENT",
+    "label": "Acompte",
+    "amount": 1384000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-08-01T16:07:00.000Z"
+  },
+  {
+    "id": "txn-0156",
+    "customerId": "cust-024",
+    "type": "PAYMENT",
+    "label": "Avance sur commande",
+    "amount": 696000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-08-01T16:08:00.000Z"
+  },
+  {
+    "id": "txn-0035",
+    "customerId": "cust-009",
+    "type": "PAYMENT",
+    "label": "Paiement dette",
+    "amount": 900000,
+    "paymentMethod": "CASH",
+    "createdAt": "2026-08-01T16:56:00.000Z"
+  }
+]
