@@ -3,39 +3,43 @@ import { ModalComponent } from '../../ui/modal/modal.component';
 import { ButtonComponent } from '../../ui/button/button.component';
 import { LabelComponent } from '../../form/label/label.component';
 import { InputFieldComponent } from '../../form/input/input-field.component';
-import { SelectComponent, Option } from '../../form/select/select.component';
-import { CustomerService } from '../../../../core/services/customer.service';
+import { ClientPickerStepComponent, ClientReadyEvent } from '../client-picker-step/client-picker-step.component';
 import { TransactionService } from '../../../../core/services/transaction.service';
 
 @Component({
   selector: 'app-new-debt-modal',
-  imports: [ModalComponent, ButtonComponent, LabelComponent, InputFieldComponent, SelectComponent],
+  imports: [ModalComponent, ButtonComponent, LabelComponent, InputFieldComponent, ClientPickerStepComponent],
   templateUrl: './new-debt-modal.component.html'
 })
 export class NewDebtModalComponent {
   @Input() isOpen = false;
+  @Input() presetCustomerId?: string;
+  @Input() presetCustomerName?: string;
   @Output() close = new EventEmitter<void>();
 
-  readonly customerId = signal('');
+  readonly selectedClient = signal<ClientReadyEvent | null>(null);
   readonly label = signal('');
   readonly amount = signal<number | ''>('');
   readonly submitting = signal(false);
 
-  readonly customerOptions = computed<Option[]>(() =>
-    this.customerService.customers().map(c => ({ value: c.id, label: c.name }))
+  readonly effectiveClient = computed<ClientReadyEvent | null>(() =>
+    this.presetCustomerId
+      ? { id: this.presetCustomerId, name: this.presetCustomerName ?? '' }
+      : this.selectedClient()
   );
 
   readonly canSubmit = computed(
-    () => !!this.customerId() && !!this.label().trim() && Number(this.amount()) > 0
+    () => !!this.effectiveClient() && !!this.label().trim() && Number(this.amount()) > 0
   );
 
-  constructor(
-    private readonly customerService: CustomerService,
-    private readonly transactionService: TransactionService
-  ) {}
+  constructor(private readonly transactionService: TransactionService) {}
 
-  onCustomerChange(value: string): void {
-    this.customerId.set(value);
+  onClientReady(client: ClientReadyEvent): void {
+    this.selectedClient.set(client);
+  }
+
+  changeClient(): void {
+    this.selectedClient.set(null);
   }
 
   onLabelChange(value: string | number): void {
@@ -47,13 +51,14 @@ export class NewDebtModalComponent {
   }
 
   submit(): void {
-    if (!this.canSubmit() || this.submitting()) {
+    const client = this.effectiveClient();
+    if (!client || !this.canSubmit() || this.submitting()) {
       return;
     }
     this.submitting.set(true);
     this.transactionService
       .create({
-        customerId: this.customerId(),
+        customerId: client.id,
         type: 'DEBT',
         label: this.label().trim(),
         amount: Number(this.amount()),
@@ -72,7 +77,7 @@ export class NewDebtModalComponent {
   }
 
   private reset(): void {
-    this.customerId.set('');
+    this.selectedClient.set(null);
     this.label.set('');
     this.amount.set('');
   }

@@ -1,10 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, QueryList, ViewChildren, ChangeDetectorRef } from '@angular/core';
+import { Component, ElementRef, QueryList, ViewChildren, ChangeDetectorRef, computed } from '@angular/core';
 import { SidebarService } from '../../services/sidebar.service';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { SafeHtmlPipe } from '../../pipe/safe-html.pipe';
 import { SidebarWidgetComponent } from './app-sidebar-widget.component';
 import { combineLatest, Subscription } from 'rxjs';
+import { ProfileService } from '../../../core/services/profile.service';
 
 type NavItem = {
   name: string;
@@ -48,6 +49,11 @@ export class AppSidebarComponent {
       name: "Paiement",
       path: "/payments",
     },
+    {
+      icon: `<svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M9.6559 2.75C9.36399 2.75 9.11433 2.9576 9.06018 3.24327L8.86153 4.28901C8.4649 4.42315 8.08792 4.60039 7.73577 4.81497L6.86682 4.21778C6.62723 4.05221 6.30447 4.08186 6.09902 4.28839L4.29742 6.09384C4.09202 6.30032 4.06296 6.62311 4.22868 6.86249L4.82762 7.72982C4.61426 8.08131 4.43769 8.45744 4.30411 8.85312L3.25701 9.05165C2.97127 9.10578 2.76562 9.35547 2.76562 9.64744V12.2005C2.76562 12.4925 2.97127 12.7422 3.25701 12.7963L4.30411 12.9948C4.43769 13.3905 4.61426 13.7666 4.82762 14.1181L4.22868 14.9855C4.06296 15.2248 4.09202 15.5476 4.29742 15.7541L6.09902 17.5596C6.30447 17.7661 6.62723 17.7957 6.86682 17.6302L7.73577 17.033C8.08792 17.2476 8.4649 17.4248 8.86153 17.559L9.06018 18.6047C9.11433 18.8904 9.36399 19.098 9.6559 19.098H12.2088C12.5008 19.098 12.7504 18.8904 12.8045 18.6047L13.0032 17.559C13.3999 17.4248 13.7768 17.2476 14.129 17.033L14.998 17.6302C15.2375 17.7957 15.5603 17.7661 15.7657 17.5596L17.5673 15.7541C17.7727 15.5476 17.8018 15.2248 17.6361 14.9855L17.0371 14.1181C17.2505 13.7666 17.4271 13.3905 17.5606 12.9948L18.6077 12.7963C18.8935 12.7422 19.0991 12.4925 19.0991 12.2005V9.64744C19.0991 9.35547 18.8935 9.10578 18.6077 9.05165L17.5606 8.85312C17.4271 8.45744 17.2505 8.08131 17.0371 7.72982L17.6361 6.86249C17.8018 6.62311 17.7727 6.30032 17.5673 6.09384L15.7657 4.28839C15.5603 4.08186 15.2375 4.05221 14.998 4.21778L14.129 4.81497C13.7768 4.60039 13.3999 4.42315 13.0032 4.28901L12.8045 3.24327C12.7504 2.9576 12.5008 2.75 12.2088 2.75H9.6559ZM10.9324 8.02344C9.30001 8.02344 7.97742 9.34602 7.97742 10.9784C7.97742 12.6109 9.30001 13.9334 10.9324 13.9334C12.5648 13.9334 13.8874 12.6109 13.8874 10.9784C13.8874 9.34602 12.5648 8.02344 10.9324 8.02344Z" fill="currentColor"></path></svg>`,
+      name: "Paramètres",
+      path: "/parametres",
+    },
   ];
 
   openSubmenu: string | null | number = null;
@@ -58,12 +64,16 @@ export class AppSidebarComponent {
   readonly isMobileOpen$;
   readonly isHovered$;
 
+  readonly appName = computed(() => this.profileService.profile()?.businessName || 'iziCarnet');
+  readonly appInitial = computed(() => this.appName().charAt(0).toUpperCase());
+
   private subscription: Subscription = new Subscription();
 
   constructor(
     public sidebarService: SidebarService,
     private router: Router,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private profileService: ProfileService
   ) {
     this.isExpanded$ = this.sidebarService.isExpanded$;
     this.isMobileOpen$ = this.sidebarService.isMobileOpen$;

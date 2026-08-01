@@ -19,7 +19,7 @@ export class CustomerService {
       return this.customersSignal();
     }
     return this.customersSignal().filter(
-      c => c.name.toLowerCase().includes(term) || c.phone.toLowerCase().includes(term)
+      c => c.name.toLowerCase().includes(term) || (c.phone ?? '').toLowerCase().includes(term)
     );
   });
 

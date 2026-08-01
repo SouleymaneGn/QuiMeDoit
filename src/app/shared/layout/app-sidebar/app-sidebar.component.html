@@ -22,24 +22,22 @@
       'justify-start': (isExpanded$ | async) || (isHovered$ | async)
     }"
   >
-    <a routerLink="/">
+    <a routerLink="/" class="flex items-center gap-2">
       @if ((isExpanded$ | async) || (isHovered$ | async) || (isMobileOpen$ | async)) {
-      <img
-        class="dark:hidden"
-        src="/images/logo/logo.svg"
-        alt="Logo"
-        width="150"
-        height="40"
-      />
-      <img
-        class="hidden dark:block"
-        src="/images/logo/logo-dark.svg"
-        alt="Logo"
-        width="150"
-        height="40"
-      />
+      <span
+        class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-brand-500 text-sm font-semibold text-white"
+      >
+        {{ appInitial() }}
+      </span>
+      <span class="truncate text-base font-semibold text-gray-800 dark:text-white/90">
+        {{ appName() }}
+      </span>
       } @else {
-      <img src="/images/logo/logo-icon.svg" alt="Logo" width="32" height="32" />
+      <span
+        class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-brand-500 text-sm font-semibold text-white"
+      >
+        {{ appInitial() }}
+      </span>
       }
     </a>
   </div>

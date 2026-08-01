@@ -5,6 +5,8 @@ import { AppLayoutComponent } from './shared/layout/app-layout/app-layout.compon
 import { SignInComponent } from './pages/auth-pages/sign-in/sign-in.component';
 import { SignUpComponent } from './pages/auth-pages/sign-up/sign-up.component';
 import { CustomersComponent } from './pages/customers/customers.component';
+import { CustomerDetailComponent } from './pages/customer-detail/customer-detail.component';
+import { ParametresComponent } from './pages/parametres/parametres.component';
 import { PaymentsComponent } from './pages/payments/payments.component';
 import { ProfileComponent } from './pages/profile/profile.component';
 
@@ -22,7 +24,12 @@ export const routes: Routes = [
       {
         path:'customers',
         component:CustomersComponent,
-        title:'Clients | TailAdmin - Angular Admin Dashboard Template'
+        title:'Clients | iziCarnet'
+      },
+      {
+        path:'customers/:id',
+        component:CustomerDetailComponent,
+        title:'Fiche client | iziCarnet'
       },
       {
         path:'payments',
@@ -33,6 +40,11 @@ export const routes: Routes = [
         path:'profile',
         component:ProfileComponent,
         title:'Angular Profile Dashboard | TailAdmin - Angular Admin Dashboard Template'
+      },
+      {
+        path:'parametres',
+        component:ParametresComponent,
+        title:'Paramètres | iziCarnet'
       },
     ]
   },

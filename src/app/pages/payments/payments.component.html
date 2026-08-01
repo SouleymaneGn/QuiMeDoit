@@ -1,14 +1,74 @@
 <div>
   <app-page-breadcrumb pageTitle="Paiements" />
-  <div class="min-h-screen rounded-2xl border border-gray-200 bg-white px-5 py-7 dark:border-gray-800 dark:bg-white/[0.03] xl:px-10 xl:py-12">
-    <div class="mx-auto w-full max-w-[630px] text-center">
-      <h3 class="mb-4 font-semibold text-gray-800 text-theme-xl dark:text-white/90 sm:text-2xl">
-        Liste des paiements
-      </h3>
 
-      <p class="text-sm text-gray-500 dark:text-gray-400 sm:text-base">
-        La liste des paiements s'affichera ici.
-      </p>
+  <div class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] sm:p-6">
+    <div class="mb-5 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+      <div class="w-full sm:max-w-xs">
+        <app-date-picker
+          id="payment-range"
+          mode="range"
+          label="Période"
+          [defaultDate]="defaultRange"
+          (dateChange)="onRangeChange($event)"
+        />
+      </div>
+
+      <div class="flex items-center gap-6">
+        <div class="text-left sm:text-right">
+          <p class="text-sm text-gray-500 dark:text-gray-400">Total reçu sur la période</p>
+          <p class="mt-1 text-xl font-semibold text-gray-800 dark:text-white/90">{{ totalReceived() }}</p>
+        </div>
+        <app-button (btnClick)="showNewPaymentModal.set(true)">💵 Recevoir un paiement</app-button>
+      </div>
     </div>
+
+    @if (payments().length === 0) {
+      <p class="py-8 text-center text-sm text-gray-500 dark:text-gray-400">
+        Aucun paiement sur cette période.
+      </p>
+    } @else {
+      <div class="max-w-full overflow-x-auto">
+        <table class="w-full text-left">
+          <thead class="border-y border-gray-100 dark:border-gray-800">
+            <tr>
+              <th class="py-3 font-medium text-gray-500 text-theme-xs dark:text-gray-400">Client</th>
+              <th class="py-3 font-medium text-gray-500 text-theme-xs dark:text-gray-400">Libellé</th>
+              <th class="py-3 font-medium text-gray-500 text-theme-xs dark:text-gray-400">Mode</th>
+              <th class="py-3 font-medium text-gray-500 text-theme-xs dark:text-gray-400">Date</th>
+              <th class="py-3 text-right font-medium text-gray-500 text-theme-xs dark:text-gray-400">Montant</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
+            @for (payment of pagedPayments(); track payment.id) {
+              <tr>
+                <td class="py-3 font-medium text-gray-800 text-theme-sm dark:text-white/90">
+                  {{ payment.customerName }}
+                </td>
+                <td class="py-3 text-gray-500 text-theme-sm dark:text-gray-400">{{ payment.label }}</td>
+                <td class="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
+                  {{ paymentMethodLabel(payment.paymentMethod) }}
+                </td>
+                <td class="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
+                  {{ payment.createdAt | date: 'dd/MM/yyyy' }}
+                </td>
+                <td class="py-3 text-right text-theme-sm font-semibold text-success-600 dark:text-success-500">
+                  {{ formatAmount(payment.amount) }}
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <app-pagination
+        class="mt-4 block"
+        [page]="page()"
+        [pageSize]="pageSize"
+        [totalItems]="payments().length"
+        (pageChange)="onPageChange($event)"
+      />
+    }
   </div>
+
+  <app-new-payment-modal [isOpen]="showNewPaymentModal()" (close)="showNewPaymentModal.set(false)" />
 </div>

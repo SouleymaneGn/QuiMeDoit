@@ -1,0 +1,49 @@
+<div>
+  <app-page-breadcrumb pageTitle="Paramètres" />
+
+  <div class="max-w-lg rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/[0.03]">
+    <div class="mb-5">
+      <app-label for="settings-business">Nom du commerce</app-label>
+      <app-input-field
+        id="settings-business"
+        placeholder="Ex: Quincaillerie Diallo & Fils"
+        [value]="businessName()"
+        (valueChange)="onBusinessNameChange($event)"
+      />
+    </div>
+
+    <div class="mb-5">
+      <app-label for="settings-phone">Téléphone</app-label>
+      <app-input-field
+        id="settings-phone"
+        type="tel"
+        placeholder="Ex: +224 622 00 00 00"
+        [value]="phone()"
+        (valueChange)="onPhoneChange($event)"
+      />
+    </div>
+
+    <div class="mb-6">
+      <app-label for="settings-currency">Devise</app-label>
+      <app-input-field
+        id="settings-currency"
+        placeholder="Ex: GNF"
+        [value]="currency()"
+        (valueChange)="onCurrencyChange($event)"
+      />
+    </div>
+
+    <div class="flex items-center gap-3">
+      <app-button (btnClick)="save()">Enregistrer</app-button>
+      @if (saved()) {
+        <span class="text-sm text-success-600 dark:text-success-500">Enregistré ✓</span>
+      }
+    </div>
+  </div>
+
+  <div class="mt-6 max-w-lg rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/[0.03]">
+    <h2 class="mb-1 text-sm font-semibold text-gray-800 dark:text-white/90">Session</h2>
+    <p class="mb-4 text-sm text-gray-500 dark:text-gray-400">Se déconnecter de iziCarnet.</p>
+    <app-button variant="outline" (btnClick)="logout()">Déconnexion</app-button>
+  </div>
+</div>

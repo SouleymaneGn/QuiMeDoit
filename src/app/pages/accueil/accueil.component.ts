@@ -6,7 +6,6 @@ import { NewPaymentModalComponent } from '../../shared/components/modals/new-pay
 import { ProfileService } from '../../core/services/profile.service';
 import { CustomerService } from '../../core/services/customer.service';
 import { TransactionService } from '../../core/services/transaction.service';
-import { formatCurrency } from '../../core/utils/currency.util';
 
 @Component({
   selector: 'app-accueil',
@@ -22,7 +21,9 @@ export class AccueilComponent {
     return name.split(' ')[0] || name;
   });
 
-  readonly totalToCollect = computed(() => formatCurrency(this.transactionService.totalToCollect()));
+  readonly totalToCollect = computed(() =>
+    this.profileService.formatAmount(this.transactionService.totalToCollect())
+  );
   readonly debtorsCount = computed(() => this.transactionService.debtorsCount());
 
   readonly recentActivity = computed(() =>
@@ -42,6 +43,6 @@ export class AccueilComponent {
   ) {}
 
   formatAmount(amount: number): string {
-    return formatCurrency(amount);
+    return this.profileService.formatAmount(amount);
   }
 }

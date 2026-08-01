@@ -1,0 +1,31 @@
+<app-modal [isOpen]="isOpen" (close)="onClose()" className="max-w-md m-4">
+  <div class="p-6">
+    <h4 class="mb-6 text-lg font-semibold text-gray-800 dark:text-white/90">Nouveau client</h4>
+
+    <div class="mb-4">
+      <app-label for="customer-name">Nom</app-label>
+      <app-input-field
+        id="customer-name"
+        placeholder="Ex: Mamadou Diallo"
+        [value]="name()"
+        (valueChange)="onNameChange($event)"
+      />
+    </div>
+
+    <div class="mb-6">
+      <app-label for="customer-phone">Téléphone (facultatif)</app-label>
+      <app-input-field
+        id="customer-phone"
+        type="tel"
+        placeholder="Ex: +224 622 00 00 00"
+        [value]="phone()"
+        (valueChange)="onPhoneChange($event)"
+      />
+    </div>
+
+    <div class="flex justify-end gap-3">
+      <app-button variant="outline" (btnClick)="onClose()">Annuler</app-button>
+      <app-button [disabled]="!canSubmit() || submitting()" (btnClick)="submit()">Enregistrer</app-button>
+    </div>
+  </div>
+</app-modal>

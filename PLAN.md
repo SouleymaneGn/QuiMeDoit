@@ -101,7 +101,7 @@ Page dédiée iziCarnet, volontairement minimale — aucun champ hérité du pro
 - Déconnexion
 
 **Fichiers à créer :**
-- `src/app/pages/parametres/parametres.component.ts/.html` — nouvelle page sobre affichant les 4 champs ci-dessus, lecture des données via `ProfileService` (lui-même injectant `ProfileRepository` → `JsonProfileRepository` → `assets/mock/profile.json`, posé en Phase 0). Réutilise les composants UI existants pertinents (`form/input`, `form/label`, `ui/button` pour l'action Déconnexion) sans réutiliser la page `/profile` ni ses cards (`UserMetaCard`, `UserInfoCard`, `UserAddressCard`).
+- `src/app/pages/parametres/parametres.component.ts/.html` — nouvelle page  affichant les 4 champs ci-dessus, lecture des données via `ProfileService` (lui-même injectant `ProfileRepository` → `JsonProfileRepository` → `assets/mock/profile.json`, posé en Phase 0). Réutilise les composants UI existants pertinents (`form/input`, `form/label`, `ui/button` pour l'action Déconnexion) sans réutiliser la page `/profile` ni ses cards (`UserMetaCard`, `UserInfoCard`, `UserAddressCard`).
 - `src/app/core/models/profile.model.ts` (déjà prévu en Phase 0) — s'assurer que les champs correspondent exactement à ce besoin : `businessName`, `phone`, `currency` (+ champs internes éventuels comme `id`)
 
 **Fichiers à modifier :**
