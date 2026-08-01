@@ -6,6 +6,7 @@ import { NewPaymentModalComponent } from '../../shared/components/modals/new-pay
 import { ProfileService } from '../../core/services/profile.service';
 import { CustomerService } from '../../core/services/customer.service';
 import { TransactionService } from '../../core/services/transaction.service';
+import { SupabaseService } from '../../core/services/supabase.service';
 
 @Component({
   selector: 'app-accueil',
@@ -16,8 +17,10 @@ export class AccueilComponent {
   readonly showNewDebtModal = signal(false);
   readonly showNewPaymentModal = signal(false);
 
+  readonly userName = signal('');
+
   readonly firstName = computed(() => {
-    const name = this.profileService.profile()?.ownerName ?? '';
+    const name = this.userName();
     return name.split(' ')[0] || name;
   });
 
@@ -39,10 +42,19 @@ export class AccueilComponent {
   constructor(
     private readonly profileService: ProfileService,
     private readonly customerService: CustomerService,
-    private readonly transactionService: TransactionService
-  ) {}
+    private readonly transactionService: TransactionService,
+    private readonly supabaseService: SupabaseService
+  ) {
+    this.loadUser();
+  }
 
   formatAmount(amount: number): string {
     return this.profileService.formatAmount(amount);
+  }
+
+  private async loadUser(): Promise<void> {
+    const { data } = await this.supabaseService.getUser();
+    const displayName = data.user?.user_metadata?.['displayName'] as string | undefined;
+    this.userName.set(displayName?.trim() || data.user?.email || '');
   }
 }
