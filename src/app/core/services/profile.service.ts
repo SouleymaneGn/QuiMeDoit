@@ -15,7 +15,10 @@ export class ProfileService {
   }
 
   load(): void {
-    this.repository.get().subscribe(profile => this.profileSignal.set(profile));
+    this.repository.get().subscribe({
+      next: profile => this.profileSignal.set(profile),
+      error: err => console.error('Échec du chargement du profil', err)
+    });
   }
 
   update(patch: ProfileInput): Observable<Profile> {

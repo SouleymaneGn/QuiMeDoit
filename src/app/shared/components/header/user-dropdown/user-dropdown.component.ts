@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, computed, signal } from '@angular/core';
 import { DropdownComponent } from '../../ui/dropdown/dropdown.component';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
@@ -12,11 +12,20 @@ import { SupabaseService } from '../../../../core/services/supabase.service';
 })
 export class UserDropdownComponent {
   isOpen = false;
+    readonly userName = signal('');
+    
 
+  readonly firstName = computed(() => {
+    const name = this.userName();
+    return name.split(' ')[0] || name;
+  });
   constructor(
     private readonly supabaseService: SupabaseService,
     private readonly router: Router
-  ) {}
+  ) {
+        this.loadUser();
+
+  }
 
   toggleDropdown() {
     this.isOpen = !this.isOpen;
@@ -30,5 +39,10 @@ export class UserDropdownComponent {
     this.closeDropdown();
     await this.supabaseService.signOut();
     this.router.navigate(['/signin']);
+  }
+  private async loadUser(): Promise<void> {
+    const { data } = await this.supabaseService.getUser();
+    const displayName = data.user?.user_metadata?.['displayName'] as string | undefined;
+    this.userName.set(displayName?.trim() || data.user?.email || '');
   }
 }

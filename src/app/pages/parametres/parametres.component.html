@@ -38,6 +38,9 @@
       @if (saved()) {
         <span class="text-sm text-success-600 dark:text-success-500">Enregistré ✓</span>
       }
+      @if (errorMessage()) {
+        <span class="text-sm text-error-500">{{ errorMessage() }}</span>
+      }
     </div>
   </div>
 

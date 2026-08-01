@@ -4,19 +4,19 @@ import { provideRouter } from '@angular/router';
 
 import { routes } from './app.routes';
 import { CustomerRepository } from './core/repositories/customer.repository';
-import { JsonCustomerRepository } from './core/repositories/json/json-customer.repository';
+import { SupabaseCustomerRepository } from './core/repositories/supabase/supabase-customer.repository';
 import { TransactionRepository } from './core/repositories/transaction.repository';
-import { JsonTransactionRepository } from './core/repositories/json/json-transaction.repository';
+import { SupabaseTransactionRepository } from './core/repositories/supabase/supabase-transaction.repository';
 import { ProfileRepository } from './core/repositories/profile.repository';
-import { JsonProfileRepository } from './core/repositories/json/json-profile.repository';
+import { SupabaseProfileRepository } from './core/repositories/supabase/supabase-profile.repository';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
     provideHttpClient(),
-    { provide: CustomerRepository, useClass: JsonCustomerRepository },
-    { provide: TransactionRepository, useClass: JsonTransactionRepository },
-    { provide: ProfileRepository, useClass: JsonProfileRepository }
+    { provide: CustomerRepository, useClass: SupabaseCustomerRepository },
+    { provide: TransactionRepository, useClass: SupabaseTransactionRepository },
+    { provide: ProfileRepository, useClass: SupabaseProfileRepository }
   ]
 };

@@ -17,6 +17,7 @@ export class ParametresComponent {
   readonly phone = signal('');
   readonly currency = signal('GNF');
   readonly saved = signal(false);
+  readonly errorMessage = signal('');
 
   constructor(
     private readonly profileService: ProfileService,
@@ -46,15 +47,22 @@ export class ParametresComponent {
   }
 
   save(): void {
+    this.errorMessage.set('');
     this.profileService
       .update({
         businessName: this.businessName().trim(),
         phone: this.phone().trim(),
         currency: this.currency().trim() || 'GNF'
       })
-      .subscribe(() => {
-        this.saved.set(true);
-        setTimeout(() => this.saved.set(false), 2000);
+      .subscribe({
+        next: () => {
+          this.saved.set(true);
+          setTimeout(() => this.saved.set(false), 2000);
+        },
+        error: err => {
+          this.errorMessage.set("Erreur lors de l'enregistrement. Réessayez.");
+          console.error('Échec de la sauvegarde du profil', err);
+        }
       });
   }
 

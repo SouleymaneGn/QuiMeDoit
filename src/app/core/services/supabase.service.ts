@@ -48,4 +48,7 @@ export class SupabaseService {
     return await this.supabase.auth.signOut();
   }
 
+  get client(): SupabaseClient {
+    return this.supabase;
+  }
 }
