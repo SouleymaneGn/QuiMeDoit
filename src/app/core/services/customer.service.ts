@@ -2,6 +2,7 @@ import { Injectable, computed, signal } from '@angular/core';
 import { Observable, tap } from 'rxjs';
 import { Customer, CustomerInput } from '../models/customer.model';
 import { CustomerRepository } from '../repositories/customer.repository';
+import { SupabaseService } from './supabase.service';
 
 @Injectable({ providedIn: 'root' })
 export class CustomerService {
@@ -23,8 +24,21 @@ export class CustomerService {
     );
   });
 
-  constructor(private readonly repository: CustomerRepository) {
-    this.loadAll();
+  constructor(
+    private readonly repository: CustomerRepository,
+    private readonly supabaseService: SupabaseService
+  ) {
+    // Recharge (ou vide) les données à chaque changement de session : connexion,
+    // déconnexion, ou changement de compte sans rechargement complet de la page.
+    this.supabaseService.client.auth.onAuthStateChange((_event, session) => {
+      if (session) {
+        this.loadAll();
+      } else {
+        this.customersSignal.set([]);
+        this.loadedSignal.set(false);
+        this.searchTerm.set('');
+      }
+    });
   }
 
   loadAll(): void {

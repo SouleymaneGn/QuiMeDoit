@@ -3,6 +3,7 @@ import { Observable, tap } from 'rxjs';
 import { Transaction, TransactionInput } from '../models/transaction.model';
 import { TransactionRepository } from '../repositories/transaction.repository';
 import { computeBalance } from '../utils/balance.util';
+import { SupabaseService } from './supabase.service';
 
 @Injectable({ providedIn: 'root' })
 export class TransactionService {
@@ -49,8 +50,20 @@ export class TransactionService {
     );
   });
 
-  constructor(private readonly repository: TransactionRepository) {
-    this.loadAll();
+  constructor(
+    private readonly repository: TransactionRepository,
+    private readonly supabaseService: SupabaseService
+  ) {
+    // Recharge (ou vide) les données à chaque changement de session : connexion,
+    // déconnexion, ou changement de compte sans rechargement complet de la page.
+    this.supabaseService.client.auth.onAuthStateChange((_event, session) => {
+      if (session) {
+        this.loadAll();
+      } else {
+        this.transactionsSignal.set([]);
+        this.loadedSignal.set(false);
+      }
+    });
   }
 
   loadAll(): void {

@@ -3,6 +3,7 @@ import { Observable, tap } from 'rxjs';
 import { Profile, ProfileInput } from '../models/profile.model';
 import { ProfileRepository } from '../repositories/profile.repository';
 import { formatCurrency } from '../utils/currency.util';
+import { SupabaseService } from './supabase.service';
 
 @Injectable({ providedIn: 'root' })
 export class ProfileService {
@@ -10,8 +11,19 @@ export class ProfileService {
 
   readonly profile = this.profileSignal.asReadonly();
 
-  constructor(private readonly repository: ProfileRepository) {
-    this.load();
+  constructor(
+    private readonly repository: ProfileRepository,
+    private readonly supabaseService: SupabaseService
+  ) {
+    // Recharge (ou vide) le profil à chaque changement de session : connexion,
+    // déconnexion, ou changement de compte sans rechargement complet de la page.
+    this.supabaseService.client.auth.onAuthStateChange((_event, session) => {
+      if (session) {
+        this.load();
+      } else {
+        this.profileSignal.set(null);
+      }
+    });
   }
 
   load(): void {

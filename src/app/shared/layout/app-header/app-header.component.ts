@@ -1,10 +1,14 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, ViewChild, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { SidebarService } from '../../services/sidebar.service';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { NavigationEnd, Router, RouterModule } from '@angular/router';
+import { filter, map } from 'rxjs';
 import { ThemeToggleButtonComponent } from '../../components/common/theme-toggle/theme-toggle-button.component';
 import { NotificationDropdownComponent } from '../../components/header/notification-dropdown/notification-dropdown.component';
 import { UserDropdownComponent } from '../../components/header/user-dropdown/user-dropdown.component';
+import { ButtonComponent } from '../../components/ui/button/button.component';
+import { NewDebtModalComponent } from '../../components/modals/new-debt-modal/new-debt-modal.component';
 
 @Component({
   selector: 'app-header',
@@ -14,17 +18,32 @@ import { UserDropdownComponent } from '../../components/header/user-dropdown/use
     ThemeToggleButtonComponent,
     NotificationDropdownComponent,
     UserDropdownComponent,
+    ButtonComponent,
+    NewDebtModalComponent,
   ],
   templateUrl: './app-header.component.html',
 })
 export class AppHeaderComponent {
   isApplicationMenuOpen = false;
   readonly isMobileOpen$;
+  readonly showNewDebtModal = signal(false);
+
+  readonly isOnAccueil;
 
   @ViewChild('searchInput') searchInput!: ElementRef<HTMLInputElement>;
 
-  constructor(public sidebarService: SidebarService) {
+  constructor(
+    public sidebarService: SidebarService,
+    private readonly router: Router
+  ) {
     this.isMobileOpen$ = this.sidebarService.isMobileOpen$;
+    this.isOnAccueil = toSignal(
+      this.router.events.pipe(
+        filter((event): event is NavigationEnd => event instanceof NavigationEnd),
+        map(event => event.urlAfterRedirects === '/')
+      ),
+      { initialValue: this.router.url === '/' }
+    );
   }
 
   handleToggle() {
