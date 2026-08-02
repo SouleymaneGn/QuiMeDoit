@@ -17,12 +17,16 @@
       <p class="py-8 text-center text-sm text-gray-500 dark:text-gray-400">Aucun client trouvé.</p>
     } @else {
       <div class="max-w-full overflow-x-auto">
-        <table class="w-full text-left">
+        <table class="w-full min-w-[480px] text-left">
           <thead class="border-y border-gray-100 dark:border-gray-800">
             <tr>
-              <th class="py-3 font-medium text-gray-500 text-theme-xs dark:text-gray-400">Nom</th>
-              <th class="py-3 font-medium text-gray-500 text-theme-xs dark:text-gray-400">Téléphone</th>
-              <th class="py-3 text-right font-medium text-gray-500 text-theme-xs dark:text-gray-400">
+              <th class="py-3 whitespace-nowrap font-medium text-gray-500 text-theme-xs dark:text-gray-400">
+                Nom
+              </th>
+              <th class="py-3 whitespace-nowrap font-medium text-gray-500 text-theme-xs dark:text-gray-400">
+                Téléphone
+              </th>
+              <th class="py-3 whitespace-nowrap text-right font-medium text-gray-500 text-theme-xs dark:text-gray-400">
                 Dette actuelle
               </th>
             </tr>
@@ -33,12 +37,14 @@
                 class="cursor-pointer hover:bg-gray-50 dark:hover:bg-white/[0.03]"
                 (click)="openCustomer(customer.id)"
               >
-                <td class="py-3 font-medium text-gray-800 text-theme-sm dark:text-white/90">
+                <td class="py-3 whitespace-nowrap font-medium text-gray-800 text-theme-sm dark:text-white/90">
                   {{ customer.name }}
                 </td>
-                <td class="py-3 text-gray-500 text-theme-sm dark:text-gray-400">{{ customer.phone || '—' }}</td>
+                <td class="py-3 whitespace-nowrap text-gray-500 text-theme-sm dark:text-gray-400">
+                  {{ customer.phone || '—' }}
+                </td>
                 <td
-                  class="py-3 text-right text-theme-sm font-semibold"
+                  class="py-3 whitespace-nowrap text-right text-theme-sm font-semibold"
                   [ngClass]="
                     customer.balance > 0
                       ? 'text-error-600 dark:text-error-500'

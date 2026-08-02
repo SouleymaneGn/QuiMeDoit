@@ -28,30 +28,44 @@
       </p>
     } @else {
       <div class="max-w-full overflow-x-auto">
-        <table class="w-full text-left">
+        <table class="w-full min-w-[640px] text-left">
           <thead class="border-y border-gray-100 dark:border-gray-800">
             <tr>
-              <th class="py-3 font-medium text-gray-500 text-theme-xs dark:text-gray-400">Client</th>
-              <th class="py-3 font-medium text-gray-500 text-theme-xs dark:text-gray-400">Libellé</th>
-              <th class="py-3 font-medium text-gray-500 text-theme-xs dark:text-gray-400">Mode</th>
-              <th class="py-3 font-medium text-gray-500 text-theme-xs dark:text-gray-400">Date</th>
-              <th class="py-3 text-right font-medium text-gray-500 text-theme-xs dark:text-gray-400">Montant</th>
+              <th class="py-3 whitespace-nowrap font-medium text-gray-500 text-theme-xs dark:text-gray-400">
+                Client
+              </th>
+              <th class="py-3 whitespace-nowrap font-medium text-gray-500 text-theme-xs dark:text-gray-400">
+                Libellé
+              </th>
+              <th class="py-3 whitespace-nowrap font-medium text-gray-500 text-theme-xs dark:text-gray-400">
+                Mode
+              </th>
+              <th class="py-3 whitespace-nowrap font-medium text-gray-500 text-theme-xs dark:text-gray-400">
+                Date
+              </th>
+              <th class="py-3 whitespace-nowrap text-right font-medium text-gray-500 text-theme-xs dark:text-gray-400">
+                Montant
+              </th>
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
             @for (payment of pagedPayments(); track payment.id) {
               <tr>
-                <td class="py-3 font-medium text-gray-800 text-theme-sm dark:text-white/90">
+                <td class="py-3 whitespace-nowrap font-medium text-gray-800 text-theme-sm dark:text-white/90">
                   {{ payment.customerName }}
                 </td>
-                <td class="py-3 text-gray-500 text-theme-sm dark:text-gray-400">{{ payment.label }}</td>
-                <td class="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
+                <td class="py-3 whitespace-nowrap text-gray-500 text-theme-sm dark:text-gray-400">
+                  {{ payment.label }}
+                </td>
+                <td class="py-3 whitespace-nowrap text-gray-500 text-theme-sm dark:text-gray-400">
                   {{ paymentMethodLabel(payment.paymentMethod) }}
                 </td>
-                <td class="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
+                <td class="py-3 whitespace-nowrap text-gray-500 text-theme-sm dark:text-gray-400">
                   {{ payment.createdAt | date: 'dd/MM/yyyy' }}
                 </td>
-                <td class="py-3 text-right text-theme-sm font-semibold text-success-600 dark:text-success-500">
+                <td
+                  class="py-3 whitespace-nowrap text-right text-theme-sm font-semibold text-success-600 dark:text-success-500"
+                >
                   {{ formatAmount(payment.amount) }}
                 </td>
               </tr>
