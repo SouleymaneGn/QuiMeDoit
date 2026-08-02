@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild, signal } from '@angular/core';
+import { Component, ElementRef, ViewChild, computed, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { SidebarService } from '../../services/sidebar.service';
 import { CommonModule } from '@angular/common';
@@ -9,6 +9,7 @@ import { NotificationDropdownComponent } from '../../components/header/notificat
 import { UserDropdownComponent } from '../../components/header/user-dropdown/user-dropdown.component';
 import { ButtonComponent } from '../../components/ui/button/button.component';
 import { NewDebtModalComponent } from '../../components/modals/new-debt-modal/new-debt-modal.component';
+import { ProfileService } from '../../../core/services/profile.service';
 
 @Component({
   selector: 'app-header',
@@ -29,12 +30,14 @@ export class AppHeaderComponent {
   readonly showNewDebtModal = signal(false);
 
   readonly isOnAccueil;
+  readonly appName = computed(() => this.profileService.profile()?.businessName || 'iziCarnet');
 
   @ViewChild('searchInput') searchInput!: ElementRef<HTMLInputElement>;
 
   constructor(
     public sidebarService: SidebarService,
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly profileService: ProfileService
   ) {
     this.isMobileOpen$ = this.sidebarService.isMobileOpen$;
     this.isOnAccueil = toSignal(
