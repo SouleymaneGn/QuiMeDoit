@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { LandingComponent } from './pages/landing/landing.component';
 import { AccueilComponent } from './pages/accueil/accueil.component';
 import { NotFoundComponent } from './pages/other-page/not-found/not-found.component';
 import { AppLayoutComponent } from './shared/layout/app-layout/app-layout.component';
@@ -13,7 +14,13 @@ import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
   {
-    path:'',
+    path: '',
+    component: LandingComponent,
+    pathMatch: 'full',
+    title: 'iziCarnet — Le carnet de dettes simple pour commerçants',
+  },
+  {
+    path:'app',
     component:AppLayoutComponent,
     canActivate: [authGuard],
     children:[

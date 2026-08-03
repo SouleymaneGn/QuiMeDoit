@@ -4,12 +4,13 @@ import { PageBreadcrumbComponent } from '../../shared/components/common/page-bre
 import { ButtonComponent } from '../../shared/components/ui/button/button.component';
 import { LabelComponent } from '../../shared/components/form/label/label.component';
 import { InputFieldComponent } from '../../shared/components/form/input/input-field.component';
+import { PhoneInputComponent } from '../../shared/components/form/group-input/phone-input/phone-input.component';
 import { ProfileService } from '../../core/services/profile.service';
 import { SupabaseService } from '../../core/services/supabase.service';
 
 @Component({
   selector: 'app-parametres',
-  imports: [PageBreadcrumbComponent, ButtonComponent, LabelComponent, InputFieldComponent],
+  imports: [PageBreadcrumbComponent, ButtonComponent, LabelComponent, InputFieldComponent, PhoneInputComponent],
   templateUrl: './parametres.component.html'
 })
 export class ParametresComponent {

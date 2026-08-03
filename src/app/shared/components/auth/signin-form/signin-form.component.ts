@@ -69,6 +69,6 @@ export class SigninFormComponent {
       return;
     }
 
-    this.router.navigate(['/']);
+    this.router.navigate(['/app']);
   }
 }

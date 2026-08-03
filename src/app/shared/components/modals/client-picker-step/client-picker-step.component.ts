@@ -2,6 +2,7 @@ import { Component, EventEmitter, Output, computed, inject, signal } from '@angu
 import { ButtonComponent } from '../../ui/button/button.component';
 import { LabelComponent } from '../../form/label/label.component';
 import { InputFieldComponent } from '../../form/input/input-field.component';
+import { PhoneInputComponent } from '../../form/group-input/phone-input/phone-input.component';
 import { CustomerService } from '../../../../core/services/customer.service';
 import { TransactionService } from '../../../../core/services/transaction.service';
 import { ProfileService } from '../../../../core/services/profile.service';
@@ -14,7 +15,7 @@ export interface ClientReadyEvent {
 
 @Component({
   selector: 'app-client-picker-step',
-  imports: [ButtonComponent, LabelComponent, InputFieldComponent],
+  imports: [ButtonComponent, LabelComponent, InputFieldComponent, PhoneInputComponent],
   templateUrl: './client-picker-step.component.html'
 })
 export class ClientPickerStepComponent {

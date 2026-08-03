@@ -43,9 +43,9 @@ export class AppHeaderComponent {
     this.isOnAccueil = toSignal(
       this.router.events.pipe(
         filter((event): event is NavigationEnd => event instanceof NavigationEnd),
-        map(event => event.urlAfterRedirects === '/')
+        map(event => event.urlAfterRedirects === '/app')
       ),
-      { initialValue: this.router.url === '/' }
+      { initialValue: this.router.url === '/app' }
     );
   }
 

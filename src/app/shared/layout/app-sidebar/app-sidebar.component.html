@@ -22,7 +22,7 @@
       'justify-start': (isExpanded$ | async) || (isHovered$ | async)
     }"
   >
-    <a routerLink="/" class="flex items-center gap-2">
+    <a routerLink="/app" class="flex items-center gap-2">
       @if ((isExpanded$ | async) || (isHovered$ | async) || (isMobileOpen$ | async)) {
       <span
         class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-brand-500 text-sm font-semibold text-white"
@@ -213,7 +213,7 @@
                 <a
                   [routerLink]="nav.path"
                   routerLinkActive="menu-item-active"
-                  [routerLinkActiveOptions]="{ exact: nav.path === '/' }"
+                  [routerLinkActiveOptions]="{ exact: nav.path === '/app' }"
                   class="menu-item group"
                   [ngClass]="{ 'menu-item-inactive': !isActive(nav.path) }"
                 >

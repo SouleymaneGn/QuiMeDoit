@@ -3,8 +3,10 @@ import { LabelComponent } from '../../form/label/label.component';
 import { CheckboxComponent } from '../../form/input/checkbox.component';
 import { ButtonComponent } from '../../ui/button/button.component';
 import { InputFieldComponent } from '../../form/input/input-field.component';
+import { PhoneInputComponent } from '../../form/group-input/phone-input/phone-input.component';
 import { Router, RouterModule } from '@angular/router';
 import { SupabaseService } from '../../../../core/services/supabase.service';
+import { ProfileService } from '../../../../core/services/profile.service';
 
 function mapSignUpError(message: string): string {
   if (/already registered|already exists/i.test(message)) {
@@ -18,7 +20,14 @@ function mapSignUpError(message: string): string {
 
 @Component({
   selector: 'app-signup-form',
-  imports: [LabelComponent, CheckboxComponent, ButtonComponent, InputFieldComponent, RouterModule],
+  imports: [
+    LabelComponent,
+    CheckboxComponent,
+    ButtonComponent,
+    InputFieldComponent,
+    PhoneInputComponent,
+    RouterModule
+  ],
   templateUrl: './signup-form.component.html',
   styles: ``
 })
@@ -29,6 +38,7 @@ export class SignupFormComponent {
   readonly fname = signal('');
   readonly lname = signal('');
   readonly email = signal('');
+  readonly phone = signal('');
   readonly password = signal('');
 
   readonly submitting = signal(false);
@@ -46,6 +56,7 @@ export class SignupFormComponent {
 
   constructor(
     private readonly supabaseService: SupabaseService,
+    private readonly profileService: ProfileService,
     private readonly router: Router
   ) {}
 
@@ -65,6 +76,10 @@ export class SignupFormComponent {
     this.email.set(String(value));
   }
 
+  onPhoneChange(value: string | number): void {
+    this.phone.set(String(value));
+  }
+
   onPasswordChange(value: string | number): void {
     this.password.set(String(value));
   }
@@ -77,10 +92,13 @@ export class SignupFormComponent {
     this.errorMessage.set('');
     this.successMessage.set('');
 
+    const phone = this.phone().trim();
+
     const { data, error } = await this.supabaseService.signUpWithEmail({
       name: `${this.fname().trim()} ${this.lname().trim()}`.trim(),
       email: this.email().trim(),
-      password: this.password()
+      password: this.password(),
+      phone: phone || undefined
     });
 
     this.submitting.set(false);
@@ -91,7 +109,10 @@ export class SignupFormComponent {
     }
 
     if (data.session) {
-      this.router.navigate(['/']);
+      if (phone) {
+        this.profileService.update({ phone }).subscribe();
+      }
+      this.router.navigate(['/app']);
       return;
     }
 

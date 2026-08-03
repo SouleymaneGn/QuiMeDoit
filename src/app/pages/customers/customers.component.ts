@@ -62,6 +62,6 @@ export class CustomersComponent {
   }
 
   openCustomer(id: string): void {
-    this.router.navigate(['/customers', id]);
+    this.router.navigate(['/app/customers', id]);
   }
 }

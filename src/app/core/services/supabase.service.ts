@@ -31,6 +31,7 @@ export class SupabaseService {
       options: {
         data: {
           displayName: payload.name,
+          phone: payload.phone || undefined,
         },
       },
     });

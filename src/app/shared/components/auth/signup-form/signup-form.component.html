@@ -66,6 +66,11 @@
             placeholder="Entrez votre email"
           />
         </div>
+        <!-- Phone -->
+        <div>
+          <app-label>Téléphone (facultatif)</app-label>
+          <app-phone-input [value]="phone()" (valueChange)="onPhoneChange($event)" />
+        </div>
         <!-- Password -->
         <div>
           <app-label>Mot de passe <span class="text-error-500">*</span></app-label>

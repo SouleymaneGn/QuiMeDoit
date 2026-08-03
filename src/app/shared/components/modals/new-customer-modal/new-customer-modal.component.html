@@ -14,13 +14,7 @@
 
     <div class="mb-6">
       <app-label for="customer-phone">Téléphone (facultatif)</app-label>
-      <app-input-field
-        id="customer-phone"
-        type="tel"
-        placeholder="Ex: +224 622 00 00 00"
-        [value]="phone()"
-        (valueChange)="onPhoneChange($event)"
-      />
+      <app-phone-input id="customer-phone" [value]="phone()" (valueChange)="onPhoneChange($event)" />
     </div>
 
     <div class="flex justify-end gap-3">
