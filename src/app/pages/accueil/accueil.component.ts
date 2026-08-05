@@ -1,6 +1,7 @@
 import { Component, computed, signal } from '@angular/core';
 import { ButtonComponent } from '../../shared/components/ui/button/button.component';
 import { BadgeComponent } from '../../shared/components/ui/badge/badge.component';
+import { SkeletonComponent } from '../../shared/components/ui/skeleton/skeleton.component';
 import { NewDebtModalComponent } from '../../shared/components/modals/new-debt-modal/new-debt-modal.component';
 import { NewPaymentModalComponent } from '../../shared/components/modals/new-payment-modal/new-payment-modal.component';
 import { ProfileService } from '../../core/services/profile.service';
@@ -10,7 +11,7 @@ import { SupabaseService } from '../../core/services/supabase.service';
 
 @Component({
   selector: 'app-accueil',
-  imports: [ButtonComponent, BadgeComponent, NewDebtModalComponent, NewPaymentModalComponent],
+  imports: [ButtonComponent, BadgeComponent, SkeletonComponent, NewDebtModalComponent, NewPaymentModalComponent],
   templateUrl: './accueil.component.html'
 })
 export class AccueilComponent {
@@ -18,6 +19,8 @@ export class AccueilComponent {
   readonly showNewPaymentModal = signal(false);
 
   readonly userName = signal('');
+
+  readonly isLoading = computed(() => !this.transactionService.loaded());
 
   readonly firstName = computed(() => {
     const name = this.userName();

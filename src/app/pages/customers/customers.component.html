@@ -13,7 +13,17 @@
       <app-button (btnClick)="showNewCustomerModal.set(true)">+ Nouveau client</app-button>
     </div>
 
-    @if (rows().length === 0) {
+    @if (!customerService.loaded()) {
+      <div class="space-y-4 py-1">
+        @for (i of [1, 2, 3, 4, 5]; track i) {
+          <div class="flex items-center justify-between">
+            <app-skeleton className="h-4 w-32" />
+            <app-skeleton className="h-4 w-24" />
+            <app-skeleton className="h-4 w-20" />
+          </div>
+        }
+      </div>
+    } @else if (rows().length === 0) {
       <p class="py-8 text-center text-sm text-gray-500 dark:text-gray-400">Aucun client trouvé.</p>
     } @else {
       <div class="max-w-full overflow-x-auto">

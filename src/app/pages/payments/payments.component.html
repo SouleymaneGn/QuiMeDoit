@@ -16,13 +16,28 @@
       <div class="flex items-center gap-6">
         <div class="text-left sm:text-right">
           <p class="text-sm text-gray-500 dark:text-gray-400">Total reçu sur la période</p>
-          <p class="mt-1 text-xl font-semibold text-gray-800 dark:text-white/90">{{ totalReceived() }}</p>
+          @if (isLoading()) {
+            <app-skeleton className="mt-1 h-6 w-28" />
+          } @else {
+            <p class="mt-1 text-xl font-semibold text-gray-800 dark:text-white/90">{{ totalReceived() }}</p>
+          }
         </div>
         <app-button (btnClick)="showNewPaymentModal.set(true)">💵 Recevoir un paiement</app-button>
       </div>
     </div>
 
-    @if (payments().length === 0) {
+    @if (isLoading()) {
+      <div class="space-y-4 py-1">
+        @for (i of [1, 2, 3, 4, 5]; track i) {
+          <div class="flex items-center justify-between">
+            <app-skeleton className="h-4 w-28" />
+            <app-skeleton className="h-4 w-24" />
+            <app-skeleton className="h-4 w-20" />
+            <app-skeleton className="h-4 w-16" />
+          </div>
+        }
+      </div>
+    } @else if (payments().length === 0) {
       <p class="py-8 text-center text-sm text-gray-500 dark:text-gray-400">
         Aucun paiement sur cette période.
       </p>

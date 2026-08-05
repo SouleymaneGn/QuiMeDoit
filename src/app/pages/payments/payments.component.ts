@@ -5,6 +5,7 @@ import { ButtonComponent } from '../../shared/components/ui/button/button.compon
 import { DatePickerComponent } from '../../shared/components/form/date-picker/date-picker.component';
 import { NewPaymentModalComponent } from '../../shared/components/modals/new-payment-modal/new-payment-modal.component';
 import { PaginationComponent } from '../../shared/components/ui/pagination/pagination.component';
+import { SkeletonComponent } from '../../shared/components/ui/skeleton/skeleton.component';
 import { CustomerService } from '../../core/services/customer.service';
 import { TransactionService } from '../../core/services/transaction.service';
 import { ProfileService } from '../../core/services/profile.service';
@@ -33,7 +34,8 @@ interface DatePickerChangeEvent {
     ButtonComponent,
     DatePickerComponent,
     NewPaymentModalComponent,
-    PaginationComponent
+    PaginationComponent,
+    SkeletonComponent
   ],
   templateUrl: './payments.component.html'
 })
@@ -71,6 +73,8 @@ export class PaymentsComponent {
     const start = (this.page() - 1) * this.pageSize;
     return this.payments().slice(start, start + this.pageSize);
   });
+
+  readonly isLoading = computed(() => !this.transactionService.loaded());
 
   constructor(
     private readonly customerService: CustomerService,

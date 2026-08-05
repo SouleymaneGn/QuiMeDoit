@@ -28,9 +28,9 @@
           Client → Libellé → Montant → Dette ou Paiement. Enregistrez en quelques secondes qui vous doit
           quoi, et sachez toujours où vous en êtes, sans carnet papier.
         </p>
-        <div class="mt-8 flex flex-col gap-3 sm:flex-row">
-          <app-button (btnClick)="goTo('/signup')">Créer un compte gratuitement</app-button>
-          <app-button variant="outline" (btnClick)="goTo('/signin')">Se connecter</app-button>
+        <div class="mt-8 flex flex-col gap-3 sm:flex-row justify-center">
+          <app-button (btnClick)="goTo('/signup')">Démarrer gratuitement</app-button>
+          <!-- <app-button variant="outline" (btnClick)="goTo('/signin')">Se connecter</app-button> -->
         </div>
       </div>
 
@@ -371,7 +371,7 @@
       <h2 class="text-2xl font-semibold text-white sm:text-3xl">Prêt à simplifier vos dettes clients ?</h2>
       <p class="mt-3 text-gray-300">Créez votre compte gratuitement et commencez en moins d'une minute.</p>
       <div class="mt-8">
-        <app-button (btnClick)="goTo('/signup')">Créer un compte</app-button>
+        <app-button (btnClick)="goTo('/signup')">Démarrer gratuitement</app-button>
       </div>
     </div>
   </section>

@@ -1,16 +1,24 @@
-import { Component, effect, signal } from '@angular/core';
+import { Component, computed, effect, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { PageBreadcrumbComponent } from '../../shared/components/common/page-breadcrumb/page-breadcrumb.component';
 import { ButtonComponent } from '../../shared/components/ui/button/button.component';
 import { LabelComponent } from '../../shared/components/form/label/label.component';
 import { InputFieldComponent } from '../../shared/components/form/input/input-field.component';
 import { PhoneInputComponent } from '../../shared/components/form/group-input/phone-input/phone-input.component';
+import { SkeletonComponent } from '../../shared/components/ui/skeleton/skeleton.component';
 import { ProfileService } from '../../core/services/profile.service';
 import { SupabaseService } from '../../core/services/supabase.service';
 
 @Component({
   selector: 'app-parametres',
-  imports: [PageBreadcrumbComponent, ButtonComponent, LabelComponent, InputFieldComponent, PhoneInputComponent],
+  imports: [
+    PageBreadcrumbComponent,
+    ButtonComponent,
+    LabelComponent,
+    InputFieldComponent,
+    PhoneInputComponent,
+    SkeletonComponent
+  ],
   templateUrl: './parametres.component.html'
 })
 export class ParametresComponent {
@@ -19,6 +27,8 @@ export class ParametresComponent {
   readonly currency = signal('GNF');
   readonly saved = signal(false);
   readonly errorMessage = signal('');
+
+  readonly isLoading = computed(() => this.profileService.profile() === null);
 
   constructor(
     private readonly profileService: ProfileService,

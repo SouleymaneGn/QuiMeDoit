@@ -6,6 +6,7 @@ import { ButtonComponent } from '../../shared/components/ui/button/button.compon
 import { InputFieldComponent } from '../../shared/components/form/input/input-field.component';
 import { NewCustomerModalComponent } from '../../shared/components/modals/new-customer-modal/new-customer-modal.component';
 import { PaginationComponent } from '../../shared/components/ui/pagination/pagination.component';
+import { SkeletonComponent } from '../../shared/components/ui/skeleton/skeleton.component';
 import { CustomerService } from '../../core/services/customer.service';
 import { TransactionService } from '../../core/services/transaction.service';
 import { ProfileService } from '../../core/services/profile.service';
@@ -20,7 +21,8 @@ const PAGE_SIZE = 10;
     ButtonComponent,
     InputFieldComponent,
     NewCustomerModalComponent,
-    PaginationComponent
+    PaginationComponent,
+    SkeletonComponent
   ],
   templateUrl: './customers.component.html'
 })

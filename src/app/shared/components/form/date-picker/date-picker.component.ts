@@ -1,6 +1,7 @@
 
 import { Component, Input, Output, EventEmitter, ElementRef, ViewChild } from '@angular/core';
 import flatpickr from 'flatpickr';
+import { French } from 'flatpickr/dist/l10n/fr.js';
 import { LabelComponent } from '../label/label.component';
 
 @Component({
@@ -28,6 +29,7 @@ export class DatePickerComponent {
       static: true,
       monthSelectorType: 'static',
       dateFormat: 'Y-m-d',
+      locale: French,
       defaultDate: this.defaultDate,
       onChange: (selectedDates, dateStr, instance) => {
         this.dateChange.emit({ selectedDates, dateStr, instance });
