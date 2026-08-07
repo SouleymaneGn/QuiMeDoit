@@ -57,4 +57,21 @@ export class JsonTransactionRepository extends TransactionRepository {
     this.transactions$.next([...current, transaction]);
     return of(transaction);
   }
+
+  update(id: string, patch: Partial<TransactionInput>): Observable<Transaction> {
+    const current = this.transactions$.value ?? [];
+    const updatedList = current.map(t => (t.id === id ? { ...t, ...patch } : t));
+    this.transactions$.next(updatedList);
+    const updated = updatedList.find(t => t.id === id);
+    if (!updated) {
+      throw new Error(`Transaction ${id} introuvable`);
+    }
+    return of(updated);
+  }
+
+  delete(id: string): Observable<void> {
+    const current = this.transactions$.value ?? [];
+    this.transactions$.next(current.filter(t => t.id !== id));
+    return of(undefined);
+  }
 }

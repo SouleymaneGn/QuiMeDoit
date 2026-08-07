@@ -12,7 +12,23 @@
     <div class="mb-6 rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/[0.03]">
       <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <h1 class="text-xl font-semibold text-gray-800 dark:text-white/90">{{ customer()!.name }}</h1>
+          <div class="flex items-center gap-2">
+            <h1 class="text-xl font-semibold text-gray-800 dark:text-white/90">{{ customer()!.name }}</h1>
+            <button
+              type="button"
+              class="inline-flex items-center gap-1 text-xs font-medium text-brand-500 hover:underline"
+              (click)="showEditModal.set(true)"
+            >
+              <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="m16.5 3.5 4 4L9 19H5v-4L16.5 3.5Z"
+                ></path>
+              </svg>
+              Modifier
+            </button>
+          </div>
           <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ customer()!.phone || 'Téléphone non renseigné' }}</p>
         </div>
         <div class="text-left sm:text-right">
@@ -72,6 +88,11 @@
       [presetCustomerId]="customerId()"
       [presetCustomerName]="customer()!.name"
       (close)="showNewPaymentModal.set(false)"
+    />
+    <app-edit-customer-modal
+      [isOpen]="showEditModal()"
+      [customer]="customer()!"
+      (close)="showEditModal.set(false)"
     />
   }
 </div>

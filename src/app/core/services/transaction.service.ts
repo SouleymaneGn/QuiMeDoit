@@ -86,4 +86,16 @@ export class TransactionService {
       tap(transaction => this.transactionsSignal.update(list => [...list, transaction]))
     );
   }
+
+  update(id: string, patch: Partial<TransactionInput>): Observable<Transaction> {
+    return this.repository.update(id, patch).pipe(
+      tap(updated => this.transactionsSignal.update(list => list.map(t => (t.id === id ? updated : t))))
+    );
+  }
+
+  delete(id: string): Observable<void> {
+    return this.repository.delete(id).pipe(
+      tap(() => this.transactionsSignal.update(list => list.filter(t => t.id !== id)))
+    );
+  }
 }

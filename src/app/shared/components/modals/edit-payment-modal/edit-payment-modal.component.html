@@ -1,0 +1,52 @@
+<app-modal [isOpen]="isOpen" (close)="onClose()" className="max-w-md m-4">
+  <div class="p-6">
+    <h4 class="mb-6 text-lg font-semibold text-gray-800 dark:text-white/90">Modifier le paiement</h4>
+
+    <div class="mb-4">
+      <app-label>Client</app-label>
+      <p class="text-sm font-medium text-gray-800 dark:text-white/90">{{ customerName }}</p>
+    </div>
+
+    <div class="mb-4">
+      <app-label for="edit-payment-amount">Montant (GNF)</app-label>
+      <app-input-field
+        id="edit-payment-amount"
+        type="number"
+        placeholder="0"
+        [value]="amount()"
+        (valueChange)="onAmountChange($event)"
+      />
+    </div>
+
+    <div class="mb-4">
+      <app-label for="edit-payment-method">Mode de paiement</app-label>
+      <app-select
+        id="edit-payment-method"
+        [options]="paymentMethodOptions"
+        [value]="paymentMethod()"
+        (valueChange)="onPaymentMethodChange($event)"
+      />
+    </div>
+
+    <div class="mb-6">
+      <app-label for="edit-payment-label">Libellé</app-label>
+      <app-input-field
+        id="edit-payment-label"
+        placeholder="Ex: Règlement"
+        [value]="label()"
+        (valueChange)="onLabelChange($event)"
+      />
+    </div>
+
+    @if (errorMessage()) {
+      <p class="mb-4 text-sm text-error-500">{{ errorMessage() }}</p>
+    }
+
+    <div class="flex justify-end gap-3">
+      <app-button variant="outline" (btnClick)="onClose()">Annuler</app-button>
+      <app-button [disabled]="!canSubmit() || submitting()" (btnClick)="submit()">
+        {{ submitting() ? 'Enregistrement...' : 'Enregistrer' }}
+      </app-button>
+    </div>
+  </div>
+</app-modal>

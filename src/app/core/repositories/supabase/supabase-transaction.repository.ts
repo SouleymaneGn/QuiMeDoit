@@ -95,4 +95,30 @@ export class SupabaseTransactionRepository extends TransactionRepository {
       })
     );
   }
+
+  update(id: string, patch: Partial<TransactionInput>): Observable<Transaction> {
+    const row: Record<string, unknown> = {};
+    if (patch.customerId !== undefined) row['customer_id'] = patch.customerId;
+    if (patch.type !== undefined) row['type'] = patch.type;
+    if (patch.label !== undefined) row['label'] = patch.label;
+    if (patch.amount !== undefined) row['amount'] = patch.amount;
+    if (patch.paymentMethod !== undefined) row['payment_method'] = patch.paymentMethod;
+
+    return from(
+      this.supabaseService.client.from('transactions').update(row).eq('id', id).select().single()
+    ).pipe(
+      map(({ data, error }) => {
+        if (error) throw error;
+        return toTransaction(data as TransactionRow);
+      })
+    );
+  }
+
+  delete(id: string): Observable<void> {
+    return from(this.supabaseService.client.from('transactions').delete().eq('id', id)).pipe(
+      map(({ error }) => {
+        if (error) throw error;
+      })
+    );
+  }
 }

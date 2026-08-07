@@ -8,6 +8,7 @@ import { ButtonComponent } from '../../shared/components/ui/button/button.compon
 import { BadgeComponent } from '../../shared/components/ui/badge/badge.component';
 import { NewDebtModalComponent } from '../../shared/components/modals/new-debt-modal/new-debt-modal.component';
 import { NewPaymentModalComponent } from '../../shared/components/modals/new-payment-modal/new-payment-modal.component';
+import { EditCustomerModalComponent } from '../../shared/components/modals/edit-customer-modal/edit-customer-modal.component';
 import { CustomerService } from '../../core/services/customer.service';
 import { TransactionService } from '../../core/services/transaction.service';
 import { ProfileService } from '../../core/services/profile.service';
@@ -22,7 +23,8 @@ import { ProfileService } from '../../core/services/profile.service';
     ButtonComponent,
     BadgeComponent,
     NewDebtModalComponent,
-    NewPaymentModalComponent
+    NewPaymentModalComponent,
+    EditCustomerModalComponent
   ],
   templateUrl: './customer-detail.component.html'
 })
@@ -34,6 +36,7 @@ export class CustomerDetailComponent {
 
   readonly showNewDebtModal = signal(false);
   readonly showNewPaymentModal = signal(false);
+  readonly showEditModal = signal(false);
 
   readonly customerId = toSignal(
     this.route.paramMap.pipe(map(params => params.get('id') ?? '')),

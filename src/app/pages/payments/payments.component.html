@@ -43,7 +43,7 @@
       </p>
     } @else {
       <div class="max-w-full overflow-x-auto">
-        <table class="min-w-[640px] text-left sm:w-full">
+        <table class="min-w-[720px] text-left sm:w-full">
           <thead class="border-y border-gray-100 dark:border-gray-800">
             <tr>
               <th class="py-3 whitespace-nowrap font-medium text-gray-500 text-theme-xs dark:text-gray-400">
@@ -60,6 +60,9 @@
               </th>
               <th class="py-3 whitespace-nowrap text-right font-medium text-gray-500 text-theme-xs dark:text-gray-400">
                 Montant
+              </th>
+              <th class="py-3 whitespace-nowrap text-right font-medium text-gray-500 text-theme-xs dark:text-gray-400">
+                <span class="sr-only">Actions</span>
               </th>
             </tr>
           </thead>
@@ -83,6 +86,38 @@
                 >
                   {{ formatAmount(payment.amount) }}
                 </td>
+                <td class="py-3 whitespace-nowrap text-right">
+                  <div class="flex items-center justify-end gap-2">
+                    <button
+                      type="button"
+                      class="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-white/5 dark:hover:text-gray-300"
+                      aria-label="Modifier"
+                      (click)="openEdit(payment)"
+                    >
+                      <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          d="m16.5 3.5 4 4L9 19H5v-4L16.5 3.5Z"
+                        ></path>
+                      </svg>
+                    </button>
+                    <button
+                      type="button"
+                      class="rounded-lg p-1.5 text-gray-400 hover:bg-error-50 hover:text-error-600 dark:hover:bg-error-500/10 dark:hover:text-error-500"
+                      aria-label="Supprimer"
+                      (click)="openDeleteConfirm(payment)"
+                    >
+                      <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          d="M4 7h16M9.5 7V5a1.5 1.5 0 0 1 1.5-1.5h2A1.5 1.5 0 0 1 14.5 5v2M18 7l-.7 12.1a2 2 0 0 1-2 1.9H8.7a2 2 0 0 1-2-1.9L6 7"
+                        ></path>
+                      </svg>
+                    </button>
+                  </div>
+                </td>
               </tr>
             }
           </tbody>
@@ -100,4 +135,25 @@
   </div>
 
   <app-new-payment-modal [isOpen]="showNewPaymentModal()" (close)="showNewPaymentModal.set(false)" />
+
+  <app-edit-payment-modal
+    [isOpen]="showEditModal()"
+    [payment]="editingPayment()"
+    [customerName]="editingPayment()?.customerName ?? ''"
+    (close)="showEditModal.set(false)"
+  />
+
+  <app-confirm-dialog
+    [isOpen]="showDeleteConfirm()"
+    title="Supprimer ce paiement ?"
+    [message]="
+      'Le paiement' +
+      (deletingPayment() ? ' de ' + deletingPayment()!.customerName : '') +
+      ' sera définitivement supprimé. Cette action est irréversible.'
+    "
+    confirmLabel="Supprimer"
+    [busy]="deleting()"
+    (cancel)="cancelDelete()"
+    (confirm)="confirmDelete()"
+  />
 </div>

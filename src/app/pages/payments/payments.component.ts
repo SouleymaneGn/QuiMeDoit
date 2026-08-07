@@ -4,11 +4,16 @@ import { PageBreadcrumbComponent } from '../../shared/components/common/page-bre
 import { ButtonComponent } from '../../shared/components/ui/button/button.component';
 import { DatePickerComponent } from '../../shared/components/form/date-picker/date-picker.component';
 import { NewPaymentModalComponent } from '../../shared/components/modals/new-payment-modal/new-payment-modal.component';
+import { EditPaymentModalComponent } from '../../shared/components/modals/edit-payment-modal/edit-payment-modal.component';
+import { ConfirmDialogComponent } from '../../shared/components/modals/confirm-dialog/confirm-dialog.component';
 import { PaginationComponent } from '../../shared/components/ui/pagination/pagination.component';
 import { SkeletonComponent } from '../../shared/components/ui/skeleton/skeleton.component';
 import { CustomerService } from '../../core/services/customer.service';
 import { TransactionService } from '../../core/services/transaction.service';
 import { ProfileService } from '../../core/services/profile.service';
+import { Transaction } from '../../core/models/transaction.model';
+
+type PaymentRow = Transaction & { customerName: string };
 
 const PAGE_SIZE = 10;
 
@@ -34,6 +39,8 @@ interface DatePickerChangeEvent {
     ButtonComponent,
     DatePickerComponent,
     NewPaymentModalComponent,
+    EditPaymentModalComponent,
+    ConfirmDialogComponent,
     PaginationComponent,
     SkeletonComponent
   ],
@@ -76,6 +83,13 @@ export class PaymentsComponent {
 
   readonly isLoading = computed(() => !this.transactionService.loaded());
 
+  readonly showEditModal = signal(false);
+  readonly editingPayment = signal<PaymentRow | null>(null);
+
+  readonly showDeleteConfirm = signal(false);
+  readonly deletingPayment = signal<PaymentRow | null>(null);
+  readonly deleting = signal(false);
+
   constructor(
     private readonly customerService: CustomerService,
     private readonly transactionService: TransactionService,
@@ -109,5 +123,39 @@ export class PaymentsComponent {
       default:
         return method;
     }
+  }
+
+  openEdit(payment: PaymentRow): void {
+    this.editingPayment.set(payment);
+    this.showEditModal.set(true);
+  }
+
+  openDeleteConfirm(payment: PaymentRow): void {
+    this.deletingPayment.set(payment);
+    this.showDeleteConfirm.set(true);
+  }
+
+  cancelDelete(): void {
+    this.showDeleteConfirm.set(false);
+    this.deletingPayment.set(null);
+  }
+
+  confirmDelete(): void {
+    const payment = this.deletingPayment();
+    if (!payment || this.deleting()) {
+      return;
+    }
+    this.deleting.set(true);
+    this.transactionService.delete(payment.id).subscribe({
+      next: () => {
+        this.deleting.set(false);
+        this.showDeleteConfirm.set(false);
+        this.deletingPayment.set(null);
+      },
+      error: err => {
+        this.deleting.set(false);
+        console.error('Échec de la suppression du paiement', err);
+      }
+    });
   }
 }

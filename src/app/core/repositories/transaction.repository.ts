@@ -6,4 +6,6 @@ export abstract class TransactionRepository {
   abstract getByCustomerId(customerId: string): Observable<Transaction[]>;
   abstract getByDateRange(from: Date, to: Date): Observable<Transaction[]>;
   abstract create(input: TransactionInput): Observable<Transaction>;
+  abstract update(id: string, patch: Partial<TransactionInput>): Observable<Transaction>;
+  abstract delete(id: string): Observable<void>;
 }
