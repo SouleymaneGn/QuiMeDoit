@@ -11,8 +11,8 @@ export const authGuard: CanActivateFn = async () => {
     if (data.session) {
       return true;
     }
-  } catch {
-    // Session lookup failed (network/storage issue) — treat as unauthenticated.
+  } catch (err) {
+    console.error('Échec de la vérification de session, redirection vers /signin', err);
   }
 
   return router.parseUrl('/signin');

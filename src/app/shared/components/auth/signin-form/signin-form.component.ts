@@ -24,7 +24,7 @@ function mapSignInError(message: string): string {
 })
 export class SigninFormComponent {
   readonly showPassword = signal(false);
-  readonly isChecked = signal(false);
+  readonly isChecked = signal(true);
 
   readonly email = signal('');
   readonly password = signal('');
@@ -56,6 +56,7 @@ export class SigninFormComponent {
     }
     this.submitting.set(true);
     this.errorMessage.set('');
+    this.supabaseService.setRememberMe(this.isChecked());
 
     const { error } = await this.supabaseService.signInWithEmail({
       email: this.email().trim(),

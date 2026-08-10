@@ -4,6 +4,21 @@ import { LoginPayload } from '../models/login-payload.model';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { environment } from '../../../environment/environment';
 
+const REMEMBER_ME_KEY = 'cp-remember-me';
+
+function isRemembered(): boolean {
+  return localStorage.getItem(REMEMBER_ME_KEY) !== 'false';
+}
+
+// Session token goes to localStorage (survives browser close) when "remember me"
+// is on, sessionStorage (cleared on browser close) otherwise. The preference flag
+// itself always lives in localStorage so it can be read before the session storage
+// is known.
+const rememberAwareStorage = {
+  getItem: (key: string) => (isRemembered() ? localStorage : sessionStorage).getItem(key),
+  setItem: (key: string, value: string) => (isRemembered() ? localStorage : sessionStorage).setItem(key, value),
+  removeItem: (key: string) => (isRemembered() ? localStorage : sessionStorage).removeItem(key)
+};
 
 @Injectable({
   providedIn: 'root',
@@ -13,8 +28,25 @@ export class SupabaseService {
   constructor() {
     this.supabase = createClient(
       environment.supabaseUrl,
-      environment.supabaseKey
+      environment.supabaseKey,
+      {
+        auth: {
+          persistSession: true,
+          autoRefreshToken: true,
+          detectSessionInUrl: false,
+          storage: rememberAwareStorage
+        }
+      }
     );
+  }
+
+  /** Call before signIn to control whether the session survives closing the browser. */
+  setRememberMe(remember: boolean): void {
+    const other = remember ? sessionStorage : localStorage;
+    Object.keys(other)
+      .filter(key => key.startsWith('sb-'))
+      .forEach(key => other.removeItem(key));
+    localStorage.setItem(REMEMBER_ME_KEY, String(remember));
   }
 
   async signInWithEmail(payload: LoginPayload) {
