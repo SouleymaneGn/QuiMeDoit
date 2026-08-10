@@ -53,3 +53,46 @@ Aucun changement de système de design par rapport à la V1 : mêmes tokens (`br
 - Les ancres de navigation du header font défiler vers la bonne section.
 - La FAQ (si accordéon) s'ouvre/se ferme correctement.
 - Aucun contenu inventé (pas de faux chiffres, faux témoignages, faux tarifs) ne s'est glissé dans le résultat.
+
+---
+
+# Audit de cohérence — Landing page vs application réelle (2026-08-10)
+
+Comparaison entre les promesses de `src/app/pages/landing/` telle qu'elle existe aujourd'hui et ce que l'application (`/app/*`) fait réellement (données mock JSON, pas encore Supabase).
+
+## ✅ Vérifié conforme (pas d'action)
+
+- "Quatre menus, pas un de plus : Accueil, Clients, Paiements, Paramètres" → sidebar réelle = exactement ces 4 items.
+- "Solde actuel toujours visible, calculé en temps réel" → solde jamais stocké, toujours recalculé (DETTE - PAIEMENT).
+- "Nouvelle dette ou paiement pré-rempli avec ce client, en un clic" → `CustomerDetailComponent` passe `presetCustomerId`/`presetCustomerName` aux modales, qui sautent la sélection du client.
+- "Indicatifs téléphoniques de plus de 190 pays avec recherche" → `phone-countries.ts` (193 pays) + champ de recherche réel dans `PhoneInputComponent`.
+- "Navigation adaptée au mobile" → menu hamburger réel dans `AppHeaderComponent`.
+- Filtre par date + modes de paiement (Espèces / Orange Money / Mobile Money) sur la page Paiements → conforme au modèle `PaymentMethod`.
+- "Devise CFA par défaut et modifiable" → conforme au code (`ParametresComponent` défaut `'CFA'`, `assets/mock/profile.json` a `"currency": "CFA"`).
+
+## ⚠️ À corriger / à trancher
+
+### 1. Devise CFA vs numéro guinéen (+224)
+Le mock `profile.json` et l'exemple client sur la landing ("Mamadou Diallo", +224) associent un numéro guinéen à la devise "CFA". La Guinée n'utilise pas le franc CFA mais le **GNF (franc guinéen)** — unité utilisée par ailleurs dans les exemples de CLAUDE.md ("500000 GNF"). Le persona de démo contredit la devise par défaut.
+- **Statut** : bug de contenu (données de démo)
+- **Fichiers concernés** : `src/assets/mock/profile.json`, `src/app/pages/parametres/parametres.component.ts`, exemples dans `landing.component.html`
+- **Options** : changer le numéro d'exemple pour un pays de la zone CFA, ou passer la devise par défaut à GNF.
+
+### 2. Titres d'onglet "TailAdmin" résiduels
+Les routes `payments`, `profile` et `**` (404) gardent le `title` `"... | TailAdmin - Angular Admin Dashboard Template"` au lieu de "iziCarnet".
+- **Statut** : incohérence de branding
+- **Fichier concerné** : `src/app/app.routes.ts`
+
+### 3. Page `/app/profile` hors périmètre
+Une page Profile existe et est routée, alors que CLAUDE.md et la landing ("Quatre menus, pas un de plus") ne mentionnent que Accueil / Clients / Paiements / Paramètres. Pas dans la sidebar, mais probablement accessible via l'avatar.
+- **Statut** : décision produit à trancher
+- **Options** : fusionner avec Paramètres, supprimer, ou assumer comme page technique hors périmètre marketing.
+
+### 4. Aucune section tarifs/plans
+La landing vend un "SaaS" et pousse vers "Créer un compte gratuitement" sans jamais mentionner de plan payant, essai ou limites.
+- **Statut** : point ouvert produit (cohérent avec la décision déjà prise plus haut dans ce fichier de ne pas inventer de tarifs — pas un bug)
+
+### 5. Code mort du template d'origine (AilAdmin/TailAdmin)
+Pages non utilisées toujours présentes dans le repo : ecommerce dashboard, invoices, tables, charts, calendar, forms, ui-elements, billing. Aucune n'est routée ni liée depuis la landing ou le nav — donc pas d'incohérence visible pour l'utilisateur, mais dette technique à nettoyer plus tard.
+- **Statut** : dette technique, secondaire
+- **Dossiers concernés** : `src/app/pages/{dashboard/ecommerce,invoices,tables,calender,charts,forms,ui-elements,blank}`, `src/app/shared/components/ecommerce/*`
