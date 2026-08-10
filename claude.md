@@ -1,4 +1,4 @@
-Je développe iziCarnet, un SaaS de carnet de dettes destiné aux commerçants africains.
+Je développe Carnet+, un SaaS de carnet de dettes destiné aux commerçants africains.
 
 IMPORTANT :
 Je veux d'abord développer toute l'interface avec des FAUSSES DONNÉES JSON.
@@ -15,7 +15,7 @@ Ne mets PAS Supabase pour le moment.
 
 VISION PRODUIT :
 
-iziCarnet V1 est volontairement très simple.
+Carnet+ V1 est volontairement très simple.
 
 Le concept central est :
 
@@ -218,7 +218,7 @@ Avant de coder :
 1. Analyse le projet AilAdmin existant.
 2. Analyse sa structure et ses composants.
 3. Ne remplace pas inutilement son architecture.
-4. Propose l'architecture iziCarnet adaptée à ce projet.
+4. Propose l'architecture Carnet+ adaptée à ce projet.
 5. Propose un plan de développement par étapes.
 6. Attends ma validation avant de commencer les modifications.
 

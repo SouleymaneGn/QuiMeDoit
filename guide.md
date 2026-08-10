@@ -1,16 +1,16 @@
-# Guide — Créer les tables Supabase pour iziCarnet
+# Guide — Créer les tables Supabase pour Carnet+
 
 Je n'ai pas accès aux identifiants base de données / API de gestion de ton projet Supabase (seulement l'URL publique + la clé "publishable" dans `src/environment/environment.ts`, qui ne permettent que de lire/écrire des données dans des tables existantes, pas d'en créer). Tu dois donc exécuter ce script SQL toi-même, une seule fois.
 
 ## Étape 1 — Exécuter le script SQL
 
-1. Va sur [supabase.com/dashboard](https://supabase.com/dashboard), ouvre ton projet iziCarnet.
+1. Va sur [supabase.com/dashboard](https://supabase.com/dashboard), ouvre ton projet Carnet+.
 2. Dans le menu de gauche, clique sur **SQL Editor**.
 3. Clique **New query**, colle le script ci-dessous en entier, puis clique **Run**.
 
 ```sql
 -- ============================================
--- iziCarnet — schéma initial
+-- Carnet+ — schéma initial
 -- ============================================
 
 -- Profil du commerçant (1 ligne par utilisateur connecté)

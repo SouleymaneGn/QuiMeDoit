@@ -1,4 +1,4 @@
-# iziCarnet — Landing Page publique (v2, inspirée de dailykash.app)
+# Carnet+ — Landing Page publique (v2, inspirée de dailykash.app)
 
 ## Contexte
 
@@ -12,7 +12,7 @@ Ton : direct, orienté problème → solution, phrases courtes ("Fini les fichie
 
 ## Ce qu'on adapte et ce qu'on n'adapte PAS
 
-**Adapté à iziCarnet (ajouts par rapport à la V1) :**
+**Adapté à Carnet+ (ajouts par rapport à la V1) :**
 - Nouvelle section **"Le problème"** (3 points courts) juste après le hero — inspiré de la section "3 pain points" de dailykash, adapté au carnet de dettes.
 - Hero enrichi : la petite carte d'exemple devient une **mini-maquette façon tableau de bord** (salutation + solde à récupérer + dernière activité), plus proche visuellement du mockup dashboard de dailykash, tout en restant statique (pas besoin d'interactivité).
 - Nouvelle section **"Disponible partout"** (3 cartes courtes : accessible sur tout appareil, données hébergées en toute sécurité (Supabase), devise adaptable) — inspirée de la section "Robustesse" de dailykash.
@@ -20,15 +20,15 @@ Ton : direct, orienté problème → solution, phrases courtes ("Fini les fichie
 - En-tête enrichi avec ancres de navigation (Fonctionnalités, Comment ça marche, FAQ) en plus de Connexion/Créer un compte.
 
 **Volontairement PAS adapté (pour rester honnête, pas de contenu inventé) :**
-- Pas de badge "Aimé par +X commerçants" ni de compteur d'utilisateurs — iziCarnet n'a pas encore d'utilisateurs réels à afficher.
+- Pas de badge "Aimé par +X commerçants" ni de compteur d'utilisateurs — Carnet+ n'a pas encore d'utilisateurs réels à afficher.
 - Pas de témoignages clients — aucun client réel n'existe encore, en inventer serait un faux avis.
-- Pas de section Tarifs — aucune grille tarifaire n'a été définie pour iziCarnet, on n'invente pas de prix.
+- Pas de section Tarifs — aucune grille tarifaire n'a été définie pour Carnet+, on n'invente pas de prix.
 - Pas de "démo interactive" (simulateur cliquable) — la petite carte d'exemple statique suffit, reste simple.
 - Le ton reste en "vous" (comme tout le reste de l'app déjà codée — Signin/Signup, Paramètres...), pas en "tu" comme dailykash, pour rester cohérent avec l'existant. On reprend en revanche le style direct/orienté-problème de l'écriture.
 
 ## Nouvelle structure de la page (haut en bas)
 
-1. **En-tête** (sticky) : wordmark "iziCarnet" + nav ancres ("Fonctionnalités", "Comment ça marche", "FAQ") + boutons Connexion/Créer un compte.
+1. **En-tête** (sticky) : wordmark "Carnet+" + nav ancres ("Fonctionnalités", "Comment ça marche", "FAQ") + boutons Connexion/Créer un compte.
 2. **Hero** : accroche directe orientée problème (ex. "Finies les dettes clients qu'on oublie de noter") + sous-titre reprenant le concept Client → Libellé → Montant → Dette/Paiement + 2 CTA + mini-maquette tableau de bord (salutation, "À récupérer", dernière activité) à droite.
 3. **Le problème** (3 cartes courtes) : carnet papier qui se perd/s'abîme, impossible de savoir qui doit quoi d'un coup d'œil, relances oubliées faute de suivi.
 4. **Comment ça marche** (reprise de la V1, 3 étapes, inchangé).
@@ -79,7 +79,7 @@ Le mock `profile.json` et l'exemple client sur la landing ("Mamadou Diallo", +22
 - **Options** : changer le numéro d'exemple pour un pays de la zone CFA, ou passer la devise par défaut à GNF.
 
 ### 2. Titres d'onglet "TailAdmin" résiduels
-Les routes `payments`, `profile` et `**` (404) gardent le `title` `"... | TailAdmin - Angular Admin Dashboard Template"` au lieu de "iziCarnet".
+Les routes `payments`, `profile` et `**` (404) gardent le `title` `"... | TailAdmin - Angular Admin Dashboard Template"` au lieu de "Carnet+".
 - **Statut** : incohérence de branding
 - **Fichier concerné** : `src/app/app.routes.ts`
 

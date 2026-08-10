@@ -30,7 +30,7 @@ export class AppHeaderComponent {
   readonly showNewDebtModal = signal(false);
 
   readonly isOnAccueil;
-  readonly appName = computed(() => this.profileService.profile()?.businessName || 'iziCarnet');
+  readonly appName = computed(() => this.profileService.profile()?.businessName || 'Carnet+');
 
   @ViewChild('searchInput') searchInput!: ElementRef<HTMLInputElement>;
 

@@ -64,7 +64,7 @@ export class AppSidebarComponent {
   readonly isMobileOpen$;
   readonly isHovered$;
 
-  readonly appName = computed(() => this.profileService.profile()?.businessName || 'iziCarnet');
+  readonly appName = computed(() => this.profileService.profile()?.businessName || 'Carnet+');
   readonly appInitial = computed(() => this.appName().charAt(0).toUpperCase());
 
   private subscription: Subscription = new Subscription();

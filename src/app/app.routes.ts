@@ -17,7 +17,7 @@ export const routes: Routes = [
     path: '',
     component: LandingComponent,
     pathMatch: 'full',
-    title: 'iziCarnet — Le carnet de dettes simple pour commerçants',
+    title: 'Carnet+ — Le carnet de dettes simple pour commerçants',
   },
   {
     path:'app',
@@ -28,17 +28,17 @@ export const routes: Routes = [
         path: '',
         component: AccueilComponent,
         pathMatch: 'full',
-        title: 'Accueil | iziCarnet',
+        title: 'Accueil | Carnet+',
       },
       {
         path:'customers',
         component:CustomersComponent,
-        title:'Clients | iziCarnet'
+        title:'Clients | Carnet+'
       },
       {
         path:'customers/:id',
         component:CustomerDetailComponent,
-        title:'Fiche client | iziCarnet'
+        title:'Fiche client | Carnet+'
       },
       {
         path:'payments',
@@ -53,7 +53,7 @@ export const routes: Routes = [
       {
         path:'parametres',
         component:ParametresComponent,
-        title:'Paramètres | iziCarnet'
+        title:'Paramètres | Carnet+'
       },
     ]
   },
@@ -61,12 +61,12 @@ export const routes: Routes = [
   {
     path:'signin',
     component:SignInComponent,
-    title:'Connexion | iziCarnet'
+    title:'Connexion | Carnet+'
   },
   {
     path:'signup',
     component:SignUpComponent,
-    title:'Créer un compte | iziCarnet'
+    title:'Créer un compte | Carnet+'
   },
   // error pages
   {

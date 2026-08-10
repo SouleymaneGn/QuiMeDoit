@@ -1,10 +1,10 @@
-# iziCarnet — Plan de développement phasé
+# Carnet+ — Plan de développement phasé
 
 ## Contexte
 
-Le projet part d'un template Angular "AilAdmin" (TailAdmin) déjà partiellement épuré vers iziCarnet : les routes et la sidebar n'exposent déjà que Dashboard/Client/Paiement (stubs vides), et le kit UI Tailwind (boutons, modales, tables, formulaires) est réutilisable tel quel. Il manque entièrement la couche données/services : aucun HttpClient, aucun repository, aucun JSON mock, aucun usage de Signals à ce jour (l'état existant utilise des BehaviorSubject RxJS pour la sidebar/le thème).
+Le projet part d'un template Angular "AilAdmin" (TailAdmin) déjà partiellement épuré vers Carnet+ : les routes et la sidebar n'exposent déjà que Dashboard/Client/Paiement (stubs vides), et le kit UI Tailwind (boutons, modales, tables, formulaires) est réutilisable tel quel. Il manque entièrement la couche données/services : aucun HttpClient, aucun repository, aucun JSON mock, aucun usage de Signals à ce jour (l'état existant utilise des BehaviorSubject RxJS pour la sidebar/le thème).
 
-Objectif : construire iziCarnet phase par phase, avec validation utilisateur à chaque étape, sans jamais connecter Supabase pour l'instant. L'architecture doit permettre de remplacer plus tard le repository JSON par un repository Supabase sans toucher aux composants ni aux services.
+Objectif : construire Carnet+ phase par phase, avec validation utilisateur à chaque étape, sans jamais connecter Supabase pour l'instant. L'architecture doit permettre de remplacer plus tard le repository JSON par un repository Supabase sans toucher aux composants ni aux services.
 
 **Décisions validées avec l'utilisateur :**
 - Données créées via l'UI (nouveau client, dette, paiement) : **en mémoire seulement**, perdues au rafraîchissement (pas de localStorage pour l'instant).
@@ -92,7 +92,7 @@ Remplace `EcommerceComponent` sur la route `''`.
 
 ## Phase 4 — Paramètres
 
-Page dédiée iziCarnet, volontairement minimale — aucun champ hérité du profil AilAdmin (pas d'adresse, pas de réseaux sociaux, pas d'avatar upload).
+Page dédiée Carnet+, volontairement minimale — aucun champ hérité du profil AilAdmin (pas d'adresse, pas de réseaux sociaux, pas d'avatar upload).
 
 **Contenu exact de la page (V1) :**
 - Nom du commerce

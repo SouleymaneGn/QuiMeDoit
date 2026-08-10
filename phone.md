@@ -2,7 +2,7 @@ Je veux améliorer le champ **numéro de téléphone** dans mon application Angu
 
 ### Objectif
 
-Créer un composant de téléphone moderne et simple pour iziCarnet avec :
+Créer un composant de téléphone moderne et simple pour Carnet+ avec :
 
 ```text
 ┌──────────────┬─────────────────────────┐
@@ -57,7 +57,7 @@ Je veux un design :
 * moderne
 * minimaliste
 * propre
-* adapté à iziCarnet
+* adapté à Carnet+
 * responsive
 * avec bordure, focus et hover propres
 * dropdown avec recherche si cela reste simple

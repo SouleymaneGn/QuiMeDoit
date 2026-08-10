@@ -70,6 +70,38 @@
                 <span class="text-sm font-semibold text-gray-800 dark:text-white/90">
                   {{ formatAmount(item.amount) }}
                 </span>
+                @if (item.type === 'DEBT') {
+                  <div class="flex items-center gap-1">
+                    <button
+                      type="button"
+                      class="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-white/5 dark:hover:text-gray-300"
+                      aria-label="Modifier"
+                      (click)="openEditDebt(item)"
+                    >
+                      <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          d="m16.5 3.5 4 4L9 19H5v-4L16.5 3.5Z"
+                        ></path>
+                      </svg>
+                    </button>
+                    <button
+                      type="button"
+                      class="rounded-lg p-1.5 text-gray-400 hover:bg-error-50 hover:text-error-600 dark:hover:bg-error-500/10 dark:hover:text-error-500"
+                      aria-label="Supprimer"
+                      (click)="openDeleteConfirm(item)"
+                    >
+                      <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          d="M4 7h16M9.5 7V5a1.5 1.5 0 0 1 1.5-1.5h2A1.5 1.5 0 0 1 14.5 5v2M18 7l-.7 12.1a2 2 0 0 1-2 1.9H8.7a2 2 0 0 1-2-1.9L6 7"
+                        ></path>
+                      </svg>
+                    </button>
+                  </div>
+                }
               </div>
             </div>
           }
@@ -93,6 +125,21 @@
       [isOpen]="showEditModal()"
       [customer]="customer()!"
       (close)="showEditModal.set(false)"
+    />
+    <app-edit-debt-modal
+      [isOpen]="showEditDebtModal()"
+      [debt]="editingDebt()"
+      [customerName]="customer()!.name"
+      (close)="showEditDebtModal.set(false)"
+    />
+    <app-confirm-dialog
+      [isOpen]="showDeleteConfirm()"
+      title="Supprimer cette dette ?"
+      message="Cette dette sera définitivement supprimée. Cette action est irréversible."
+      confirmLabel="Supprimer"
+      [busy]="deleting()"
+      (cancel)="cancelDelete()"
+      (confirm)="confirmDelete()"
     />
   }
 </div>

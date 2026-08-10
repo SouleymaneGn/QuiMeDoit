@@ -34,7 +34,7 @@ export class LandingComponent {
     {
       question: 'Dois-je installer une application ?',
       answer:
-        'Non. iziCarnet fonctionne directement dans votre navigateur, sur téléphone comme sur ordinateur.'
+        'Non. Carnet+ fonctionne directement dans votre navigateur, sur téléphone comme sur ordinateur.'
     },
     {
       question: 'Puis-je changer la devise affichée ?',
@@ -46,7 +46,7 @@ export class LandingComponent {
         "Oui, plus de 190 indicatifs de pays sont disponibles avec recherche par nom ou indicatif lors de l'ajout d'un client."
     },
     {
-      question: 'Puis-je utiliser iziCarnet sur plusieurs appareils ?',
+      question: 'Puis-je utiliser Carnet+ sur plusieurs appareils ?',
       answer:
         'Oui. Connectez-vous simplement avec vos identifiants depuis n\'importe quel appareil pour retrouver vos données.'
     }
