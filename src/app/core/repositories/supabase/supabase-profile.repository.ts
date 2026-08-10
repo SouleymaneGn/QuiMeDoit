@@ -46,7 +46,7 @@ export class SupabaseProfileRepository extends ProfileRepository {
         // Compte créé avant la mise en place du trigger d'auto-provisioning : on crée la ligne manquante.
         const { data: created, error: insertError } = await this.supabaseService.client
           .from('profiles')
-          .insert({ id: userId, owner_name: '', business_name: '', phone: '', currency: 'GNF' })
+          .insert({ id: userId, owner_name: '', business_name: '', phone: '', currency: 'CFA' })
           .select()
           .single();
         if (insertError) throw insertError;

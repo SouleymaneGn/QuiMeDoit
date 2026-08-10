@@ -41,6 +41,6 @@ export class ProfileService {
 
   /** Formate un montant avec la devise actuellement configurée dans le profil. */
   formatAmount(amount: number): string {
-    return formatCurrency(amount, this.profileSignal()?.currency ?? 'GNF');
+    return formatCurrency(amount, this.profileSignal()?.currency ?? 'CFA');
   }
 }

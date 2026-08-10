@@ -5,6 +5,7 @@
       <span class="text-lg font-semibold text-gray-800 dark:text-white/90">iziCarnet</span>
 
       <nav class="hidden items-center gap-6 text-sm text-gray-600 dark:text-gray-300 md:flex">
+        <a href="#apercu" class="hover:text-gray-900 dark:hover:text-white">Aperçu</a>
         <a href="#fonctionnalites" class="hover:text-gray-900 dark:hover:text-white">Fonctionnalités</a>
         <a href="#comment-ca-marche" class="hover:text-gray-900 dark:hover:text-white">Comment ça marche</a>
         <a href="#faq" class="hover:text-gray-900 dark:hover:text-white">FAQ</a>
@@ -25,12 +26,11 @@
           Finies les dettes clients qu'on oublie de noter
         </h1>
         <p class="mt-4 text-base text-gray-500 dark:text-gray-400 sm:text-lg">
-          Client → Libellé → Montant → Dette ou Paiement. Enregistrez en quelques secondes qui vous doit
+          Client → Libellé → Montant → Dette ou Paiement. Enregistrez en moins de 10 secondes qui vous doit
           quoi, et sachez toujours où vous en êtes, sans carnet papier.
         </p>
         <div class="mt-8 flex flex-col gap-3 sm:flex-row justify-center">
           <app-button (btnClick)="goTo('/signup')">Démarrer gratuitement</app-button>
-          <!-- <app-button variant="outline" (btnClick)="goTo('/signin')">Se connecter</app-button> -->
         </div>
       </div>
 
@@ -48,10 +48,17 @@
             </span>
           </div>
 
-          <div class="mb-4 rounded-lg bg-gray-50 px-4 py-3 dark:bg-white/5">
-            <p class="text-xs text-gray-500 dark:text-gray-400">À récupérer</p>
-            <p class="text-xl font-semibold text-gray-800 dark:text-white/90">1 350 000 GNF</p>
-            <p class="mt-0.5 text-xs text-gray-400 dark:text-gray-500">6 clients débiteurs</p>
+          <div class="mb-3 grid grid-cols-2 gap-2">
+            <div class="rounded-lg bg-gray-50 px-3 py-2.5 dark:bg-white/5">
+              <p class="text-xs text-gray-500 dark:text-gray-400">À récupérer</p>
+              <p class="text-base font-semibold text-gray-800 dark:text-white/90">1 350 000</p>
+              <p class="mt-0.5 text-[11px] text-gray-400 dark:text-gray-500">6 clients débiteurs</p>
+            </div>
+            <div class="rounded-lg bg-gray-50 px-3 py-2.5 dark:bg-white/5">
+              <p class="text-xs text-gray-500 dark:text-gray-400">À rembourser</p>
+              <p class="text-base font-semibold text-gray-800 dark:text-white/90">80 000</p>
+              <p class="mt-0.5 text-[11px] text-gray-400 dark:text-gray-500">1 client</p>
+            </div>
           </div>
 
           <p class="mb-2 text-xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-500">
@@ -177,9 +184,9 @@
               <path stroke-linecap="round" d="M18.5 8v6M15.5 11h6"></path>
             </svg>
           </span>
-          <h3 class="mt-4 font-semibold text-gray-800 dark:text-white/90">Ajoutez un client</h3>
+          <h3 class="mt-4 font-semibold text-gray-800 dark:text-white/90">Recherchez ou créez un client</h3>
           <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
-            Recherchez ou créez un client directement depuis le champ de recherche, sans étape en plus.
+            Tapez un nom : le client existant s'affiche, ou créez-le en un instant sans quitter l'écran.
           </p>
         </div>
 
@@ -195,9 +202,9 @@
               ></path>
             </svg>
           </span>
-          <h3 class="mt-4 font-semibold text-gray-800 dark:text-white/90">Enregistrez en secondes</h3>
+          <h3 class="mt-4 font-semibold text-gray-800 dark:text-white/90">Notez la dette ou le paiement</h3>
           <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
-            Libellé, montant, enregistrer — une dette ou un paiement en moins de 10 secondes.
+            Libellé, montant, enregistrer : moins de 10 secondes pour une dette ou un paiement.
           </p>
         </div>
 
@@ -210,17 +217,112 @@
               <path stroke-linecap="round" stroke-linejoin="round" d="m16 16 2 2 4-4"></path>
             </svg>
           </span>
-          <h3 class="mt-4 font-semibold text-gray-800 dark:text-white/90">Suivez qui vous doit quoi</h3>
+          <h3 class="mt-4 font-semibold text-gray-800 dark:text-white/90">Le solde se met à jour tout seul</h3>
           <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
-            Solde calculé automatiquement pour chaque client, à jour à chaque dette ou paiement.
+            Aucune saisie manuelle : dettes moins paiements, recalculé automatiquement à chaque mouvement.
           </p>
         </div>
       </div>
     </div>
   </section>
 
+  <!-- Aperçu : fiche client -->
+  <section id="apercu" class="py-16 sm:py-20">
+    <div class="mx-auto max-w-6xl px-5">
+      <div class="grid items-center gap-12 lg:grid-cols-2">
+        <div class="order-2 lg:order-1">
+          <h2 class="text-2xl font-semibold text-gray-800 dark:text-white/90">
+            Toute l'info d'un client au même endroit
+          </h2>
+          <p class="mt-4 text-base text-gray-500 dark:text-gray-400">
+            Pas de menu Historique à part : le nom, le téléphone, la dette actuelle et tout l'historique des
+            dettes et paiements d'un client sont réunis sur une seule fiche.
+          </p>
+          <ul class="mt-6 space-y-3 text-sm text-gray-600 dark:text-gray-300">
+            <li class="flex items-start gap-2.5">
+              <span class="mt-0.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-500"></span>
+              Solde actuel toujours visible, calculé en temps réel
+            </li>
+            <li class="flex items-start gap-2.5">
+              <span class="mt-0.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-500"></span>
+              Nouvelle dette ou paiement pré-rempli avec ce client, en un clic
+            </li>
+            <li class="flex items-start gap-2.5">
+              <span class="mt-0.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-500"></span>
+              Historique complet des transactions, du plus récent au plus ancien
+            </li>
+          </ul>
+        </div>
+
+        <div class="order-1 flex justify-center lg:order-2 lg:justify-end">
+          <div class="w-full max-w-sm rounded-2xl border border-gray-200 bg-white p-5 shadow-theme-md dark:border-gray-800 dark:bg-gray-900">
+            <div class="mb-4 flex items-center justify-between border-b border-gray-100 pb-4 dark:border-gray-800">
+              <div>
+                <p class="text-sm font-semibold text-gray-800 dark:text-white/90">Mamadou Diallo</p>
+                <p class="text-xs text-gray-400 dark:text-gray-500">+224 622 45 78 90</p>
+              </div>
+              <span
+                class="rounded-full bg-error-50 px-2.5 py-1 text-[11px] font-medium text-error-600 dark:bg-error-500/15 dark:text-error-500"
+              >
+                Débiteur
+              </span>
+            </div>
+
+            <div class="mb-4">
+              <p class="text-xs text-gray-500 dark:text-gray-400">Dette actuelle</p>
+              <p class="text-xl font-semibold text-gray-800 dark:text-white/90">300 000 CFA</p>
+            </div>
+
+            <div class="mb-4 flex gap-2">
+              <span class="rounded-lg bg-brand-500 px-3 py-2 text-xs font-medium text-white">+ Nouvelle dette</span>
+              <span
+                class="rounded-lg bg-white px-3 py-2 text-xs font-medium text-gray-700 ring-1 ring-inset ring-gray-300 dark:bg-gray-800 dark:text-gray-300 dark:ring-gray-700"
+              >
+                💵 Paiement
+              </span>
+            </div>
+
+            <p class="mb-2 text-xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-500">
+              Historique
+            </p>
+            <div class="space-y-3">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-sm font-medium text-gray-800 dark:text-white/90">Ciment + fer</p>
+                  <p class="text-xs text-gray-500 dark:text-gray-400">10 août</p>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span
+                    class="rounded-full bg-error-50 px-2 py-0.5 text-[11px] font-medium text-error-600 dark:bg-error-500/15 dark:text-error-500"
+                  >
+                    DETTE
+                  </span>
+                  <span class="text-sm font-semibold text-gray-800 dark:text-white/90">500 000</span>
+                </div>
+              </div>
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-sm font-medium text-gray-800 dark:text-white/90">Règlement</p>
+                  <p class="text-xs text-gray-500 dark:text-gray-400">3 août</p>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span
+                    class="rounded-full bg-success-50 px-2 py-0.5 text-[11px] font-medium text-success-600 dark:bg-success-500/15 dark:text-success-500"
+                  >
+                    PAIEMENT
+                  </span>
+                  <span class="text-sm font-semibold text-gray-800 dark:text-white/90">200 000</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- Fonctionnalités clés -->
-  <section id="fonctionnalites" class="py-16 sm:py-20">
+  <section id="fonctionnalites" class="border-t border-gray-100 bg-gray-50 py-16 dark:border-gray-800 dark:bg-white/[0.02] sm:py-20">
     <div class="mx-auto max-w-6xl px-5">
       <h2 class="text-center text-2xl font-semibold text-gray-800 dark:text-white/90">Fonctionnalités clés</h2>
 
@@ -230,7 +332,8 @@
           <div>
             <p class="font-medium text-gray-800 dark:text-white/90">Accueil rapide</p>
             <p class="text-sm text-gray-500 dark:text-gray-400">
-              Nouvelle dette ou paiement accessibles en un clic depuis n'importe quelle page.
+              Nouvelle dette ou paiement en un clic, avec le total à récupérer, à rembourser et le nombre de
+              clients concernés toujours sous les yeux.
             </p>
           </div>
         </div>
@@ -240,7 +343,7 @@
           <div>
             <p class="font-medium text-gray-800 dark:text-white/90">Clients &amp; recherche</p>
             <p class="text-sm text-gray-500 dark:text-gray-400">
-              Retrouvez un client par nom ou téléphone, avec sa dette actuelle et son historique.
+              Retrouvez un client par nom ou téléphone, avec sa dette actuelle affichée dans la liste.
             </p>
           </div>
         </div>
@@ -250,7 +353,8 @@
           <div>
             <p class="font-medium text-gray-800 dark:text-white/90">Paiements par période</p>
             <p class="text-sm text-gray-500 dark:text-gray-400">
-              Filtrez vos paiements reçus par date et suivez le total encaissé.
+              Filtrez par date, suivez le total encaissé et le mode de paiement : Espèces, Orange Money ou
+              Mobile Money.
             </p>
           </div>
         </div>
@@ -258,9 +362,9 @@
         <div class="flex items-start gap-3">
           <span class="mt-0.5 h-2 w-2 shrink-0 rounded-full bg-brand-500"></span>
           <div>
-            <p class="font-medium text-gray-800 dark:text-white/90">Accès depuis n'importe où</p>
+            <p class="font-medium text-gray-800 dark:text-white/90">Navigation simple</p>
             <p class="text-sm text-gray-500 dark:text-gray-400">
-              Vos données sont en ligne et accessibles depuis n'importe quel appareil.
+              Quatre menus, pas un de plus : Accueil, Clients, Paiements, Paramètres.
             </p>
           </div>
         </div>
@@ -269,7 +373,7 @@
   </section>
 
   <!-- Disponible partout -->
-  <section class="border-t border-gray-100 bg-gray-50 py-16 dark:border-gray-800 dark:bg-white/[0.02] sm:py-20">
+  <section class="py-16 sm:py-20">
     <div class="mx-auto max-w-6xl px-5">
       <h2 class="text-center text-2xl font-semibold text-gray-800 dark:text-white/90">Disponible partout</h2>
 
@@ -318,9 +422,9 @@
               <circle cx="15" cy="15" r="5.25"></circle>
             </svg>
           </span>
-          <h3 class="mt-4 font-semibold text-gray-800 dark:text-white/90">Devise adaptable</h3>
+          <h3 class="mt-4 font-semibold text-gray-800 dark:text-white/90">Adapté à votre pays</h3>
           <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
-            GNF par défaut, modifiable à tout moment selon votre pays depuis les Paramètres.
+            Devise CFA par défaut et modifiable, indicatifs téléphoniques de plus de 190 pays avec recherche.
           </p>
         </div>
       </div>
@@ -328,7 +432,7 @@
   </section>
 
   <!-- FAQ -->
-  <section id="faq" class="py-16 sm:py-20">
+  <section id="faq" class="border-t border-gray-100 py-16 dark:border-gray-800 sm:py-20">
     <div class="mx-auto max-w-2xl px-5">
       <h2 class="text-center text-2xl font-semibold text-gray-800 dark:text-white/90">Questions fréquentes</h2>
 

@@ -24,7 +24,7 @@ import { SupabaseService } from '../../core/services/supabase.service';
 export class ParametresComponent {
   readonly businessName = signal('');
   readonly phone = signal('');
-  readonly currency = signal('GNF');
+  readonly currency = signal('CFA');
   readonly saved = signal(false);
   readonly errorMessage = signal('');
 
@@ -63,7 +63,7 @@ export class ParametresComponent {
       .update({
         businessName: this.businessName().trim(),
         phone: this.phone().trim(),
-        currency: this.currency().trim() || 'GNF'
+        currency: this.currency().trim() || 'CFA'
       })
       .subscribe({
         next: () => {

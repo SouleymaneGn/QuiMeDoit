@@ -30,7 +30,12 @@ export class AccueilComponent {
   readonly totalToCollect = computed(() =>
     this.profileService.formatAmount(this.transactionService.totalToCollect())
   );
+  readonly totalToRefund = computed(() =>
+    this.profileService.formatAmount(this.transactionService.totalToRefund())
+  );
+
   readonly debtorsCount = computed(() => this.transactionService.debtorsCount());
+  readonly creditorsCount = computed(() => this.transactionService.creditorsCount());
 
   readonly recentActivity = computed(() =>
     this.transactionService

@@ -17,6 +17,16 @@ export class LandingComponent {
 
   readonly faqItems: FaqItem[] = [
     {
+      question: 'Combien de temps faut-il pour noter une dette ?',
+      answer:
+        "Moins de 10 secondes : recherchez ou créez le client, indiquez le libellé et le montant, puis enregistrez."
+    },
+    {
+      question: "Où retrouver l'historique d'un client ?",
+      answer:
+        "Directement sur sa fiche : nom, téléphone, dette actuelle et historique complet des dettes et paiements au même endroit."
+    },
+    {
       question: 'Mes données sont-elles en sécurité ?',
       answer:
         "Oui. Vos données sont hébergées de façon sécurisée et ne sont accessibles qu'à vous, depuis votre compte."
@@ -28,7 +38,12 @@ export class LandingComponent {
     },
     {
       question: 'Puis-je changer la devise affichée ?',
-      answer: 'Oui, vous pouvez choisir votre devise à tout moment dans les Paramètres.'
+      answer: 'Oui, la devise CFA est utilisée par défaut mais reste modifiable à tout moment dans les Paramètres.'
+    },
+    {
+      question: 'Les numéros de téléphone internationaux sont-ils pris en charge ?',
+      answer:
+        "Oui, plus de 190 indicatifs de pays sont disponibles avec recherche par nom ou indicatif lors de l'ajout d'un client."
     },
     {
       question: 'Puis-je utiliser iziCarnet sur plusieurs appareils ?',

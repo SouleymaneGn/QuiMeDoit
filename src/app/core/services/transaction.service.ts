@@ -36,10 +36,29 @@ export class TransactionService {
     return total;
   });
 
+  /** Somme due aux clients ayant payé plus que leur dette (solde négatif). */
+  readonly totalToRefund = computed(() => {
+    let total = 0;
+    for (const balance of this.balancesByCustomer().values()) {
+      if (balance < 0) total += Math.abs(balance);
+    }
+    return total;
+  });
+
+  /** Nombre de clients ayant une dette en cours (solde positif). */
   readonly debtorsCount = computed(() => {
     let count = 0;
     for (const balance of this.balancesByCustomer().values()) {
       if (balance > 0) count++;
+    }
+    return count;
+  });
+
+  /** Nombre de clients à rembourser (solde négatif). */
+  readonly creditorsCount = computed(() => {
+    let count = 0;
+    for (const balance of this.balancesByCustomer().values()) {
+      if (balance < 0) count++;
     }
     return count;
   });
