@@ -17,7 +17,7 @@ export const routes: Routes = [
     path: '',
     component: LandingComponent,
     pathMatch: 'full',
-    title: 'Carnet+ — Le carnet de dettes simple pour commerçants',
+    title: 'QuiMeDoit — Le carnet de dettes simple pour commerçants',
   },
   {
     path:'app',
@@ -28,32 +28,32 @@ export const routes: Routes = [
         path: '',
         component: AccueilComponent,
         pathMatch: 'full',
-        title: 'Accueil | Carnet+',
+        title: 'Accueil | QuiMeDoit',
       },
       {
         path:'customers',
         component:CustomersComponent,
-        title:'Clients | Carnet+'
+        title:'Clients | QuiMeDoit'
       },
       {
         path:'customers/:id',
         component:CustomerDetailComponent,
-        title:'Fiche client | Carnet+'
+        title:'Fiche client | QuiMeDoit'
       },
       {
         path:'payments',
         component:PaymentsComponent,
-        title:'Paiements | TailAdmin - Angular Admin Dashboard Template'
+        title:'Paiements | QuiMeDoit'
       },
       {
         path:'profile',
         component:ProfileComponent,
-        title:'Angular Profile Dashboard | TailAdmin - Angular Admin Dashboard Template'
+        title:'Profil | QuiMeDoit'
       },
       {
         path:'parametres',
         component:ParametresComponent,
-        title:'Paramètres | Carnet+'
+        title:'Paramètres | QuiMeDoit'
       },
     ]
   },
@@ -61,12 +61,12 @@ export const routes: Routes = [
   {
     path:'signin',
     component:SignInComponent,
-    title:'Connexion | Carnet+'
+    title:'Connexion | QuiMeDoit'
   },
   {
     path:'signup',
     component:SignUpComponent,
-    title:'Créer un compte | Carnet+'
+    title:'Créer un compte | QuiMeDoit'
   },
   // error pages
   {

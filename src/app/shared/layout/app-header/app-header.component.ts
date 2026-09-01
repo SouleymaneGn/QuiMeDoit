@@ -10,6 +10,7 @@ import { UserDropdownComponent } from '../../components/header/user-dropdown/use
 import { ButtonComponent } from '../../components/ui/button/button.component';
 import { NewDebtModalComponent } from '../../components/modals/new-debt-modal/new-debt-modal.component';
 import { ProfileService } from '../../../core/services/profile.service';
+import { AppLogoComponent } from '../../components/common/app-logo/app-logo.component';
 
 @Component({
   selector: 'app-header',
@@ -21,6 +22,7 @@ import { ProfileService } from '../../../core/services/profile.service';
     UserDropdownComponent,
     ButtonComponent,
     NewDebtModalComponent,
+    AppLogoComponent,
   ],
   templateUrl: './app-header.component.html',
 })
@@ -30,7 +32,7 @@ export class AppHeaderComponent {
   readonly showNewDebtModal = signal(false);
 
   readonly isOnAccueil;
-  readonly appName = computed(() => this.profileService.profile()?.businessName || 'Carnet+');
+  readonly appName = computed(() => this.profileService.profile()?.businessName || 'QuiMeDoit');
 
   @ViewChild('searchInput') searchInput!: ElementRef<HTMLInputElement>;
 

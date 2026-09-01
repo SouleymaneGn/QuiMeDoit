@@ -1,6 +1,7 @@
 import { Component, signal } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { ButtonComponent } from '../../shared/components/ui/button/button.component';
+import { AppLogoComponent } from '../../shared/components/common/app-logo/app-logo.component';
 
 interface FaqItem {
   question: string;
@@ -9,7 +10,7 @@ interface FaqItem {
 
 @Component({
   selector: 'app-landing',
-  imports: [RouterModule, ButtonComponent],
+  imports: [RouterModule, ButtonComponent, AppLogoComponent],
   templateUrl: './landing.component.html'
 })
 export class LandingComponent {
@@ -34,7 +35,7 @@ export class LandingComponent {
     {
       question: 'Dois-je installer une application ?',
       answer:
-        'Non. Carnet+ fonctionne directement dans votre navigateur, sur téléphone comme sur ordinateur.'
+        'Non. QuiMeDoit fonctionne directement dans votre navigateur, sur téléphone comme sur ordinateur.'
     },
     {
       question: 'Puis-je changer la devise affichée ?',
@@ -46,7 +47,7 @@ export class LandingComponent {
         "Oui, plus de 190 indicatifs de pays sont disponibles avec recherche par nom ou indicatif lors de l'ajout d'un client."
     },
     {
-      question: 'Puis-je utiliser Carnet+ sur plusieurs appareils ?',
+      question: 'Puis-je utiliser QuiMeDoit sur plusieurs appareils ?',
       answer:
         'Oui. Connectez-vous simplement avec vos identifiants depuis n\'importe quel appareil pour retrouver vos données.'
     }

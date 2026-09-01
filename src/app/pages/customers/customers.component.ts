@@ -13,6 +13,8 @@ import { ProfileService } from '../../core/services/profile.service';
 
 const PAGE_SIZE = 10;
 
+type BalanceFilter = 'all' | 'to-collect' | 'to-refund';
+
 @Component({
   selector: 'app-customers',
   imports: [
@@ -30,6 +32,7 @@ export class CustomersComponent {
   readonly showNewCustomerModal = signal(false);
   readonly page = signal(1);
   readonly pageSize = PAGE_SIZE;
+  readonly balanceFilter = signal<BalanceFilter>('all');
 
   readonly rows = computed(() =>
     this.customerService.filteredCustomers().map(c => ({
@@ -38,9 +41,23 @@ export class CustomersComponent {
     }))
   );
 
+  readonly toCollectCount = computed(() => this.rows().filter(r => r.balance > 0).length);
+  readonly toRefundCount = computed(() => this.rows().filter(r => r.balance < 0).length);
+
+  readonly filteredRows = computed(() => {
+    const filter = this.balanceFilter();
+    if (filter === 'to-collect') {
+      return this.rows().filter(r => r.balance > 0);
+    }
+    if (filter === 'to-refund') {
+      return this.rows().filter(r => r.balance < 0);
+    }
+    return this.rows();
+  });
+
   readonly pagedRows = computed(() => {
     const start = (this.page() - 1) * this.pageSize;
-    return this.rows().slice(start, start + this.pageSize);
+    return this.filteredRows().slice(start, start + this.pageSize);
   });
 
   constructor(
@@ -52,6 +69,11 @@ export class CustomersComponent {
 
   onSearchChange(value: string | number): void {
     this.customerService.searchTerm.set(String(value));
+    this.page.set(1);
+  }
+
+  onFilterChange(filter: BalanceFilter): void {
+    this.balanceFilter.set(filter);
     this.page.set(1);
   }
 

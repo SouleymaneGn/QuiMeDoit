@@ -2,7 +2,10 @@
   <!-- En-tête -->
   <header class="sticky top-0 z-50 border-b border-gray-200 bg-white/80 backdrop-blur dark:border-gray-800 dark:bg-gray-900/80">
     <div class="mx-auto flex max-w-6xl items-center justify-between px-5 py-4">
-      <span class="text-lg font-semibold text-gray-800 dark:text-white/90">Carnet+</span>
+      <span class="flex items-center gap-2 text-lg font-semibold text-gray-800 dark:text-white/90">
+        <app-logo [size]="28" />
+        QuiMeDoit
+      </span>
 
       <nav class="hidden items-center gap-6 text-sm text-gray-600 dark:text-gray-300 md:flex">
         <a href="#apercu" class="hover:text-gray-900 dark:hover:text-white">Aperçu</a>
@@ -405,7 +408,7 @@
           </span>
           <h3 class="mt-4 font-semibold text-gray-800 dark:text-white/90">Accessible sur tout appareil</h3>
           <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
-            Ordinateur, téléphone ou tablette : Carnet+ s'adapte à l'écran que vous utilisez.
+            Ordinateur, téléphone ou tablette : QuiMeDoit s'adapte à l'écran que vous utilisez.
           </p>
         </div>
 
@@ -498,7 +501,7 @@
   <!-- Pied de page -->
   <footer class="border-t border-gray-100 py-8 dark:border-gray-800">
     <div class="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-5 text-sm text-gray-500 dark:text-gray-400 sm:flex-row">
-      <span>© {{ currentYear }} Carnet+</span>
+      <span>© {{ currentYear }} QuiMeDoit</span>
       <div class="flex items-center gap-4">
         <a href="#fonctionnalites" class="hover:text-gray-700 dark:hover:text-gray-300">Fonctionnalités</a>
         <a routerLink="/signin" class="hover:text-gray-700 dark:hover:text-gray-300">Connexion</a>

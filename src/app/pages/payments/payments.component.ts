@@ -17,8 +17,10 @@ type PaymentRow = Transaction & { customerName: string };
 
 const PAGE_SIZE = 10;
 
-function startOfMonth(date: Date): Date {
-  return new Date(date.getFullYear(), date.getMonth(), 1, 0, 0, 0, 0);
+function daysAgo(date: Date, days: number): Date {
+  const d = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0, 0);
+  d.setDate(d.getDate() - days);
+  return d;
 }
 
 function endOfDay(date: Date): Date {
@@ -51,7 +53,7 @@ export class PaymentsComponent {
   readonly page = signal(1);
   readonly pageSize = PAGE_SIZE;
 
-  readonly rangeStart = signal(startOfMonth(new Date()));
+  readonly rangeStart = signal(daysAgo(new Date(), 30));
   readonly rangeEnd = signal(endOfDay(new Date()));
   readonly defaultRange = [this.rangeStart(), this.rangeEnd()];
 

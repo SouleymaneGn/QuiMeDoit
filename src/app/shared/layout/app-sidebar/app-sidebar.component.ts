@@ -6,6 +6,7 @@ import { SafeHtmlPipe } from '../../pipe/safe-html.pipe';
 import { SidebarWidgetComponent } from './app-sidebar-widget.component';
 import { combineLatest, Subscription } from 'rxjs';
 import { ProfileService } from '../../../core/services/profile.service';
+import { AppLogoComponent } from '../../components/common/app-logo/app-logo.component';
 
 type NavItem = {
   name: string;
@@ -21,7 +22,8 @@ type NavItem = {
     CommonModule,
     RouterModule,
     SafeHtmlPipe,
-    SidebarWidgetComponent
+    SidebarWidgetComponent,
+    AppLogoComponent
   ],
   templateUrl: './app-sidebar.component.html',
 })
@@ -64,8 +66,7 @@ export class AppSidebarComponent {
   readonly isMobileOpen$;
   readonly isHovered$;
 
-  readonly appName = computed(() => this.profileService.profile()?.businessName || 'Carnet+');
-  readonly appInitial = computed(() => this.appName().charAt(0).toUpperCase());
+  readonly appName = computed(() => this.profileService.profile()?.businessName || 'QuiMeDoit');
 
   private subscription: Subscription = new Subscription();
 

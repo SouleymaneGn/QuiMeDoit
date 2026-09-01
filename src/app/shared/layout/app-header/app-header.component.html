@@ -25,7 +25,8 @@
           </svg>
         }
       </button>
-      <a routerLink="/app" class="text-base font-semibold text-gray-800 dark:text-white/90 xl:hidden">
+      <a routerLink="/app" class="flex items-center gap-2 text-base font-semibold text-gray-800 dark:text-white/90 xl:hidden">
+        <app-logo [size]="28" />
         {{ appName() }}
       </a>
       <button (click)="toggleApplicationMenu()"
