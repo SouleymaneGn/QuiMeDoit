@@ -4,6 +4,7 @@ import { SupabaseService } from '../core/services/supabase.service';
 import { CustomerService } from '../core/services/customer.service';
 import { TransactionService } from '../core/services/transaction.service';
 import { ProfileService } from '../core/services/profile.service';
+import { SubscriptionService } from '../core/services/subscription.service';
 
 export const authGuard: CanActivateFn = async () => {
   const supabaseService = inject(SupabaseService);
@@ -11,6 +12,7 @@ export const authGuard: CanActivateFn = async () => {
   const customerService = inject(CustomerService);
   const transactionService = inject(TransactionService);
   const profileService = inject(ProfileService);
+  const subscriptionService = inject(SubscriptionService);
 
   try {
     const { data } = await supabaseService.getSession();
@@ -21,6 +23,7 @@ export const authGuard: CanActivateFn = async () => {
       customerService.loadAll();
       transactionService.loadAll();
       profileService.load();
+      subscriptionService.load();
       return true;
     }
   } catch (err) {

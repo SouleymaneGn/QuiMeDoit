@@ -9,6 +9,8 @@ import { TransactionRepository } from './core/repositories/transaction.repositor
 import { SupabaseTransactionRepository } from './core/repositories/supabase/supabase-transaction.repository';
 import { ProfileRepository } from './core/repositories/profile.repository';
 import { SupabaseProfileRepository } from './core/repositories/supabase/supabase-profile.repository';
+import { SubscriptionRepository } from './core/repositories/subscription.repository';
+import { SupabaseSubscriptionRepository } from './core/repositories/supabase/supabase-subscription.repository';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -17,6 +19,7 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(),
     { provide: CustomerRepository, useClass: SupabaseCustomerRepository },
     { provide: TransactionRepository, useClass: SupabaseTransactionRepository },
-    { provide: ProfileRepository, useClass: SupabaseProfileRepository }
+    { provide: ProfileRepository, useClass: SupabaseProfileRepository },
+    { provide: SubscriptionRepository, useClass: SupabaseSubscriptionRepository }
   ]
 };

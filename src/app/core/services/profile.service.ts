@@ -1,5 +1,5 @@
 import { Injectable, signal } from '@angular/core';
-import { Observable, tap } from 'rxjs';
+import { Observable, firstValueFrom, tap } from 'rxjs';
 import { Profile, ProfileInput } from '../models/profile.model';
 import { ProfileRepository } from '../repositories/profile.repository';
 import { formatCurrency } from '../utils/currency.util';
@@ -8,8 +8,10 @@ import { SupabaseService } from './supabase.service';
 @Injectable({ providedIn: 'root' })
 export class ProfileService {
   private readonly profileSignal = signal<Profile | null>(null);
+  private readonly loadedSignal = signal(false);
 
   readonly profile = this.profileSignal.asReadonly();
+  readonly loaded = this.loadedSignal.asReadonly();
 
   constructor(
     private readonly repository: ProfileRepository,
@@ -22,15 +24,30 @@ export class ProfileService {
         this.load();
       } else {
         this.profileSignal.set(null);
+        this.loadedSignal.set(false);
       }
     });
   }
 
   load(): void {
     this.repository.get().subscribe({
-      next: profile => this.profileSignal.set(profile),
+      next: profile => {
+        this.profileSignal.set(profile);
+        this.loadedSignal.set(true);
+      },
       error: err => console.error('Échec du chargement du profil', err)
     });
+  }
+
+  /** Comme load(), mais attend la résolution — utilisé par subscriptionGuard pour connaître le rôle avant de statuer. */
+  async ensureLoaded(): Promise<Profile> {
+    if (this.loadedSignal()) {
+      return this.profileSignal() as Profile;
+    }
+    const profile = await firstValueFrom(this.repository.get());
+    this.profileSignal.set(profile);
+    this.loadedSignal.set(true);
+    return profile;
   }
 
   update(patch: ProfileInput): Observable<Profile> {

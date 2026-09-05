@@ -1,5 +1,5 @@
 import { Injectable, computed, signal } from '@angular/core';
-import { Observable, tap } from 'rxjs';
+import { Observable, firstValueFrom, tap } from 'rxjs';
 import { Customer, CustomerInput } from '../models/customer.model';
 import { CustomerRepository } from '../repositories/customer.repository';
 import { SupabaseService } from './supabase.service';
@@ -46,6 +46,17 @@ export class CustomerService {
       this.customersSignal.set(customers);
       this.loadedSignal.set(true);
     });
+  }
+
+  /** Comme loadAll(), mais attend la résolution — utilisé par subscriptionGuard pour éviter une décision prise avant la fin du chargement. */
+  async ensureLoaded(): Promise<Customer[]> {
+    if (this.loadedSignal()) {
+      return this.customersSignal();
+    }
+    const customers = await firstValueFrom(this.repository.getAll());
+    this.customersSignal.set(customers);
+    this.loadedSignal.set(true);
+    return customers;
   }
 
   getById(id: string): Customer | undefined {

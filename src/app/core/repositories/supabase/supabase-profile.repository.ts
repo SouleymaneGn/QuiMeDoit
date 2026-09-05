@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable, from, map } from 'rxjs';
-import { Profile, ProfileInput } from '../../models/profile.model';
+import { Profile, ProfileInput, UserRole } from '../../models/profile.model';
 import { ProfileRepository } from '../profile.repository';
 import { SupabaseService } from '../../services/supabase.service';
 
@@ -10,6 +10,7 @@ interface ProfileRow {
   business_name: string;
   phone: string;
   currency: string;
+  role: UserRole;
 }
 
 function toProfile(row: ProfileRow): Profile {
@@ -18,7 +19,8 @@ function toProfile(row: ProfileRow): Profile {
     ownerName: row.owner_name,
     businessName: row.business_name,
     phone: row.phone,
-    currency: row.currency
+    currency: row.currency,
+    role: row.role
   };
 }
 
