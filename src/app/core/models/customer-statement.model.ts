@@ -7,13 +7,13 @@ export interface CustomerStatementLine {
   type: TransactionType;
 }
 
-/** Période optionnelle de la situation (bornes incluses, à la journée). */
+/** Période optionnelle du relevé (bornes incluses, à la journée). */
 export interface StatementPeriod {
   from: Date | null;
   to: Date | null;
 }
 
-/** Situation de facture d'un client : opérations de la période, totaux et solde calculés. */
+/** Relevé de compte d’un client : opérations de la période, totaux et solde calculés. */
 export interface CustomerStatement {
   customerName: string;
   customerPhone?: string;

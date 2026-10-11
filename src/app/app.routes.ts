@@ -12,6 +12,7 @@ import { PaymentsComponent } from './pages/payments/payments.component';
 import { ProfileComponent } from './pages/profile/profile.component';
 import { AbonnementComponent } from './pages/abonnement/abonnement.component';
 import { MerciComponent } from './pages/merci/merci.component';
+import { SharedStatementComponent } from './pages/shared-statement/shared-statement.component';
 import { authGuard } from './guards/auth.guard';
 import { subscriptionGuard } from './guards/subscription.guard';
 
@@ -75,6 +76,12 @@ export const routes: Routes = [
     path: 'merci',
     component: MerciComponent,
     title: 'Merci | QuiMeDoit'
+  },
+  // Relevé partagé avec le client : public, sans compte ni abonnement.
+  {
+    path: 'releve/:token',
+    component: SharedStatementComponent,
+    title: 'Relevé de compte | QuiMeDoit'
   },
   // auth pages
   {

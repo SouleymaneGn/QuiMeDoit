@@ -11,6 +11,8 @@ import { ProfileRepository } from './core/repositories/profile.repository';
 import { SupabaseProfileRepository } from './core/repositories/supabase/supabase-profile.repository';
 import { SubscriptionRepository } from './core/repositories/subscription.repository';
 import { SupabaseSubscriptionRepository } from './core/repositories/supabase/supabase-subscription.repository';
+import { StatementShareRepository } from './core/repositories/statement-share.repository';
+import { SupabaseStatementShareRepository } from './core/repositories/supabase/supabase-statement-share.repository';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -20,6 +22,7 @@ export const appConfig: ApplicationConfig = {
     { provide: CustomerRepository, useClass: SupabaseCustomerRepository },
     { provide: TransactionRepository, useClass: SupabaseTransactionRepository },
     { provide: ProfileRepository, useClass: SupabaseProfileRepository },
-    { provide: SubscriptionRepository, useClass: SupabaseSubscriptionRepository }
+    { provide: SubscriptionRepository, useClass: SupabaseSubscriptionRepository },
+    { provide: StatementShareRepository, useClass: SupabaseStatementShareRepository }
   ]
 };

@@ -2,17 +2,22 @@ import { Injectable } from '@angular/core';
 import type { jsPDF } from 'jspdf';
 import { CustomerStatement } from '../models/customer-statement.model';
 import { formatAmountPlain } from '../utils/currency.util';
-import { summarizeBalance } from '../utils/statement.util';
+import { ledgerRows, statementStart, summarizeBalance } from '../utils/statement.util';
+
+type Rgb = [number, number, number];
 
 const PAGE_MARGIN = 15;
-const HEADER_FILL: [number, number, number] = [30, 27, 75];
-const STRIPE_FILL: [number, number, number] = [245, 245, 248];
-const BALANCE_FILL: [number, number, number] = [235, 233, 252];
-const BORDER_COLOR: [number, number, number] = [210, 210, 215];
-const TEXT_COLOR: [number, number, number] = [20, 20, 20];
-const MUTED_COLOR: [number, number, number] = [130, 130, 130];
+const NAVY: Rgb = [31, 56, 100];
+const WHITE: Rgb = [255, 255, 255];
+const PAYMENT_FILL: Rgb = [239, 246, 240];
+const PAYMENT_TEXT: Rgb = [46, 125, 50];
+const TOTALS_FILL: Rgb = [230, 233, 241];
+const BORDER_COLOR: Rgb = [200, 205, 215];
+const TEXT_COLOR: Rgb = [20, 20, 20];
+const MUTED_COLOR: Rgb = [130, 130, 130];
+const SUMMARY_WIDTH = 112;
 
-/** Génère le PDF « Situation de facture client » (jsPDF chargé à la demande). */
+/** Génère le PDF « Relevé de compte client » (jsPDF chargé à la demande). */
 @Injectable({ providedIn: 'root' })
 export class StatementPdfService {
   async generate(statement: CustomerStatement): Promise<jsPDF> {
@@ -21,112 +26,114 @@ export class StatementPdfService {
     const doc = new jsPDF({ unit: 'mm', format: 'a4' });
     const pageWidth = doc.internal.pageSize.getWidth();
     const pageHeight = doc.internal.pageSize.getHeight();
-    const contentWidth = pageWidth - PAGE_MARGIN * 2;
-    const currency = statement.currency;
+    const money = (value: number) => `${formatAmountPlain(value)} ${statement.currency}`;
 
-    doc.setTextColor(...TEXT_COLOR);
     doc.setFont('helvetica', 'bold');
-    doc.setFontSize(18);
-    doc.text('SITUATION DE FACTURE CLIENT', pageWidth / 2, 25, { align: 'center' });
+    doc.setFontSize(20);
+    doc.setTextColor(...NAVY);
+    doc.text('RELEVÉ DE COMPTE CLIENT', pageWidth / 2, 24, { align: 'center' });
 
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(9);
-    doc.setTextColor(...MUTED_COLOR);
-    const subtitle = statement.periodStart
-      ? `Période du ${formatDate(statement.periodStart)} au ${formatDate(statement.asOf)}`
-      : `Situation arrêtée au ${formatDate(statement.asOf)}`;
-    doc.text(subtitle, pageWidth / 2, 32, { align: 'center' });
+    const tableStartY = drawHeader(doc, statement, 34) + 6;
 
-    const tableStartY = drawCustomer(doc, statement, 42) + 3;
-
+    const rows = ledgerRows(statement);
     autoTable(doc, {
       startY: tableStartY,
       // Marge basse élargie pour laisser la place au numéro de page ; l'en-tête est répété sur chaque page.
       margin: { top: PAGE_MARGIN, bottom: PAGE_MARGIN + 5, left: PAGE_MARGIN, right: PAGE_MARGIN },
       theme: 'grid',
-      head: [['Date', 'Désignation / Opération', `Montant (${currency})`, 'Type']],
-      body: statement.lines.map(line => [
-        formatDate(new Date(line.date)),
-        line.label,
-        formatAmountPlain(line.amount),
-        line.type === 'DEBT' ? 'Dette' : 'Paiement'
+      head: [['Date', 'Désignation', 'Débit (dette)', 'Crédit (paiement)', 'Solde']],
+      body: rows.map(row => [
+        row.date ? formatDate(new Date(row.date)) : '',
+        row.label,
+        row.debit === null ? '' : money(row.debit),
+        row.credit === null ? '' : money(row.credit),
+        money(row.balance)
       ]),
+      foot: [['', 'TOTAUX', money(statement.totalDebts), money(statement.totalPayments), money(statement.balance)]],
+      showFoot: 'lastPage',
       styles: {
         font: 'helvetica',
         fontSize: 8.5,
         textColor: TEXT_COLOR,
         lineColor: BORDER_COLOR,
         lineWidth: 0.2,
-        cellPadding: { top: 2.3, bottom: 2.3, left: 2.5, right: 2.5 }
+        valign: 'middle',
+        cellPadding: { top: 2.6, bottom: 2.6, left: 2.5, right: 2.5 }
       },
-      headStyles: { fillColor: HEADER_FILL, textColor: [255, 255, 255], fontStyle: 'bold' },
-      bodyStyles: { fillColor: [255, 255, 255] },
-      didParseCell: data => {
-        if (data.section === 'body' && data.row.index % 2 === 1) {
-          data.cell.styles.fillColor = STRIPE_FILL;
-        }
-      },
+      headStyles: { fillColor: NAVY, textColor: WHITE, fontStyle: 'bold' },
+      bodyStyles: { fillColor: WHITE },
+      footStyles: { fillColor: TOTALS_FILL, textColor: TEXT_COLOR, fontStyle: 'bold' },
       columnStyles: {
-        0: { cellWidth: 26 },
-        2: { cellWidth: 34, halign: 'right' },
-        3: { cellWidth: 24, halign: 'center' }
+        0: { cellWidth: 22 },
+        2: { cellWidth: 29, halign: 'right' },
+        3: { cellWidth: 31, halign: 'right' },
+        4: { cellWidth: 30, halign: 'right' }
+      },
+      didParseCell: data => {
+        if (data.column.index >= 2) {
+          data.cell.styles.halign = 'right';
+        }
+        if (data.section !== 'body') {
+          return;
+        }
+        const row = rows[data.row.index];
+        if (row.opening) {
+          data.cell.styles.fontStyle = 'italic';
+        } else if (row.credit !== null) {
+          data.cell.styles.fillColor = PAYMENT_FILL;
+          if (data.column.index === 3) {
+            data.cell.styles.textColor = PAYMENT_TEXT;
+          }
+        }
       }
     });
 
     const balance = summarizeBalance(statement.balance);
-    const totals: string[][] = [];
+    const summary: string[][] = [];
     if (statement.periodStart) {
-      totals.push([
-        `Solde antérieur au ${formatDate(statement.periodStart)}`,
-        `${formatAmountPlain(statement.openingBalance)} ${currency}`
-      ]);
+      summary.push(['Solde antérieur', money(statement.openingBalance)]);
     }
-    totals.push(
-      ['Total des dettes / factures', `${formatAmountPlain(statement.totalDebts)} ${currency}`],
-      ['Total des paiements / versements', `${formatAmountPlain(statement.totalPayments)} ${currency}`],
-      [balance.label.toUpperCase(), `${formatAmountPlain(balance.amount)} ${currency}`]
+    summary.push(
+      ['Total des achats (dettes)', money(statement.totalDebts)],
+      ['Total des versements', money(statement.totalPayments)],
+      [balance.label.toUpperCase(), money(balance.amount)]
     );
 
     autoTable(doc, {
-      startY: lastTableEndY(doc) + 5,
-      margin: { left: PAGE_MARGIN, right: PAGE_MARGIN },
-      theme: 'grid',
-      // Les totaux restent groupés : ils passent entiers à la page suivante s'ils ne tiennent pas.
+      startY: lastTableEndY(doc) + 8,
+      margin: { left: pageWidth - PAGE_MARGIN - SUMMARY_WIDTH, right: PAGE_MARGIN },
+      theme: 'plain',
+      // Le récapitulatif reste groupé : il passe entier à la page suivante s'il ne tient pas.
       pageBreak: 'avoid',
-      body: totals,
+      tableLineColor: NAVY,
+      tableLineWidth: 0.3,
+      body: summary,
       styles: {
         font: 'helvetica',
-        fontSize: 10.5,
-        fontStyle: 'bold',
+        fontSize: 9.5,
         textColor: TEXT_COLOR,
-        fillColor: [255, 255, 255],
-        lineColor: BORDER_COLOR,
-        lineWidth: 0.2,
-        cellPadding: { top: 3.4, bottom: 3.4, left: 3, right: 3 }
+        cellPadding: { top: 2.8, bottom: 2.8, left: 3, right: 3 }
       },
-      columnStyles: {
-        0: { cellWidth: contentWidth * 0.64 },
-        1: { halign: 'right' }
-      },
+      columnStyles: { 1: { halign: 'right' } },
       didParseCell: data => {
-        if (data.row.index === totals.length - 1) {
-          data.cell.styles.fillColor = BALANCE_FILL;
+        if (data.row.index === summary.length - 1) {
+          data.cell.styles.fillColor = NAVY;
+          data.cell.styles.textColor = WHITE;
+          data.cell.styles.fontStyle = 'bold';
+          data.cell.styles.fontSize = 11.5;
         }
       }
     });
 
-    // NB + signature (~25 mm) : nouvelle page s'il ne reste pas assez de place.
-    let y = lastTableEndY(doc) + 9;
-    if (y + 25 > pageHeight - PAGE_MARGIN) {
+    let y = lastTableEndY(doc) + 20;
+    if (y > pageHeight - PAGE_MARGIN - 5) {
       doc.addPage();
-      y = PAGE_MARGIN + 5;
+      y = PAGE_MARGIN + 10;
     }
-    y = drawNote(doc, statement, y, contentWidth);
-
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(9.5);
     doc.setTextColor(...TEXT_COLOR);
-    doc.text('Signature / Cachet : ______________________________', PAGE_MARGIN, y + 10);
+    doc.text('Signature et cachet : ______________________', PAGE_MARGIN + 2, y);
 
     drawPageNumbers(doc);
 
@@ -136,6 +143,43 @@ export class StatementPdfService {
   async download(statement: CustomerStatement): Promise<void> {
     const doc = await this.generate(statement);
     doc.save(fileName(statement));
+  }
+
+  /** Vrai si le navigateur sait partager un fichier PDF (feuille de partage native, surtout sur mobile). */
+  canShareFiles(): boolean {
+    if (typeof navigator.share !== 'function' || typeof navigator.canShare !== 'function') {
+      return false;
+    }
+    const probe = new File([''], 'releve.pdf', { type: 'application/pdf' });
+    return navigator.canShare({ files: [probe] });
+  }
+
+  /**
+   * Partage le PDF via la feuille de partage native (WhatsApp, Telegram… sur mobile).
+   * Retourne 'unsupported' si le navigateur ne sait pas partager de fichier (desktop) : à l'appelant de prévoir un repli.
+   */
+  async share(statement: CustomerStatement, text: string): Promise<'shared' | 'cancelled' | 'unsupported'> {
+    if (!this.canShareFiles()) {
+      return 'unsupported';
+    }
+    const doc = await this.generate(statement);
+    const file = new File([doc.output('blob')], fileName(statement), { type: 'application/pdf' });
+    if (!navigator.canShare({ files: [file] })) {
+      return 'unsupported';
+    }
+    try {
+      await navigator.share({ files: [file], title: 'Relevé de compte', text });
+      return 'shared';
+    } catch (err) {
+      if (err instanceof DOMException && err.name === 'AbortError') {
+        return 'cancelled';
+      }
+      // NotAllowedError : l'activation utilisateur a expiré pendant la génération du PDF.
+      if (err instanceof DOMException && err.name === 'NotAllowedError') {
+        return 'unsupported';
+      }
+      throw err;
+    }
   }
 
   /** Ouvre le PDF dans un nouvel onglet (visionneuse du navigateur). Repli : téléchargement si l'onglet est bloqué. */
@@ -158,67 +202,47 @@ export class StatementPdfService {
   }
 }
 
-/** Bloc client (nom, téléphone) aligné à gauche au-dessus du tableau. Retourne l'ordonnée sous le bloc. */
-function drawCustomer(doc: jsPDF, statement: CustomerStatement, y: number): number {
-  const rows: [string, string][] = [['Client :', statement.customerName]];
+/**
+ * En-tête sur deux colonnes : Client / Période (+ Téléphone) à gauche, Date d'édition / Devise à droite.
+ * Retourne l'ordonnée de la dernière ligne.
+ */
+function drawHeader(doc: jsPDF, statement: CustomerStatement, y: number): number {
+  const start = statementStart(statement);
+  const period = start ? `${formatDate(start)} au ${formatDate(statement.asOf)}` : 'Aucune opération';
+  const left: [string, string][] = [
+    ['Client :', statement.customerName],
+    ['Période :', period]
+  ];
   if (statement.customerPhone) {
-    rows.push(['Téléphone :', statement.customerPhone]);
+    left.push(['Téléphone :', statement.customerPhone]);
   }
+  const right: [string, string][] = [
+    ["Date d'édition :", formatDate(new Date())],
+    ['Devise :', statement.currency]
+  ];
+
+  const lineHeight = 7;
+  drawColumn(doc, left, PAGE_MARGIN + 10, y, lineHeight);
+  drawColumn(doc, right, 112, y, lineHeight);
+  return y + (Math.max(left.length, right.length) - 1) * lineHeight;
+}
+
+/** Libellés en gras alignés à droite, valeurs alignées à gauche juste après. */
+function drawColumn(doc: jsPDF, rows: [string, string][], x: number, y: number, lineHeight: number): void {
   doc.setFontSize(10);
-  doc.setFont('helvetica', 'normal');
-  const labelWidth = Math.max(...rows.map(([label]) => doc.getTextWidth(label))) + 2;
+  doc.setFont('helvetica', 'bold');
+  const labelWidth = Math.max(...rows.map(([label]) => doc.getTextWidth(label)));
   rows.forEach(([label, value], i) => {
-    const rowY = y + i * 5.5;
-    doc.setFont('helvetica', 'normal');
-    doc.setTextColor(...MUTED_COLOR);
-    doc.text(label, PAGE_MARGIN, rowY);
+    const rowY = y + i * lineHeight;
     doc.setFont('helvetica', 'bold');
     doc.setTextColor(...TEXT_COLOR);
-    doc.text(value, PAGE_MARGIN + labelWidth, rowY);
+    doc.text(label, x + labelWidth, rowY, { align: 'right' });
+    doc.setFont('helvetica', 'normal');
+    doc.text(value, x + labelWidth + 9, rowY);
   });
-  return y + (rows.length - 1) * 5.5;
 }
 
-/** Paragraphe « NB », avec le solde en gras à la fin. Retourne l'ordonnée sous le paragraphe. */
-function drawNote(doc: jsPDF, statement: CustomerStatement, y: number, maxWidth: number): number {
-  const lineHeight = 4;
-  const payments =
-    statement.paymentsCount === 0
-      ? 'aucun versement n’est déduit'
-      : statement.paymentsCount === 1
-        ? `la ligne ${quoted('Paiement')} comme un versement déduit`
-        : `les ${statement.paymentsCount} lignes ${quoted('Paiement')} comme des versements déduits`;
-  const opening = statement.periodStart ? 'part du solde antérieur, ' : '';
-  const summary = summarizeBalance(statement.balance);
-  const prefix =
-    `NB : Le calcul ci-dessus ${opening}considère toutes les lignes ${quoted('Dette')} comme des montants à payer et ${payments}. ` +
-    summary.notePrefix;
-  const amount = `${formatAmountPlain(summary.amount)} ${statement.currency}`;
-
-  doc.setFontSize(8.5);
-  doc.setTextColor(...TEXT_COLOR);
-  doc.setFont('helvetica', 'normal');
-  const lines: string[] = doc.splitTextToSize(prefix, maxWidth);
-  lines.forEach((line, i) => doc.text(line, PAGE_MARGIN, y + i * lineHeight));
-
-  const lastLine = lines[lines.length - 1];
-  // getTextWidth ignore les espaces en bout de chaîne : on mesure l'espace entre deux caractères.
-  const spaceWidth = doc.getTextWidth('x x') - doc.getTextWidth('xx');
-  let x = PAGE_MARGIN + doc.getTextWidth(lastLine.trimEnd()) + spaceWidth * 1.2;
-  let lastY = y + (lines.length - 1) * lineHeight;
-  doc.setFont('helvetica', 'bold');
-  if (x + doc.getTextWidth(amount + '.') > PAGE_MARGIN + maxWidth) {
-    x = PAGE_MARGIN;
-    lastY += lineHeight;
-  }
-  doc.text(amount, x, lastY);
-  const amountWidth = doc.getTextWidth(amount);
-  doc.setFont('helvetica', 'normal');
-  doc.text('.', x + amountWidth, lastY);
-  return lastY + lineHeight;
-}
-
-/** « Page X / N » en bas à droite, uniquement si la situation tient sur plusieurs pages. */
+/** « Page X / N » en bas à droite, uniquement si le relevé tient sur plusieurs pages. */
 function drawPageNumbers(doc: jsPDF): void {
   const pageCount = doc.getNumberOfPages();
   if (pageCount < 2) {
@@ -233,11 +257,6 @@ function drawPageNumbers(doc: jsPDF): void {
     doc.setPage(page);
     doc.text(`Page ${page} / ${pageCount}`, pageWidth - PAGE_MARGIN, pageHeight - 8, { align: 'right' });
   }
-}
-
-/** Guillemets français avec espaces insécables, pour qu'un retour à la ligne ne sépare pas « du mot. */
-function quoted(word: string): string {
-  return `« ${word} »`;
 }
 
 function lastTableEndY(doc: jsPDF): number {
@@ -257,5 +276,5 @@ function fileName(statement: CustomerStatement): string {
     .replace(/^-+|-+$/g, '');
   const d = statement.asOf;
   const iso = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-  return `situation-${slug || 'client'}-${iso}.pdf`;
+  return `releve-${slug || 'client'}-${iso}.pdf`;
 }

@@ -1,0 +1,94 @@
+@let s = statement();
+<div
+  class="overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-800"
+  [ngClass]="{ 'max-h-[38vh] overflow-y-auto sm:max-h-[50vh]': scrollable() }"
+>
+  <table class="w-full table-fixed text-sm">
+    <thead class="sticky top-0 z-10 bg-[#1F3864] text-left text-xs font-semibold text-white">
+      <tr>
+        <th class="hidden w-24 px-3 py-2.5 sm:table-cell">Date</th>
+        <th class="px-3 py-2.5">Désignation</th>
+        <th class="w-28 px-3 py-2.5 text-right sm:hidden">Montant</th>
+        <th class="hidden w-32 px-3 py-2.5 text-right sm:table-cell">Débit (dette)</th>
+        <th class="hidden w-36 px-3 py-2.5 text-right sm:table-cell">Crédit (paiement)</th>
+        <th class="w-28 px-3 py-2.5 text-right sm:w-32">Solde</th>
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
+      @if (rows().length === 0) {
+        <tr>
+          <td colspan="6" class="px-3 py-6 text-center text-gray-500 dark:text-gray-400">
+            Aucune opération sur cette période.
+          </td>
+        </tr>
+      }
+      @for (row of rows(); track $index) {
+        <tr [ngClass]="{ 'bg-success-50/60 dark:bg-success-500/5': row.credit !== null }">
+          <td class="hidden whitespace-nowrap px-3 py-2 text-gray-600 sm:table-cell dark:text-gray-400">
+            {{ row.date | date: 'dd/MM/yyyy' }}
+          </td>
+          <td
+            class="px-3 py-2 break-words whitespace-normal text-gray-800 [overflow-wrap:anywhere] dark:text-white/90"
+            [ngClass]="{ italic: row.opening }"
+          >
+            {{ row.label }}
+            <span class="mt-0.5 block text-xs text-gray-500 not-italic sm:hidden dark:text-gray-400">
+              {{ row.date | date: 'dd/MM/yyyy' }}
+            </span>
+          </td>
+          <td class="whitespace-nowrap px-3 py-2 text-right sm:hidden">
+            @if (row.debit !== null) {
+              <span class="text-gray-800 dark:text-white/90">{{ money(row.debit) }}</span>
+            } @else if (row.credit !== null) {
+              <span class="text-success-600 dark:text-success-500">−{{ money(row.credit) }}</span>
+            }
+          </td>
+          <td class="hidden whitespace-nowrap px-3 py-2 text-right text-gray-800 sm:table-cell dark:text-white/90">
+            {{ row.debit === null ? '' : money(row.debit) }}
+          </td>
+          <td class="hidden whitespace-nowrap px-3 py-2 text-right text-success-600 sm:table-cell dark:text-success-500">
+            {{ row.credit === null ? '' : money(row.credit) }}
+          </td>
+          <td class="whitespace-nowrap px-3 py-2 text-right text-gray-800 dark:text-white/90">
+            {{ money(row.balance) }}
+          </td>
+        </tr>
+      }
+    </tbody>
+    @if (rows().length > 0) {
+      <tfoot class="bg-gray-100 text-xs font-semibold text-gray-800 dark:bg-gray-800 dark:text-white/90">
+        <tr>
+          <td class="hidden sm:table-cell"></td>
+          <td class="px-3 py-2.5">TOTAUX</td>
+          <td class="sm:hidden"></td>
+          <td class="hidden whitespace-nowrap px-3 py-2.5 text-right sm:table-cell">{{ money(s.totalDebts) }}</td>
+          <td class="hidden whitespace-nowrap px-3 py-2.5 text-right sm:table-cell">{{ money(s.totalPayments) }}</td>
+          <td class="whitespace-nowrap px-3 py-2.5 text-right">{{ money(s.balance) }}</td>
+        </tr>
+      </tfoot>
+    }
+  </table>
+</div>
+
+<div class="mt-4 flex sm:justify-end">
+  <dl class="w-full overflow-hidden rounded-xl border border-[#1F3864] text-sm sm:max-w-sm dark:border-[#3B5A94]">
+    @if (s.periodStart) {
+      <div class="flex justify-between gap-4 px-4 py-2.5">
+        <dt class="text-gray-700 dark:text-gray-300">Solde antérieur</dt>
+        <dd class="text-gray-800 dark:text-white/90">{{ money(s.openingBalance) }}</dd>
+      </div>
+    }
+    <div class="flex justify-between gap-4 px-4 py-2.5">
+      <dt class="text-gray-700 dark:text-gray-300">Total des achats (dettes)</dt>
+      <dd class="text-gray-800 dark:text-white/90">{{ money(s.totalDebts) }}</dd>
+    </div>
+    <div class="flex justify-between gap-4 px-4 py-2.5">
+      <dt class="text-gray-700 dark:text-gray-300">Total des versements</dt>
+      <dd class="text-gray-800 dark:text-white/90">{{ money(s.totalPayments) }}</dd>
+    </div>
+    <div class="flex justify-between gap-4 bg-[#1F3864] px-4 py-3 font-bold text-white">
+      <dt class="uppercase">{{ summary().label }}</dt>
+      <dd>{{ money(summary().amount) }}</dd>
+    </div>
+  </dl>
+</div>

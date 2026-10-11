@@ -48,7 +48,7 @@
         <app-button (btnClick)="showNewDebtModal.set(true)">+ Nouvelle dette</app-button>
         <app-button variant="outline" (btnClick)="showNewPaymentModal.set(true)">💵 Paiement</app-button>
         <app-button variant="outline" [disabled]="history().length === 0" (btnClick)="showStatementModal.set(true)">
-          📄 Situation
+          📄 Relevé
         </app-button>
       </div>
     </div>

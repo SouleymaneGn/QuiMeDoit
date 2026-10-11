@@ -1,0 +1,82 @@
+<div class="min-h-screen bg-gray-50 px-4 py-8 dark:bg-gray-900 sm:py-12">
+  <div class="mx-auto w-full max-w-3xl">
+    @switch (state()) {
+      @case ('loading') {
+        <p class="py-24 text-center text-sm text-gray-500 dark:text-gray-400">Chargement du relevé…</p>
+      }
+
+      @case ('ready') {
+        @if (data(); as d) {
+          @let s = d.statement;
+          @let summary = balanceSummary(s.balance);
+
+          <div class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] sm:p-6">
+            <div class="flex flex-col gap-1 border-b border-gray-100 pb-4 dark:border-gray-800">
+              @if (d.businessName) {
+                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ d.businessName }}</p>
+              }
+              <h1 class="text-lg font-semibold text-gray-800 dark:text-white/90">Relevé de compte</h1>
+              <p class="text-sm text-gray-500 dark:text-gray-400">
+                <span class="font-medium text-gray-700 dark:text-gray-300">{{ s.customerName }}</span>
+                @if (s.customerPhone) {
+                  · {{ s.customerPhone }}
+                }
+                · arrêté au {{ s.asOf | date: 'dd/MM/yyyy' }}
+              </p>
+            </div>
+
+            <div class="flex flex-col gap-4 py-5 sm:flex-row sm:items-end sm:justify-between">
+              <div>
+                <p class="text-sm text-gray-500 dark:text-gray-400">{{ summary.label }}</p>
+                <p
+                  class="mt-1 text-3xl font-semibold"
+                  [class]="s.balance > 0 ? 'text-error-600 dark:text-error-500' : 'text-success-600 dark:text-success-500'"
+                >
+                  {{ amount(summary.amount) }} {{ s.currency }}
+                </p>
+              </div>
+              <app-button [disabled]="downloading()" (btnClick)="download()">
+                {{ downloading() ? 'Génération…' : 'Télécharger le PDF' }}
+              </app-button>
+            </div>
+
+            @if (downloadError()) {
+              <p class="mb-4 text-sm text-error-600 dark:text-error-500">{{ downloadError() }}</p>
+            }
+
+            <app-statement-view [statement]="s" />
+          </div>
+
+          <p class="mt-4 text-center text-xs text-gray-500 dark:text-gray-400">
+            Relevé en lecture seule, mis à jour automatiquement. Lien valable jusqu'au
+            {{ d.expiresAt | date: 'dd/MM/yyyy' }}.
+          </p>
+        }
+      }
+
+      @case ('invalid') {
+        <div class="mx-auto max-w-md rounded-2xl border border-gray-200 bg-white p-8 text-center dark:border-gray-800 dark:bg-white/[0.03]">
+          <h1 class="mb-2 text-lg font-semibold text-gray-800 dark:text-white/90">Lien invalide ou expiré</h1>
+          <p class="text-sm text-gray-500 dark:text-gray-400">
+            Ce relevé n'est plus disponible. Demandez un nouveau lien à votre commerçant.
+          </p>
+        </div>
+      }
+
+      @case ('error') {
+        <div class="mx-auto max-w-md rounded-2xl border border-gray-200 bg-white p-8 text-center dark:border-gray-800 dark:bg-white/[0.03]">
+          <h1 class="mb-2 text-lg font-semibold text-gray-800 dark:text-white/90">Relevé indisponible</h1>
+          <p class="mb-5 text-sm text-gray-500 dark:text-gray-400">
+            Impossible de charger le relevé. Vérifiez votre connexion internet.
+          </p>
+          <app-button variant="outline" (btnClick)="load()">Réessayer</app-button>
+        </div>
+      }
+    }
+
+    <a routerLink="/" class="mt-8 flex items-center justify-center gap-2 text-xs text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+      <app-logo [size]="18" />
+      Carnet tenu avec QuiMeDoit
+    </a>
+  </div>
+</div>
