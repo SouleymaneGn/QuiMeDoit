@@ -47,6 +47,9 @@
       <div class="mt-5 flex flex-col gap-3 sm:flex-row">
         <app-button (btnClick)="showNewDebtModal.set(true)">+ Nouvelle dette</app-button>
         <app-button variant="outline" (btnClick)="showNewPaymentModal.set(true)">💵 Paiement</app-button>
+        <app-button variant="outline" [disabled]="history().length === 0" (btnClick)="showStatementModal.set(true)">
+          📄 Situation
+        </app-button>
       </div>
     </div>
 
@@ -131,6 +134,11 @@
       [debt]="editingDebt()"
       [customerName]="customer()!.name"
       (close)="showEditDebtModal.set(false)"
+    />
+    <app-statement-preview-modal
+      [isOpen]="showStatementModal()"
+      [customerId]="customerId()"
+      (close)="showStatementModal.set(false)"
     />
     <app-confirm-dialog
       [isOpen]="showDeleteConfirm()"

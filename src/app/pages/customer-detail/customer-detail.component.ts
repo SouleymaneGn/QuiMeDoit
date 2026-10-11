@@ -14,6 +14,7 @@ import { ConfirmDialogComponent } from '../../shared/components/modals/confirm-d
 import { CustomerService } from '../../core/services/customer.service';
 import { TransactionService } from '../../core/services/transaction.service';
 import { ProfileService } from '../../core/services/profile.service';
+import { StatementPreviewModalComponent } from '../../shared/components/modals/statement-preview-modal/statement-preview-modal.component';
 import { Transaction } from '../../core/models/transaction.model';
 
 @Component({
@@ -29,7 +30,8 @@ import { Transaction } from '../../core/models/transaction.model';
     NewPaymentModalComponent,
     EditCustomerModalComponent,
     EditDebtModalComponent,
-    ConfirmDialogComponent
+    ConfirmDialogComponent,
+    StatementPreviewModalComponent
   ],
   templateUrl: './customer-detail.component.html'
 })
@@ -49,6 +51,8 @@ export class CustomerDetailComponent {
   readonly showDeleteConfirm = signal(false);
   readonly deletingDebt = signal<Transaction | null>(null);
   readonly deleting = signal(false);
+
+  readonly showStatementModal = signal(false);
 
   readonly customerId = toSignal(
     this.route.paramMap.pipe(map(params => params.get('id') ?? '')),
