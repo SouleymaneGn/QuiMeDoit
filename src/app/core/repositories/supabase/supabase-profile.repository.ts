@@ -11,6 +11,7 @@ interface ProfileRow {
   phone: string;
   currency: string;
   reminder_template: string | null;
+  stamp_image: string | null;
   role: UserRole;
 }
 
@@ -22,6 +23,7 @@ function toProfile(row: ProfileRow): Profile {
     phone: row.phone,
     currency: row.currency,
     reminderTemplate: row.reminder_template ?? null,
+    stampImage: row.stamp_image ?? null,
     role: row.role
   };
 }
@@ -66,6 +68,7 @@ export class SupabaseProfileRepository extends ProfileRepository {
     if (patch.phone !== undefined) row['phone'] = patch.phone;
     if (patch.currency !== undefined) row['currency'] = patch.currency;
     if (patch.reminderTemplate !== undefined) row['reminder_template'] = patch.reminderTemplate;
+    if (patch.stampImage !== undefined) row['stamp_image'] = patch.stampImage;
 
     return from(
       this.supabaseService.getUser().then(async ({ data: userData }) => {

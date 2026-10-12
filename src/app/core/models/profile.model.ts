@@ -8,6 +8,8 @@ export interface Profile {
   currency: string;
   /** Message de rappel WhatsApp ({prenom}, {montant}, {commerce}) ; vide = message par défaut. */
   reminderTemplate?: string | null;
+  /** Cachet du commerce (data URL PNG), apposé sur les relevés. */
+  stampImage?: string | null;
   role: UserRole;
 }
 

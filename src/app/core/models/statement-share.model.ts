@@ -18,6 +18,7 @@ export interface SharedStatementTransaction {
 /** Données renvoyées pour un lien public valide (lecture seule, sans compte). */
 export interface SharedStatementData {
   businessName: string;
+  stampImage?: string | null;
   currency: string;
   customerName: string;
   customerPhone?: string;

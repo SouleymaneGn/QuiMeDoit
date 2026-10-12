@@ -17,11 +17,12 @@ export class CustomerStatementService {
     if (!customer) {
       return null;
     }
-    return buildStatement(
+    const statement = buildStatement(
       customer,
       this.transactionService.transactionsForCustomer(customerId),
       this.profileService.profile()?.currency ?? 'CFA',
       period
     );
+    return { ...statement, stampImage: this.profileService.profile()?.stampImage ?? null };
   }
 }

@@ -16,6 +16,7 @@ import { isAcceptablePhone } from '../../core/utils/phone.util';
 import { toTitleCase } from '../../core/utils/text.util';
 import { DEFAULT_REMINDER_TEMPLATE, REMINDER_VARIABLES, renderReminder } from '../../core/utils/reminder.util';
 import { downloadCsv, toCsv } from '../../core/utils/csv.util';
+import { prepareStampImage } from '../../core/utils/stamp-image.util';
 import { balanceLabel } from '../../core/utils/balance.util';
 import { TRANSACTION_TYPE_LABELS, paymentMethodLabel } from '../../core/utils/operation.util';
 
@@ -81,6 +82,13 @@ export class ParametresComponent {
       commerce: this.businessName().trim() || 'votre commerce'
     })
   );
+
+  // — Cachet du commerce —
+  readonly stampImage = computed(() => this.profileService.profile()?.stampImage ?? null);
+  readonly removeStampBackground = signal(true);
+  readonly stampBusy = signal(false);
+  readonly stampError = signal('');
+  readonly stampSaved = signal(false);
 
   // — Mot de passe —
   readonly newPassword = signal('');
@@ -186,6 +194,46 @@ export class ParametresComponent {
       error: err => {
         this.reminderError.set("Erreur lors de l'enregistrement. Réessayez.");
         console.error('Échec de la sauvegarde du message de rappel', err);
+      }
+    });
+  }
+
+  /** Photo prise ou image importée : nettoyée (fond transparent, recadrage), puis enregistrée dans le profil. */
+  async onStampSelected(event: Event): Promise<void> {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    input.value = ''; // permet de re-sélectionner le même fichier
+    if (!file || this.stampBusy()) {
+      return;
+    }
+    this.stampBusy.set(true);
+    this.stampError.set('');
+    try {
+      const dataUrl = await prepareStampImage(file, this.removeStampBackground());
+      this.saveStamp(dataUrl);
+    } catch (err) {
+      this.stampBusy.set(false);
+      this.stampError.set(err instanceof Error ? err.message : "Impossible de lire l'image.");
+    }
+  }
+
+  removeStamp(): void {
+    this.stampError.set('');
+    this.stampBusy.set(true);
+    this.saveStamp(null);
+  }
+
+  private saveStamp(stampImage: string | null): void {
+    this.profileService.update({ stampImage }).subscribe({
+      next: () => {
+        this.stampBusy.set(false);
+        this.stampSaved.set(true);
+        setTimeout(() => this.stampSaved.set(false), 2000);
+      },
+      error: err => {
+        this.stampBusy.set(false);
+        this.stampError.set("Erreur lors de l'enregistrement du cachet. Réessayez.");
+        console.error("Échec de l'enregistrement du cachet", err);
       }
     });
   }

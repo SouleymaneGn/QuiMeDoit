@@ -1,30 +1,79 @@
 @let s = statement();
+
+<!-- Mobile : liste (un tableau à 3 colonnes coupait les montants) -->
+<div class="overflow-hidden rounded-xl border border-gray-200 sm:hidden dark:border-gray-800">
+  <div class="flex justify-between bg-[#1F3864] px-3 py-2.5 text-xs font-semibold text-white">
+    <span>Opération</span>
+    <span>Montant · Solde</span>
+  </div>
+  @if (rows().length === 0) {
+    <p class="px-3 py-6 text-center text-sm text-gray-500 dark:text-gray-400">Aucune opération sur cette période.</p>
+  }
+  <!-- En modale : liste à défilement interne, pour voir les totaux et l'envoi dès l'ouverture. -->
+  <ul
+    class="divide-y divide-gray-100 dark:divide-gray-800"
+    [ngClass]="{ 'max-h-[28vh] overflow-y-auto overscroll-contain': scrollable() }"
+  >
+    @for (row of rows(); track $index) {
+      <li
+        class="flex items-start justify-between gap-3 px-3 py-2.5 text-sm"
+        [ngClass]="{ 'bg-success-50/60 dark:bg-success-500/5': row.credit !== null }"
+      >
+        <div class="min-w-0">
+          <p
+            class="break-words text-gray-800 [overflow-wrap:anywhere] dark:text-white/90"
+            [ngClass]="{ italic: row.opening }"
+          >
+            {{ row.label }}
+          </p>
+          <p class="mt-0.5 text-xs text-gray-500 dark:text-gray-400">
+            {{ row.date | date: 'dd/MM/yyyy' }}
+            @if (row.debit !== null) {
+              · Dette
+            } @else if (row.credit !== null) {
+              · Versement
+            }
+          </p>
+        </div>
+        <div class="shrink-0 text-right">
+          @if (row.debit !== null) {
+            <p class="whitespace-nowrap font-medium text-gray-800 dark:text-white/90">{{ money(row.debit) }}</p>
+          } @else if (row.credit !== null) {
+            <p class="whitespace-nowrap font-medium text-success-600 dark:text-success-500">{{ money(row.credit) }}</p>
+          }
+          <p class="mt-0.5 whitespace-nowrap text-xs text-gray-500 dark:text-gray-400">Solde {{ money(row.balance) }}</p>
+        </div>
+      </li>
+    }
+  </ul>
+</div>
+
+<!-- Ordinateur : tableau -->
 <div
-  class="overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-800"
-  [ngClass]="{ 'max-h-[38vh] overflow-y-auto sm:max-h-[50vh]': scrollable() }"
+  class="hidden overflow-x-auto rounded-xl border border-gray-200 sm:block dark:border-gray-800"
+  [ngClass]="{ 'sm:max-h-[50vh] sm:overflow-y-auto': scrollable() }"
 >
   <table class="w-full table-fixed text-sm">
     <thead class="sticky top-0 z-10 bg-[#1F3864] text-left text-xs font-semibold text-white">
       <tr>
-        <th class="hidden w-24 px-3 py-2.5 sm:table-cell">Date</th>
+        <th class="w-24 px-3 py-2.5">Date</th>
         <th class="px-3 py-2.5">Désignation</th>
-        <th class="w-28 px-3 py-2.5 text-right sm:hidden">Montant</th>
-        <th class="hidden w-32 px-3 py-2.5 text-right sm:table-cell">Débit (dette)</th>
-        <th class="hidden w-36 px-3 py-2.5 text-right sm:table-cell">Crédit (paiement)</th>
-        <th class="w-28 px-3 py-2.5 text-right sm:w-32">Solde</th>
+        <th class="w-32 px-3 py-2.5 text-right">Débit (dette)</th>
+        <th class="w-36 px-3 py-2.5 text-right">Crédit (paiement)</th>
+        <th class="w-32 px-3 py-2.5 text-right">Solde</th>
       </tr>
     </thead>
     <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
       @if (rows().length === 0) {
         <tr>
-          <td colspan="6" class="px-3 py-6 text-center text-gray-500 dark:text-gray-400">
+          <td colspan="5" class="px-3 py-6 text-center text-gray-500 dark:text-gray-400">
             Aucune opération sur cette période.
           </td>
         </tr>
       }
       @for (row of rows(); track $index) {
         <tr [ngClass]="{ 'bg-success-50/60 dark:bg-success-500/5': row.credit !== null }">
-          <td class="hidden whitespace-nowrap px-3 py-2 text-gray-600 sm:table-cell dark:text-gray-400">
+          <td class="whitespace-nowrap px-3 py-2 text-gray-600 dark:text-gray-400">
             {{ row.date | date: 'dd/MM/yyyy' }}
           </td>
           <td
@@ -32,21 +81,11 @@
             [ngClass]="{ italic: row.opening }"
           >
             {{ row.label }}
-            <span class="mt-0.5 block text-xs text-gray-500 not-italic sm:hidden dark:text-gray-400">
-              {{ row.date | date: 'dd/MM/yyyy' }}
-            </span>
           </td>
-          <td class="whitespace-nowrap px-3 py-2 text-right sm:hidden">
-            @if (row.debit !== null) {
-              <span class="text-gray-800 dark:text-white/90">{{ money(row.debit) }}</span>
-            } @else if (row.credit !== null) {
-              <span class="text-success-600 dark:text-success-500">−{{ money(row.credit) }}</span>
-            }
-          </td>
-          <td class="hidden whitespace-nowrap px-3 py-2 text-right text-gray-800 sm:table-cell dark:text-white/90">
+          <td class="whitespace-nowrap px-3 py-2 text-right text-gray-800 dark:text-white/90">
             {{ row.debit === null ? '' : money(row.debit) }}
           </td>
-          <td class="hidden whitespace-nowrap px-3 py-2 text-right text-success-600 sm:table-cell dark:text-success-500">
+          <td class="whitespace-nowrap px-3 py-2 text-right text-success-600 dark:text-success-500">
             {{ row.credit === null ? '' : money(row.credit) }}
           </td>
           <td class="whitespace-nowrap px-3 py-2 text-right text-gray-800 dark:text-white/90">
@@ -58,11 +97,10 @@
     @if (rows().length > 0) {
       <tfoot class="bg-gray-100 text-xs font-semibold text-gray-800 dark:bg-gray-800 dark:text-white/90">
         <tr>
-          <td class="hidden sm:table-cell"></td>
+          <td></td>
           <td class="px-3 py-2.5">TOTAUX</td>
-          <td class="sm:hidden"></td>
-          <td class="hidden whitespace-nowrap px-3 py-2.5 text-right sm:table-cell">{{ money(s.totalDebts) }}</td>
-          <td class="hidden whitespace-nowrap px-3 py-2.5 text-right sm:table-cell">{{ money(s.totalPayments) }}</td>
+          <td class="whitespace-nowrap px-3 py-2.5 text-right">{{ money(s.totalDebts) }}</td>
+          <td class="whitespace-nowrap px-3 py-2.5 text-right">{{ money(s.totalPayments) }}</td>
           <td class="whitespace-nowrap px-3 py-2.5 text-right">{{ money(s.balance) }}</td>
         </tr>
       </tfoot>
@@ -73,22 +111,35 @@
 <div class="mt-4 flex sm:justify-end">
   <dl class="w-full overflow-hidden rounded-xl border border-[#1F3864] text-sm sm:max-w-sm dark:border-[#3B5A94]">
     @if (s.periodStart) {
-      <div class="flex justify-between gap-4 px-4 py-2.5">
+      <div class="flex justify-between gap-3 px-4 py-2.5">
         <dt class="text-gray-700 dark:text-gray-300">Solde antérieur</dt>
-        <dd class="text-gray-800 dark:text-white/90">{{ money(s.openingBalance) }}</dd>
+        <dd class="whitespace-nowrap text-right text-gray-800 dark:text-white/90">{{ money(s.openingBalance) }}</dd>
       </div>
     }
-    <div class="flex justify-between gap-4 px-4 py-2.5">
+    <div class="flex justify-between gap-3 px-4 py-2.5">
       <dt class="text-gray-700 dark:text-gray-300">Total des achats (dettes)</dt>
-      <dd class="text-gray-800 dark:text-white/90">{{ money(s.totalDebts) }}</dd>
+      <dd class="whitespace-nowrap text-right text-gray-800 dark:text-white/90">{{ money(s.totalDebts) }}</dd>
     </div>
-    <div class="flex justify-between gap-4 px-4 py-2.5">
+    <div class="flex justify-between gap-3 px-4 py-2.5">
       <dt class="text-gray-700 dark:text-gray-300">Total des versements</dt>
-      <dd class="text-gray-800 dark:text-white/90">{{ money(s.totalPayments) }}</dd>
+      <dd class="whitespace-nowrap text-right text-gray-800 dark:text-white/90">{{ money(s.totalPayments) }}</dd>
     </div>
     <div class="flex justify-between gap-4 bg-[#1F3864] px-4 py-3 font-bold text-white">
       <dt class="uppercase">{{ summary().label }}</dt>
-      <dd>{{ money(summary().amount) }}</dd>
+      <dd class="whitespace-nowrap text-right">{{ money(summary().amount) }}</dd>
     </div>
   </dl>
 </div>
+
+@if (s.stampImage) {
+  <div class="mt-4 flex flex-col items-end">
+    <p class="mb-1 text-xs text-gray-500 dark:text-gray-400">Signature et cachet</p>
+    <!-- Fond clair sous le cachet : il reste lisible en mode sombre. -->
+    <img
+      [src]="s.stampImage"
+      alt="Cachet du commerce"
+      class="w-auto rounded-lg bg-white p-1"
+      [ngClass]="scrollable() ? 'h-16' : 'h-28'"
+    />
+  </div>
+}

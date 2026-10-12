@@ -58,10 +58,9 @@ function toPublicStatement(data: SharedStatementData): PublicStatement {
   return {
     businessName: data.businessName,
     expiresAt: data.expiresAt,
-    statement: buildStatement(
-      { name: data.customerName, phone: data.customerPhone },
-      data.transactions,
-      data.currency
-    )
+    statement: {
+      ...buildStatement({ name: data.customerName, phone: data.customerPhone }, data.transactions, data.currency),
+      stampImage: data.stampImage ?? null
+    }
   };
 }

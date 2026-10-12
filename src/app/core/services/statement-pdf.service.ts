@@ -16,6 +16,8 @@ const BORDER_COLOR: Rgb = [200, 205, 215];
 const TEXT_COLOR: Rgb = [20, 20, 20];
 const MUTED_COLOR: Rgb = [130, 130, 130];
 const SUMMARY_WIDTH = 112;
+/** Côté maximal du cachet sur le PDF (mm). */
+const STAMP_MAX_MM = 38;
 
 /** Génère le PDF « Relevé de compte client » (jsPDF chargé à la demande). */
 @Injectable({ providedIn: 'root' })
@@ -125,15 +127,22 @@ export class StatementPdfService {
       }
     });
 
-    let y = lastTableEndY(doc) + 20;
-    if (y > pageHeight - PAGE_MARGIN - 5) {
+    // Cachet du commerce (Paramètres) apposé sous la mention, sinon une ligne à signer à la main.
+    const stamp = statement.stampImage ? stampSize(doc, statement.stampImage) : null;
+    let y = lastTableEndY(doc) + (stamp ? 14 : 20);
+    if (y + (stamp ? stamp.height + 4 : 0) > pageHeight - PAGE_MARGIN - 5) {
       doc.addPage();
       y = PAGE_MARGIN + 10;
     }
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(9.5);
     doc.setTextColor(...TEXT_COLOR);
-    doc.text('Signature et cachet : ______________________', PAGE_MARGIN + 2, y);
+    if (stamp) {
+      doc.text('Signature et cachet :', PAGE_MARGIN + 2, y);
+      doc.addImage(statement.stampImage!, 'PNG', PAGE_MARGIN + 6, y + 3, stamp.width, stamp.height);
+    } else {
+      doc.text('Signature et cachet : ______________________', PAGE_MARGIN + 2, y);
+    }
 
     drawPageNumbers(doc);
 
@@ -256,6 +265,18 @@ function drawPageNumbers(doc: jsPDF): void {
   for (let page = 1; page <= pageCount; page++) {
     doc.setPage(page);
     doc.text(`Page ${page} / ${pageCount}`, pageWidth - PAGE_MARGIN, pageHeight - 8, { align: 'right' });
+  }
+}
+
+/** Taille du cachet sur la page (mm), proportions conservées, dans un carré de STAMP_MAX_MM. */
+function stampSize(doc: jsPDF, dataUrl: string): { width: number; height: number } | null {
+  try {
+    const { width, height } = doc.getImageProperties(dataUrl);
+    const ratio = Math.min(STAMP_MAX_MM / width, STAMP_MAX_MM / height);
+    return { width: width * ratio, height: height * ratio };
+  } catch {
+    // Image illisible : on garde la ligne de signature plutôt que d'échouer.
+    return null;
   }
 }
 

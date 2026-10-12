@@ -29,4 +29,6 @@ export interface CustomerStatement {
   totalPayments: number;
   balance: number;
   paymentsCount: number;
+  /** Cachet du commerce à apposer (data URL), s'il a été importé dans Paramètres. */
+  stampImage?: string | null;
 }
