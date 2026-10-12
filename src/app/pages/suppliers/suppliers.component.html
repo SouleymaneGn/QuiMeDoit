@@ -1,0 +1,218 @@
+<div>
+  <app-page-breadcrumb pageTitle="Fournisseurs" />
+
+  @switch (accessMode()) {
+    @case ('loading') {
+      <div class="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/[0.03]">
+        <app-skeleton className="h-4 w-48" />
+        <app-skeleton className="mt-3 h-3 w-72" />
+      </div>
+    }
+
+    @case ('presentation') {
+      <div class="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/[0.03] sm:p-8">
+        <span
+          class="inline-flex rounded-full bg-brand-50 px-2.5 py-0.5 text-theme-xs font-medium text-brand-600 dark:bg-brand-500/15 dark:text-brand-400"
+        >
+          Réservé aux abonnés
+        </span>
+        <h2 class="mt-3 text-lg font-semibold text-gray-800 dark:text-white/90">
+          Suivez ce que vous devez à vos fournisseurs
+        </h2>
+        <p class="mt-2 max-w-xl text-sm text-gray-500 dark:text-gray-400">
+          Notez vos achats à crédit et vos règlements chez chaque grossiste ou dépôt. Le reste à payer se calcule
+          tout seul, fournisseur par fournisseur.
+        </p>
+        <ul class="mt-4 space-y-1.5 text-sm text-gray-600 dark:text-gray-300">
+          <li>• Total à payer à tous vos fournisseurs, en un coup d'œil</li>
+          <li>• Historique des achats et règlements par fournisseur</li>
+          <li>• Espèces, Orange Money ou Mobile Money</li>
+        </ul>
+        <a
+          routerLink="/app/abonnement"
+          class="mt-6 inline-flex items-center justify-center rounded-lg bg-brand-500 px-4 py-3 text-sm font-medium text-white shadow-theme-xs hover:bg-brand-600"
+        >
+          Passer à l'abonnement
+        </a>
+      </div>
+    }
+
+    @default {
+      @if (accessMode() === 'read-only') {
+        <div class="mb-6">
+          <app-alert
+            variant="warning"
+            title="Abonnement expiré"
+            message="Vos fournisseurs restent consultables, mais vous ne pouvez plus ajouter d'achats ni de règlements."
+            [showLink]="true"
+            linkHref="/app/abonnement"
+            linkText="Renouveler l'abonnement"
+          />
+        </div>
+      }
+
+      <div class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] sm:p-6">
+        <div class="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div class="w-full sm:max-w-xs">
+            <app-input-field
+              placeholder="Rechercher un fournisseur..."
+              [value]="supplierService.searchTerm()"
+              (valueChange)="onSearchChange($event)"
+            />
+          </div>
+          @if (canWrite()) {
+            <app-button (btnClick)="showNewSupplierModal.set(true)">+ Nouveau fournisseur</app-button>
+          }
+        </div>
+
+        <div class="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div class="flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              (click)="onFilterChange('all')"
+              class="rounded-full border px-3 py-1.5 text-theme-xs font-medium transition-colors"
+              [ngClass]="
+                balanceFilter() === 'all'
+                  ? 'border-brand-500 bg-brand-50 text-brand-600 dark:border-brand-500 dark:bg-brand-500/10 dark:text-brand-400'
+                  : 'border-gray-200 text-gray-500 hover:bg-gray-50 dark:border-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03]'
+              "
+            >
+              Tous ({{ rows().length }})
+            </button>
+            <button
+              type="button"
+              (click)="onFilterChange('to-pay')"
+              class="rounded-full border px-3 py-1.5 text-theme-xs font-medium transition-colors"
+              [ngClass]="
+                balanceFilter() === 'to-pay'
+                  ? 'border-warning-500 bg-warning-50 text-warning-600 dark:border-warning-500 dark:bg-warning-500/10 dark:text-warning-500'
+                  : 'border-gray-200 text-gray-500 hover:bg-gray-50 dark:border-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03]'
+              "
+            >
+              À payer ({{ toPayCount() }})
+            </button>
+          </div>
+          @if (!isLoading()) {
+            <p class="text-sm text-gray-500 dark:text-gray-400">
+              À payer :
+              <span class="font-semibold text-gray-800 dark:text-white/90">{{ totalToPay() }}</span>
+            </p>
+          }
+        </div>
+
+        @if (isLoading()) {
+          <div class="space-y-4 py-1">
+            @for (i of [1, 2, 3, 4, 5]; track i) {
+              <div class="flex items-center justify-between">
+                <app-skeleton className="h-4 w-32" />
+                <app-skeleton className="h-4 w-24" />
+                <app-skeleton className="h-4 w-20" />
+              </div>
+            }
+          </div>
+        } @else if (filteredRows().length === 0) {
+          <p class="py-8 text-center text-sm text-gray-500 dark:text-gray-400">
+            @if (supplierService.suppliers().length === 0) {
+              Aucun fournisseur pour l'instant. Ajoutez votre premier grossiste ou dépôt.
+            } @else {
+              Aucun fournisseur trouvé.
+            }
+          </p>
+        } @else {
+          <!-- Mobile : cartes -->
+          <div class="space-y-3 sm:hidden">
+            @for (supplier of pagedRows(); track supplier.id) {
+              <button
+                type="button"
+                class="flex w-full items-center justify-between gap-3 rounded-xl border border-gray-200 p-4 text-left active:bg-gray-50 dark:border-gray-800 dark:active:bg-white/[0.03]"
+                (click)="openSupplier(supplier.id)"
+              >
+                <span class="min-w-0">
+                  <span class="block truncate text-sm font-semibold text-gray-800 dark:text-white/90">{{ supplier.name }}</span>
+                  <span class="block text-xs text-gray-500 dark:text-gray-400">{{ supplier.phone || 'Sans numéro' }}</span>
+                </span>
+                <span
+                  class="shrink-0 text-right"
+                  [ngClass]="
+                    supplier.balance > 0
+                      ? 'text-warning-600 dark:text-warning-500'
+                      : supplier.balance < 0
+                        ? 'text-success-600 dark:text-success-500'
+                        : 'text-gray-500 dark:text-gray-400'
+                  "
+                >
+                  <span class="block text-sm font-semibold">
+                    {{ formatAmount(supplier.balance < 0 ? -supplier.balance : supplier.balance) }}
+                  </span>
+                  <span class="block text-theme-xs">
+                    {{ supplier.balance > 0 ? 'Reste à payer' : supplier.balance < 0 ? 'Avance' : 'Soldé' }}
+                  </span>
+                </span>
+              </button>
+            }
+          </div>
+
+          <div class="hidden max-w-full overflow-x-auto sm:block">
+            <table class="min-w-[480px] text-left sm:w-full">
+              <thead class="border-y border-gray-100 dark:border-gray-800">
+                <tr>
+                  <th class="py-3 whitespace-nowrap font-medium text-gray-500 text-theme-xs dark:text-gray-400">
+                    Nom
+                  </th>
+                  <th class="py-3 whitespace-nowrap font-medium text-gray-500 text-theme-xs dark:text-gray-400">
+                    Téléphone
+                  </th>
+                  <th
+                    class="py-3 whitespace-nowrap text-right font-medium text-gray-500 text-theme-xs dark:text-gray-400"
+                  >
+                    Reste à payer
+                  </th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
+                @for (supplier of pagedRows(); track supplier.id) {
+                  <tr
+                    class="cursor-pointer hover:bg-gray-50 dark:hover:bg-white/[0.03]"
+                    (click)="openSupplier(supplier.id)"
+                  >
+                    <td class="py-3 whitespace-nowrap font-medium text-gray-800 text-theme-sm dark:text-white/90">
+                      {{ supplier.name }}
+                    </td>
+                    <td class="py-3 whitespace-nowrap text-gray-500 text-theme-sm dark:text-gray-400">
+                      {{ supplier.phone || '—' }}
+                    </td>
+                    <td
+                      class="py-3 whitespace-nowrap text-right text-theme-sm font-semibold"
+                      [ngClass]="
+                        supplier.balance > 0
+                          ? 'text-warning-600 dark:text-warning-500'
+                          : supplier.balance < 0
+                            ? 'text-success-600 dark:text-success-500'
+                            : 'text-gray-500 dark:text-gray-400'
+                      "
+                    >
+                      {{ formatAmount(supplier.balance < 0 ? -supplier.balance : supplier.balance) }}
+                      @if (supplier.balance < 0) {
+                        <span class="block text-theme-xs font-normal">Avance</span>
+                      }
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+
+          <app-pagination
+            class="mt-4 block"
+            [page]="page()"
+            [pageSize]="pageSize"
+            [totalItems]="filteredRows().length"
+            (pageChange)="onPageChange($event)"
+          />
+        }
+      </div>
+
+      <app-new-supplier-modal [isOpen]="showNewSupplierModal()" (close)="showNewSupplierModal.set(false)" />
+    }
+  }
+</div>

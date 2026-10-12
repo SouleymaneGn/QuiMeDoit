@@ -23,8 +23,9 @@
               <span class="block text-xs text-gray-500 dark:text-gray-400">{{ customer.phone }}</span>
             }
           </span>
-          <span class="text-xs font-medium text-gray-500 dark:text-gray-400">
-            Dette : {{ formatAmount(balanceFor(customer.id)) }}
+          @let display = balanceDisplay(customer.id);
+          <span class="text-xs font-medium" [class]="display.textClass">
+            {{ display.label }}{{ display.tone === 'settled' ? '' : ' ' + formatAmount(display.amount) }}
           </span>
         </button>
       }
@@ -45,12 +46,12 @@
 
   <div class="mb-6">
     <app-label for="new-client-phone">Téléphone (facultatif)</app-label>
-    <app-phone-input id="new-client-phone" [value]="newPhone()" (valueChange)="onNewPhoneChange($event)" />
+    <app-phone-input id="new-client-phone" [value]="newPhone()" [warnIfEmpty]="true" (valueChange)="onNewPhoneChange($event)" />
   </div>
 
   <div class="flex justify-between gap-3">
     <app-button variant="outline" (btnClick)="backToSearch()">← Retour</app-button>
-    <app-button [disabled]="!creatingName()?.trim() || submitting()" (btnClick)="confirmNewClient()">
+    <app-button [disabled]="!creatingName()?.trim() || !newPhoneValid() || submitting()" (btnClick)="confirmNewClient()">
       Suivant →
     </app-button>
   </div>

@@ -44,6 +44,18 @@ export function hasAppAccess(
   return customerCount <= FREE_CUSTOMER_LIMIT;
 }
 
+/**
+ * Accès aux fonctionnalités réservées aux abonnés (ex. Fournisseurs) : même
+ * règle que hasAppAccess(), mais sans le quota gratuit. Miroir de la fonction
+ * SQL public.has_paid_access(), qui fait foi pour les écritures (RLS).
+ */
+export function hasPaidAccess(subscription: Subscription | null, role: UserRole = 'OWNER'): boolean {
+  if (role === 'ADMIN' || role === 'EMPLOYEE') {
+    return true;
+  }
+  return subscription?.status === 'active' && isPeriodStillValid(subscription.currentPeriodEndsAt);
+}
+
 function isPeriodStillValid(currentPeriodEndsAt: string | null): boolean {
   if (!currentPeriodEndsAt) {
     return false;

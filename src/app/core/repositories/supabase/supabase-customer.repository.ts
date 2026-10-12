@@ -8,6 +8,7 @@ interface CustomerRow {
   id: string;
   name: string;
   phone: string | null;
+  credit_limit: number | null;
   created_at: string;
 }
 
@@ -16,6 +17,7 @@ function toCustomer(row: CustomerRow): Customer {
     id: row.id,
     name: row.name,
     phone: row.phone ?? undefined,
+    creditLimit: row.credit_limit,
     createdAt: row.created_at
   };
 }
@@ -54,7 +56,12 @@ export class SupabaseCustomerRepository extends CustomerRepository {
         const ownerId = userData.user!.id;
         const { data, error } = await this.supabaseService.client
           .from('customers')
-          .insert({ owner_id: ownerId, name: input.name, phone: input.phone ?? null })
+          .insert({
+            owner_id: ownerId,
+            name: input.name,
+            phone: input.phone ?? null,
+            credit_limit: input.creditLimit ?? null
+          })
           .select()
           .single();
         if (error) throw error;
@@ -67,6 +74,8 @@ export class SupabaseCustomerRepository extends CustomerRepository {
     const row: Record<string, unknown> = {};
     if (patch.name !== undefined) row['name'] = patch.name;
     if (patch.phone !== undefined) row['phone'] = patch.phone ?? null;
+    // null retire le plafond : on teste la présence de la clé, pas sa valeur.
+    if ('creditLimit' in patch) row['credit_limit'] = patch.creditLimit ?? null;
 
     return from(
       this.supabaseService.client.from('customers').update(row).eq('id', id).select().single()

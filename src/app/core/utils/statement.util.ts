@@ -1,5 +1,6 @@
 import { CustomerStatement, StatementPeriod } from '../models/customer-statement.model';
 import { TransactionType } from '../models/transaction.model';
+import { isDebitType } from './balance.util';
 
 /** Libellé et montant (toujours positif) à afficher pour le solde d'un relevé. */
 export interface BalanceSummary {
@@ -43,12 +44,13 @@ export function ledgerRows(statement: CustomerStatement): LedgerRow[] {
     });
   }
   for (const line of [...statement.lines].reverse()) {
-    balance += line.type === 'DEBT' ? line.amount : -line.amount;
+    const debit = isDebitType(line.type);
+    balance += debit ? line.amount : -line.amount;
     rows.push({
       date: line.date,
       label: line.label,
-      debit: line.type === 'DEBT' ? line.amount : null,
-      credit: line.type === 'PAYMENT' ? line.amount : null,
+      debit: debit ? line.amount : null,
+      credit: debit ? null : line.amount,
       balance,
       opening: false
     });
@@ -95,7 +97,7 @@ export function buildStatement(
 
   for (const op of operations) {
     const time = new Date(op.createdAt).getTime();
-    const signed = op.type === 'DEBT' ? op.amount : -op.amount;
+    const signed = isDebitType(op.type) ? op.amount : -op.amount;
     if (from !== null && time < from) {
       openingBalance += signed;
       continue;
@@ -104,7 +106,7 @@ export function buildStatement(
       continue;
     }
     inPeriod.push(op);
-    if (op.type === 'DEBT') {
+    if (isDebitType(op.type)) {
       totalDebts += op.amount;
     } else {
       totalPayments += op.amount;

@@ -12,6 +12,9 @@ interface TransactionRow {
   amount: number;
   payment_method: PaymentMethod;
   created_at: string;
+  cancelled_at: string | null;
+  cancel_reason: string | null;
+  paid_by: string | null;
 }
 
 function toTransaction(row: TransactionRow): Transaction {
@@ -22,7 +25,10 @@ function toTransaction(row: TransactionRow): Transaction {
     label: row.label,
     amount: Number(row.amount),
     paymentMethod: row.payment_method,
-    createdAt: row.created_at
+    createdAt: row.created_at,
+    cancelledAt: row.cancelled_at ?? null,
+    cancelReason: row.cancel_reason ?? null,
+    paidBy: row.paid_by ?? null
   };
 }
 
@@ -86,7 +92,9 @@ export class SupabaseTransactionRepository extends TransactionRepository {
             type: input.type,
             label: input.label,
             amount: input.amount,
-            payment_method: input.paymentMethod
+            payment_method: input.paymentMethod,
+            // Colonne envoyée seulement si renseignée : les dettes n'en dépendent pas.
+            ...(input.paidBy?.trim() ? { paid_by: input.paidBy.trim() } : {})
           })
           .select()
           .single();
@@ -103,6 +111,7 @@ export class SupabaseTransactionRepository extends TransactionRepository {
     if (patch.label !== undefined) row['label'] = patch.label;
     if (patch.amount !== undefined) row['amount'] = patch.amount;
     if (patch.paymentMethod !== undefined) row['payment_method'] = patch.paymentMethod;
+    if ('paidBy' in patch) row['paid_by'] = patch.paidBy?.trim() || null;
 
     return from(
       this.supabaseService.client.from('transactions').update(row).eq('id', id).select().single()
@@ -114,10 +123,18 @@ export class SupabaseTransactionRepository extends TransactionRepository {
     );
   }
 
-  delete(id: string): Observable<void> {
-    return from(this.supabaseService.client.from('transactions').delete().eq('id', id)).pipe(
-      map(({ error }) => {
+  cancel(id: string, reason: string): Observable<Transaction> {
+    return from(
+      this.supabaseService.client
+        .from('transactions')
+        .update({ cancelled_at: new Date().toISOString(), cancel_reason: reason.trim() })
+        .eq('id', id)
+        .select()
+        .single()
+    ).pipe(
+      map(({ data, error }) => {
         if (error) throw error;
+        return toTransaction(data as TransactionRow);
       })
     );
   }

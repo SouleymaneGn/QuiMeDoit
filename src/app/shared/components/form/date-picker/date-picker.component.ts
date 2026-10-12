@@ -1,5 +1,5 @@
 
-import { Component, Input, Output, EventEmitter, ElementRef, ViewChild } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ElementRef, ViewChild, OnChanges, SimpleChanges } from '@angular/core';
 import flatpickr from 'flatpickr';
 import { French } from 'flatpickr/dist/l10n/fr.js';
 import { LabelComponent } from '../label/label.component';
@@ -10,7 +10,7 @@ import { LabelComponent } from '../label/label.component';
   templateUrl: './date-picker.component.html',
   styles: ``
 })
-export class DatePickerComponent {
+export class DatePickerComponent implements OnChanges {
 
   @Input() id!: string;
   @Input() mode: 'single' | 'multiple' | 'range' | 'time' = 'single';
@@ -35,6 +35,13 @@ export class DatePickerComponent {
         this.dateChange.emit({ selectedDates, dateStr, instance });
       }
     });
+  }
+
+  /** Un changement de `defaultDate` après l'initialisation (ex. raccourci « Ce mois ») met à jour le calendrier. */
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['defaultDate'] && !changes['defaultDate'].firstChange && this.flatpickrInstance) {
+      this.flatpickrInstance.setDate(this.defaultDate ?? [], false);
+    }
   }
 
   ngOnDestroy() {

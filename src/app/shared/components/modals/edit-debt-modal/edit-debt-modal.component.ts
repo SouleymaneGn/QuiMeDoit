@@ -1,14 +1,18 @@
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, computed, signal } from '@angular/core';
 import { ModalComponent } from '../../ui/modal/modal.component';
 import { ButtonComponent } from '../../ui/button/button.component';
+import { AlertComponent } from '../../ui/alert/alert.component';
 import { LabelComponent } from '../../form/label/label.component';
 import { InputFieldComponent } from '../../form/input/input-field.component';
 import { TransactionService } from '../../../../core/services/transaction.service';
+import { CustomerService } from '../../../../core/services/customer.service';
+import { ProfileService } from '../../../../core/services/profile.service';
+import { hasCreditLimit, isOverCreditLimit } from '../../../../core/utils/credit-limit.util';
 import { Transaction } from '../../../../core/models/transaction.model';
 
 @Component({
   selector: 'app-edit-debt-modal',
-  imports: [ModalComponent, ButtonComponent, LabelComponent, InputFieldComponent],
+  imports: [ModalComponent, ButtonComponent, LabelComponent, InputFieldComponent, AlertComponent],
   templateUrl: './edit-debt-modal.component.html'
 })
 export class EditDebtModalComponent implements OnChanges {
@@ -22,13 +26,36 @@ export class EditDebtModalComponent implements OnChanges {
   readonly amount = signal<number | ''>('');
   readonly submitting = signal(false);
   readonly errorMessage = signal('');
+  /** Copie signal de l'input `debt`, pour que creditLimitWarning se recalcule à chaque ouverture. */
+  private readonly editedDebt = signal<Transaction | null>(null);
 
   readonly canSubmit = computed(() => !!this.label().trim() && Number(this.amount()) > 0);
 
-  constructor(private readonly transactionService: TransactionService) {}
+  /** Alerte non bloquante si l'augmentation du montant fait passer le client au-delà de son plafond. */
+  readonly creditLimitWarning = computed(() => {
+    const debt = this.editedDebt();
+    const newAmount = Number(this.amount()) || 0;
+    const creditLimit = debt ? this.customerService.getById(debt.customerId)?.creditLimit : null;
+    if (!debt || newAmount <= debt.amount || !hasCreditLimit(creditLimit)) {
+      return '';
+    }
+    const newBalance = this.transactionService.balanceForCustomer(debt.customerId) - debt.amount + newAmount;
+    if (!isOverCreditLimit(newBalance, creditLimit)) {
+      return '';
+    }
+    const format = (amount: number) => this.profileService.formatAmount(amount);
+    return `Dette après modification : ${format(newBalance)}, soit ${format(newBalance - creditLimit)} au-dessus du plafond de ${format(creditLimit)}.`;
+  });
+
+  constructor(
+    private readonly transactionService: TransactionService,
+    private readonly customerService: CustomerService,
+    private readonly profileService: ProfileService
+  ) {}
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['isOpen'] && this.isOpen && this.debt) {
+      this.editedDebt.set(this.debt);
       this.label.set(this.debt.label);
       this.amount.set(this.debt.amount);
       this.errorMessage.set('');

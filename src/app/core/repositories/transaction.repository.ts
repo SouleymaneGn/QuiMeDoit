@@ -7,5 +7,6 @@ export abstract class TransactionRepository {
   abstract getByDateRange(from: Date, to: Date): Observable<Transaction[]>;
   abstract create(input: TransactionInput): Observable<Transaction>;
   abstract update(id: string, patch: Partial<TransactionInput>): Observable<Transaction>;
-  abstract delete(id: string): Observable<void>;
+  /** Annule l'opération (motif obligatoire) : elle n'est jamais supprimée. */
+  abstract cancel(id: string, reason: string): Observable<Transaction>;
 }

@@ -28,6 +28,12 @@
       />
     </div>
 
+    @if (creditLimitWarning()) {
+      <div class="mb-6">
+        <app-alert variant="warning" title="Plafond de crédit dépassé" [message]="creditLimitWarning()" />
+      </div>
+    }
+
     @if (errorMessage()) {
       <p class="mb-4 text-sm text-error-500">{{ errorMessage() }}</p>
     }
@@ -35,7 +41,7 @@
     <div class="flex justify-end gap-3">
       <app-button variant="outline" (btnClick)="onClose()">Annuler</app-button>
       <app-button [disabled]="!canSubmit() || submitting()" (btnClick)="submit()">
-        {{ submitting() ? 'Enregistrement...' : 'Enregistrer' }}
+        {{ submitting() ? 'Enregistrement...' : creditLimitWarning() ? 'Enregistrer quand même' : 'Enregistrer' }}
       </app-button>
     </div>
   </div>

@@ -4,9 +4,12 @@ import { LabelComponent } from '../../form/label/label.component';
 import { InputFieldComponent } from '../../form/input/input-field.component';
 import { PhoneInputComponent } from '../../form/group-input/phone-input/phone-input.component';
 import { CustomerService } from '../../../../core/services/customer.service';
+import { isAcceptablePhone } from '../../../../core/utils/phone.util';
+import { toTitleCase } from '../../../../core/utils/text.util';
 import { TransactionService } from '../../../../core/services/transaction.service';
 import { ProfileService } from '../../../../core/services/profile.service';
 import { Customer } from '../../../../core/models/customer.model';
+import { balanceLabel, BalanceDisplay } from '../../../../core/utils/balance.util';
 
 export interface ClientReadyEvent {
   id: string;
@@ -28,6 +31,7 @@ export class ClientPickerStepComponent {
   readonly query = signal('');
   readonly creatingName = signal<string | null>(null);
   readonly newPhone = signal('');
+  readonly newPhoneValid = computed(() => isAcceptablePhone(this.newPhone()));
   readonly submitting = signal(false);
 
   readonly results = computed(() => {
@@ -55,8 +59,8 @@ export class ClientPickerStepComponent {
     this.newPhone.set(String(value));
   }
 
-  balanceFor(customerId: string): number {
-    return this.transactionService.balanceForCustomer(customerId);
+  balanceDisplay(customerId: string): BalanceDisplay {
+    return balanceLabel(this.transactionService.balanceForCustomer(customerId));
   }
 
   formatAmount(amount: number): string {
@@ -77,8 +81,8 @@ export class ClientPickerStepComponent {
   }
 
   confirmNewClient(): void {
-    const name = (this.creatingName() ?? '').trim();
-    if (!name || this.submitting()) {
+    const name = toTitleCase(this.creatingName() ?? '');
+    if (!name || !this.newPhoneValid() || this.submitting()) {
       return;
     }
     this.submitting.set(true);

@@ -1,0 +1,170 @@
+<div>
+  <app-page-breadcrumb pageTitle="Fiche fournisseur" />
+
+  @if (!loaded()) {
+    <div class="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/[0.03]">
+      <app-skeleton className="h-5 w-48" />
+      <app-skeleton className="mt-3 h-3 w-32" />
+    </div>
+  } @else if (!supplier()) {
+    <div class="rounded-2xl border border-gray-200 bg-white p-8 text-center dark:border-gray-800 dark:bg-white/[0.03]">
+      <p class="text-sm text-gray-500 dark:text-gray-400">Fournisseur introuvable.</p>
+      <a routerLink="/app/suppliers" class="mt-4 inline-block text-sm font-medium text-brand-500 hover:underline">
+        Retour à la liste des fournisseurs
+      </a>
+    </div>
+  } @else {
+    @if (!canWrite()) {
+      <div class="mb-6">
+        <app-alert
+          variant="warning"
+          title="Abonnement expiré"
+          message="Cette fiche reste consultable, mais vous ne pouvez plus ajouter d'achats ni de règlements."
+          [showLink]="true"
+          linkHref="/app/abonnement"
+          linkText="Renouveler l'abonnement"
+        />
+      </div>
+    }
+
+    <div class="mb-6 rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/[0.03]">
+      <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="text-xl font-semibold text-gray-800 dark:text-white/90">{{ supplier()!.name }}</h1>
+            @if (canWrite()) {
+              <button
+                type="button"
+                class="inline-flex items-center gap-1 text-xs font-medium text-brand-500 hover:underline"
+                (click)="showEditModal.set(true)"
+              >
+                <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="m16.5 3.5 4 4L9 19H5v-4L16.5 3.5Z"></path>
+                </svg>
+                Modifier
+              </button>
+            }
+          </div>
+          <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+            {{ supplier()!.phone || 'Téléphone non renseigné' }}
+          </p>
+        </div>
+        <div class="text-left sm:text-right">
+          <p class="text-sm text-gray-500 dark:text-gray-400">{{ balanceLabel() }}</p>
+          <p
+            class="mt-1 text-2xl font-semibold"
+            [ngClass]="
+              balance() > 0
+                ? 'text-warning-600 dark:text-warning-500'
+                : balance() < 0
+                  ? 'text-success-600 dark:text-success-500'
+                  : 'text-gray-800 dark:text-white/90'
+            "
+          >
+            {{ formatAmount(balance() < 0 ? -balance() : balance()) }}
+          </p>
+        </div>
+      </div>
+
+      @if (canWrite()) {
+        <div class="mt-5 flex flex-col gap-3 sm:flex-row">
+          <app-button (btnClick)="openNewOperation('PURCHASE')">+ Achat à crédit</app-button>
+          <app-button variant="outline" (btnClick)="openNewOperation('PAYMENT')">💵 Payer le fournisseur</app-button>
+        </div>
+      }
+    </div>
+
+    <div class="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/[0.03]">
+      <h2 class="mb-4 text-base font-semibold text-gray-800 dark:text-white/90">Historique</h2>
+
+      @if (history().length === 0) {
+        <p class="text-sm text-gray-500 dark:text-gray-400">Aucun achat ni règlement pour ce fournisseur.</p>
+      } @else {
+        <div class="divide-y divide-gray-100 dark:divide-gray-800">
+          @for (item of history(); track item.id) {
+            @let cancelled = isCancelled(item);
+            <div class="flex flex-col gap-2 py-3 sm:flex-row sm:items-center sm:justify-between sm:gap-3" [ngClass]="{ 'opacity-60': cancelled }">
+              <div class="min-w-0">
+                <p
+                  class="truncate text-sm font-medium text-gray-800 dark:text-white/90"
+                  [ngClass]="{ 'line-through': cancelled }"
+                >
+                  {{ item.label }}
+                </p>
+                <p class="text-xs text-gray-500 dark:text-gray-400">
+                  {{ item.createdAt | date: 'dd/MM/yyyy' }}
+                  @if (item.type === 'PAYMENT') {
+                    · {{ paymentMethodLabel(item.paymentMethod) }}
+                  }
+                  @if (cancelled) {
+                    · <span class="font-medium text-gray-600 dark:text-gray-300">Annulée</span> : {{ item.cancelReason }}
+                  }
+                </p>
+              </div>
+              <div class="flex shrink-0 items-center justify-between gap-3 sm:justify-end">
+                <app-badge
+                  [color]="cancelled ? 'light' : item.type === 'PURCHASE' ? 'warning' : 'success'"
+                  size="sm"
+                >
+                  {{ item.type === 'PURCHASE' ? 'Achat' : 'Règlement' }}
+                </app-badge>
+                <span
+                  class="text-sm font-semibold text-gray-800 dark:text-white/90"
+                  [ngClass]="{ 'line-through': cancelled }"
+                >
+                  {{ formatAmount(item.amount) }}
+                </span>
+                @if (canWrite() && !cancelled) {
+                  <div class="flex items-center gap-1">
+                    <button
+                      type="button"
+                      class="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-white/5 dark:hover:text-gray-300"
+                      aria-label="Modifier"
+                      (click)="openEditOperation(item)"
+                    >
+                      <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m16.5 3.5 4 4L9 19H5v-4L16.5 3.5Z"></path>
+                      </svg>
+                    </button>
+                    <button
+                      type="button"
+                      class="rounded-lg px-2 py-1 text-xs font-medium text-gray-500 hover:bg-error-50 hover:text-error-600 dark:text-gray-400 dark:hover:bg-error-500/10 dark:hover:text-error-500"
+                      (click)="openCancel(item)"
+                    >
+                      Annuler
+                    </button>
+                  </div>
+                } @else if (canWrite()) {
+                  <span class="w-[92px]" aria-hidden="true"></span>
+                }
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </div>
+
+    <app-edit-supplier-modal
+      [isOpen]="showEditModal()"
+      [supplier]="supplier()!"
+      (close)="showEditModal.set(false)"
+    />
+    <app-supplier-operation-modal
+      [isOpen]="showOperationModal()"
+      [type]="operationType()"
+      [operation]="editingOperation()"
+      [supplierId]="supplierId()"
+      [supplierName]="supplier()!.name"
+      (close)="closeOperationModal()"
+    />
+    <app-cancel-operation-dialog
+      [isOpen]="cancellingOperation() !== null"
+      [title]="cancellingOperation()?.type === 'PAYMENT' ? 'Annuler ce règlement ?' : 'Annuler cet achat ?'"
+      [summary]="cancelSummary()"
+      [busy]="cancelling()"
+      [errorMessage]="cancelError()"
+      (cancel)="closeCancel()"
+      (confirm)="confirmCancel($event)"
+    />
+  }
+</div>

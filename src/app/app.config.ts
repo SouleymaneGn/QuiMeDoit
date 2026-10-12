@@ -13,6 +13,10 @@ import { SubscriptionRepository } from './core/repositories/subscription.reposit
 import { SupabaseSubscriptionRepository } from './core/repositories/supabase/supabase-subscription.repository';
 import { StatementShareRepository } from './core/repositories/statement-share.repository';
 import { SupabaseStatementShareRepository } from './core/repositories/supabase/supabase-statement-share.repository';
+import { SupplierRepository } from './core/repositories/supplier.repository';
+import { SupabaseSupplierRepository } from './core/repositories/supabase/supabase-supplier.repository';
+import { SupplierTransactionRepository } from './core/repositories/supplier-transaction.repository';
+import { SupabaseSupplierTransactionRepository } from './core/repositories/supabase/supabase-supplier-transaction.repository';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -23,6 +27,8 @@ export const appConfig: ApplicationConfig = {
     { provide: TransactionRepository, useClass: SupabaseTransactionRepository },
     { provide: ProfileRepository, useClass: SupabaseProfileRepository },
     { provide: SubscriptionRepository, useClass: SupabaseSubscriptionRepository },
-    { provide: StatementShareRepository, useClass: SupabaseStatementShareRepository }
+    { provide: StatementShareRepository, useClass: SupabaseStatementShareRepository },
+    { provide: SupplierRepository, useClass: SupabaseSupplierRepository },
+    { provide: SupplierTransactionRepository, useClass: SupabaseSupplierTransactionRepository }
   ]
 };

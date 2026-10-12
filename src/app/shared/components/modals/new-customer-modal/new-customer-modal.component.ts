@@ -5,6 +5,8 @@ import { LabelComponent } from '../../form/label/label.component';
 import { InputFieldComponent } from '../../form/input/input-field.component';
 import { PhoneInputComponent } from '../../form/group-input/phone-input/phone-input.component';
 import { CustomerService } from '../../../../core/services/customer.service';
+import { isAcceptablePhone } from '../../../../core/utils/phone.util';
+import { toTitleCase } from '../../../../core/utils/text.util';
 import { Customer } from '../../../../core/models/customer.model';
 
 @Component({
@@ -19,9 +21,12 @@ export class NewCustomerModalComponent {
 
   readonly name = signal('');
   readonly phone = signal('');
+  readonly creditLimit = signal<number | ''>('');
   readonly submitting = signal(false);
 
-  readonly canSubmit = computed(() => !!this.name().trim());
+  readonly canSubmit = computed(
+    () => !!this.name().trim() && Number(this.creditLimit()) >= 0 && isAcceptablePhone(this.phone())
+  );
 
   constructor(private readonly customerService: CustomerService) {}
 
@@ -33,13 +38,21 @@ export class NewCustomerModalComponent {
     this.phone.set(String(value));
   }
 
+  onCreditLimitChange(value: string | number): void {
+    this.creditLimit.set(value === '' || value === 0 ? '' : Number(value));
+  }
+
   submit(): void {
     if (!this.canSubmit() || this.submitting()) {
       return;
     }
     this.submitting.set(true);
     this.customerService
-      .create({ name: this.name().trim(), phone: this.phone().trim() || undefined })
+      .create({
+        name: toTitleCase(this.name()),
+        phone: this.phone().trim() || undefined,
+        creditLimit: Number(this.creditLimit()) > 0 ? Number(this.creditLimit()) : null
+      })
       .subscribe(customer => {
         this.submitting.set(false);
         this.reset();
@@ -56,5 +69,6 @@ export class NewCustomerModalComponent {
   private reset(): void {
     this.name.set('');
     this.phone.set('');
+    this.creditLimit.set('');
   }
 }

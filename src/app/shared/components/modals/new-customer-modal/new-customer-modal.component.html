@@ -12,9 +12,22 @@
       />
     </div>
 
-    <div class="mb-6">
+    <div class="mb-4">
       <app-label for="customer-phone">Téléphone (facultatif)</app-label>
-      <app-phone-input id="customer-phone" [value]="phone()" (valueChange)="onPhoneChange($event)" />
+      <app-phone-input id="customer-phone" [value]="phone()" [warnIfEmpty]="true" (valueChange)="onPhoneChange($event)" />
+    </div>
+
+    <div class="mb-6">
+      <app-label for="customer-credit-limit">Plafond de crédit (facultatif)</app-label>
+      <app-input-field
+        id="customer-credit-limit"
+        type="number"
+        min="0"
+        placeholder="Aucun plafond"
+        hint="Vous serez averti si la dette du client dépasse ce montant."
+        [value]="creditLimit()"
+        (valueChange)="onCreditLimitChange($event)"
+      />
     </div>
 
     <div class="flex justify-end gap-3">

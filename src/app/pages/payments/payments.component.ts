@@ -1,19 +1,62 @@
-import { DatePipe } from '@angular/common';
+import { DatePipe, NgClass } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { Component, computed, signal } from '@angular/core';
+import { Observable } from 'rxjs';
 import { PageBreadcrumbComponent } from '../../shared/components/common/page-breadcrumb/page-breadcrumb.component';
 import { ButtonComponent } from '../../shared/components/ui/button/button.component';
+import { BadgeComponent } from '../../shared/components/ui/badge/badge.component';
 import { DatePickerComponent } from '../../shared/components/form/date-picker/date-picker.component';
 import { NewPaymentModalComponent } from '../../shared/components/modals/new-payment-modal/new-payment-modal.component';
 import { EditPaymentModalComponent } from '../../shared/components/modals/edit-payment-modal/edit-payment-modal.component';
-import { ConfirmDialogComponent } from '../../shared/components/modals/confirm-dialog/confirm-dialog.component';
+import { CustomerOperationModalComponent } from '../../shared/components/modals/customer-operation-modal/customer-operation-modal.component';
+import { SupplierOperationModalComponent } from '../../shared/components/modals/supplier-operation-modal/supplier-operation-modal.component';
+import { CancelOperationDialogComponent } from '../../shared/components/modals/cancel-operation-dialog/cancel-operation-dialog.component';
 import { PaginationComponent } from '../../shared/components/ui/pagination/pagination.component';
 import { SkeletonComponent } from '../../shared/components/ui/skeleton/skeleton.component';
 import { CustomerService } from '../../core/services/customer.service';
 import { TransactionService } from '../../core/services/transaction.service';
+import { SupplierService } from '../../core/services/supplier.service';
+import { SupplierTransactionService } from '../../core/services/supplier-transaction.service';
+import { SubscriptionService } from '../../core/services/subscription.service';
 import { ProfileService } from '../../core/services/profile.service';
-import { Transaction } from '../../core/models/transaction.model';
+import { PaymentMethod, Transaction } from '../../core/models/transaction.model';
+import { SupplierTransaction } from '../../core/models/supplier-transaction.model';
+import { isCancelled } from '../../core/utils/balance.util';
+import { phoneStatus } from '../../core/utils/phone.util';
+import { receiptMessage, whatsappUrl } from '../../core/utils/whatsapp.util';
+import {
+  OperationBadgeColor,
+  TRANSACTION_TYPE_BADGE,
+  TRANSACTION_TYPE_LABELS,
+  paymentMethodLabel
+} from '../../core/utils/operation.util';
 
-type PaymentRow = Transaction & { customerName: string };
+type MoneyTab = 'in' | 'out';
+
+/** Raccourcis de période ; « custom » = plage choisie dans le calendrier. */
+type RangePreset = 'today' | '7d' | 'month' | '30d' | 'custom';
+
+type MethodFilter = '' | PaymentMethod;
+
+/** Ligne commune aux mouvements clients et fournisseurs. */
+interface MoneyRow {
+  id: string;
+  partyName: string;
+  partyLink: string[];
+  typeLabel: string;
+  typeBadge: OperationBadgeColor;
+  label: string;
+  paymentMethod: string;
+  paidBy: string | null;
+  createdAt: string;
+  amount: number;
+  cancelled: boolean;
+  cancelReason: string | null;
+  /** Lien WhatsApp du reçu (entrées clients non annulées, numéro valide), sinon null. */
+  receiptLink: string | null;
+  customerOperation?: Transaction;
+  supplierOperation?: SupplierTransaction;
+}
 
 const PAGE_SIZE = 10;
 
@@ -29,20 +72,44 @@ function endOfDay(date: Date): Date {
   return d;
 }
 
+function presetRange(preset: Exclude<RangePreset, 'custom'>): [Date, Date] {
+  const now = new Date();
+  switch (preset) {
+    case 'today':
+      return [daysAgo(now, 0), endOfDay(now)];
+    case '7d':
+      return [daysAgo(now, 6), endOfDay(now)];
+    case 'month':
+      return [new Date(now.getFullYear(), now.getMonth(), 1), endOfDay(now)];
+    case '30d':
+      return [daysAgo(now, 30), endOfDay(now)];
+  }
+}
+
 interface DatePickerChangeEvent {
   selectedDates: Date[];
 }
 
+/**
+ * Entrées : paiements et dépôts des clients.
+ * Sorties : retraits des clients et règlements aux fournisseurs.
+ * Les opérations annulées restent listées (barrées) mais ne comptent pas dans les totaux.
+ */
 @Component({
   selector: 'app-payments',
   imports: [
     DatePipe,
+    NgClass,
+    RouterLink,
     PageBreadcrumbComponent,
     ButtonComponent,
+    BadgeComponent,
     DatePickerComponent,
     NewPaymentModalComponent,
     EditPaymentModalComponent,
-    ConfirmDialogComponent,
+    CustomerOperationModalComponent,
+    SupplierOperationModalComponent,
+    CancelOperationDialogComponent,
     PaginationComponent,
     SkeletonComponent
   ],
@@ -52,58 +119,184 @@ export class PaymentsComponent {
   readonly showNewPaymentModal = signal(false);
   readonly page = signal(1);
   readonly pageSize = PAGE_SIZE;
+  readonly tab = signal<MoneyTab>('in');
 
-  readonly rangeStart = signal(daysAgo(new Date(), 30));
-  readonly rangeEnd = signal(endOfDay(new Date()));
-  readonly defaultRange = [this.rangeStart(), this.rangeEnd()];
+  readonly rangePresets: { value: Exclude<RangePreset, 'custom'>; label: string }[] = [
+    { value: 'today', label: "Aujourd'hui" },
+    { value: '7d', label: '7 jours' },
+    { value: 'month', label: 'Ce mois' },
+    { value: '30d', label: '30 jours' }
+  ];
+  readonly preset = signal<RangePreset>('30d');
+  readonly rangeStart = signal(presetRange('30d')[0]);
+  readonly rangeEnd = signal(presetRange('30d')[1]);
+  /** Plage affichée dans le calendrier (suit aussi les raccourcis). */
+  readonly pickerRange = computed(() => [this.rangeStart(), this.rangeEnd()]);
 
-  readonly payments = computed(() => {
-    const from = this.rangeStart().getTime();
-    const to = this.rangeEnd().getTime();
-    return this.transactionService
+  readonly methodFilters: { value: MethodFilter; label: string }[] = [
+    { value: '', label: 'Tous les modes' },
+    { value: 'CASH', label: 'Espèces' },
+    { value: 'ORANGE_MONEY', label: 'Orange Money' },
+    { value: 'MOBILE_MONEY', label: 'Mobile Money' }
+  ];
+  readonly methodFilter = signal<MethodFilter>('');
+
+  private readonly canManageSuppliers = computed(() => this.subscriptionService.hasPaidAccess());
+
+  private matches(iso: string, method: string): boolean {
+    const time = new Date(iso).getTime();
+    const filter = this.methodFilter();
+    return (
+      time >= this.rangeStart().getTime() && time <= this.rangeEnd().getTime() && (!filter || method === filter)
+    );
+  }
+
+  private readonly customerRows = computed<MoneyRow[]>(() =>
+    this.transactionService
       .transactions()
-      .filter(t => {
-        if (t.type !== 'PAYMENT') return false;
-        const createdAt = new Date(t.createdAt).getTime();
-        return createdAt >= from && createdAt <= to;
+      .filter(t => t.type !== 'DEBT' && this.matches(t.createdAt, t.paymentMethod))
+      .map(t => {
+        const customer = this.customerService.getById(t.customerId);
+        const cancelled = isCancelled(t);
+        return {
+          id: t.id,
+          partyName: customer?.name ?? 'Client',
+          partyLink: ['/app/customers', t.customerId],
+          typeLabel: TRANSACTION_TYPE_LABELS[t.type],
+          typeBadge: TRANSACTION_TYPE_BADGE[t.type],
+          label: t.label,
+          paymentMethod: t.paymentMethod,
+          paidBy: t.paidBy ?? null,
+          createdAt: t.createdAt,
+          amount: t.amount,
+          cancelled,
+          cancelReason: t.cancelReason ?? null,
+          receiptLink:
+            !cancelled && (t.type === 'PAYMENT' || t.type === 'DEPOSIT') && phoneStatus(customer?.phone) === 'valid'
+              ? this.receiptLink(t, customer!.name, customer!.phone!)
+              : null,
+          customerOperation: t
+        };
       })
-      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-      .map(t => ({
-        ...t,
-        customerName: this.customerService.getById(t.customerId)?.name ?? 'Client'
-      }));
-  });
-
-  readonly totalReceived = computed(() =>
-    this.profileService.formatAmount(this.payments().reduce((sum, p) => sum + p.amount, 0))
   );
 
-  readonly pagedPayments = computed(() => {
+  private readonly supplierRows = computed<MoneyRow[]>(() =>
+    this.supplierTransactionService
+      .transactions()
+      .filter(t => t.type === 'PAYMENT' && this.matches(t.createdAt, t.paymentMethod))
+      .map(t => ({
+        id: t.id,
+        partyName: this.supplierService.getById(t.supplierId)?.name ?? 'Fournisseur',
+        partyLink: ['/app/suppliers', t.supplierId],
+        typeLabel: 'Règlement fournisseur',
+        typeBadge: 'warning' as const,
+        label: t.label,
+        paymentMethod: t.paymentMethod,
+        paidBy: null,
+        createdAt: t.createdAt,
+        amount: t.amount,
+        cancelled: isCancelled(t),
+        cancelReason: t.cancelReason ?? null,
+        receiptLink: null,
+        supplierOperation: t
+      }))
+  );
+
+  private readonly incoming = computed(() =>
+    this.customerRows().filter(r => r.customerOperation!.type === 'PAYMENT' || r.customerOperation!.type === 'DEPOSIT')
+  );
+
+  private readonly outgoing = computed(() => [
+    ...this.customerRows().filter(r => r.customerOperation!.type === 'WITHDRAWAL'),
+    ...this.supplierRows()
+  ]);
+
+  readonly rows = computed(() =>
+    [...(this.tab() === 'in' ? this.incoming() : this.outgoing())].sort(
+      (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    )
+  );
+
+  private sumActive(rows: MoneyRow[]): number {
+    return rows.filter(r => !r.cancelled).reduce((sum, r) => sum + r.amount, 0);
+  }
+
+  readonly totalIn = computed(() => this.formatAmount(this.sumActive(this.incoming())));
+  readonly totalOut = computed(() => this.formatAmount(this.sumActive(this.outgoing())));
+
+  readonly pagedRows = computed(() => {
     const start = (this.page() - 1) * this.pageSize;
-    return this.payments().slice(start, start + this.pageSize);
+    return this.rows().slice(start, start + this.pageSize);
   });
 
   readonly isLoading = computed(() => !this.transactionService.loaded());
 
-  readonly showEditModal = signal(false);
-  readonly editingPayment = signal<PaymentRow | null>(null);
+  // Modification : chaque type a sa fenêtre.
+  readonly editingPayment = signal<Transaction | null>(null);
+  readonly editingMoneyOperation = signal<Transaction | null>(null);
+  readonly editingSupplierOperation = signal<SupplierTransaction | null>(null);
+  readonly editingPartyName = signal('');
 
-  readonly showDeleteConfirm = signal(false);
-  readonly deletingPayment = signal<PaymentRow | null>(null);
-  readonly deleting = signal(false);
+  // Annulation
+  readonly cancellingRow = signal<MoneyRow | null>(null);
+  readonly cancelling = signal(false);
+  readonly cancelError = signal('');
+  readonly cancelSummary = computed(() => {
+    const row = this.cancellingRow();
+    return row ? `${row.typeLabel} · ${row.partyName} · ${this.formatAmount(row.amount)}` : '';
+  });
 
   constructor(
     private readonly customerService: CustomerService,
     private readonly transactionService: TransactionService,
+    private readonly supplierService: SupplierService,
+    private readonly supplierTransactionService: SupplierTransactionService,
+    private readonly subscriptionService: SubscriptionService,
     private readonly profileService: ProfileService
   ) {}
+
+  setTab(tab: MoneyTab): void {
+    this.tab.set(tab);
+    this.page.set(1);
+  }
 
   onRangeChange(event: DatePickerChangeEvent): void {
     if (event.selectedDates.length < 2) return;
     const [start, end] = event.selectedDates;
     this.rangeStart.set(new Date(start));
     this.rangeEnd.set(endOfDay(end));
+    this.preset.set('custom');
     this.page.set(1);
+  }
+
+  selectPreset(preset: Exclude<RangePreset, 'custom'>): void {
+    const [start, end] = presetRange(preset);
+    this.preset.set(preset);
+    this.rangeStart.set(start);
+    this.rangeEnd.set(end);
+    this.page.set(1);
+  }
+
+  setMethodFilter(filter: MethodFilter): void {
+    this.methodFilter.set(filter);
+    this.page.set(1);
+  }
+
+  /** Reçu WhatsApp : montant, date, mode, « payé par » et solde actuel du client. */
+  private receiptLink(t: Transaction, customerName: string, phone: string): string {
+    const balance = this.transactionService.balanceForCustomer(t.customerId);
+    const message = receiptMessage({
+      customerName,
+      kind: t.type === 'DEPOSIT' ? 'DEPOSIT' : 'PAYMENT',
+      formattedAmount: this.formatAmount(t.amount),
+      date: t.createdAt,
+      paymentMethod: paymentMethodLabel(t.paymentMethod),
+      paidBy: t.paidBy,
+      businessName: this.profileService.profile()?.businessName ?? '',
+      balance,
+      formattedBalance: this.formatAmount(Math.abs(balance))
+    });
+    return whatsappUrl(phone, message);
   }
 
   onPageChange(page: number): void {
@@ -115,48 +308,54 @@ export class PaymentsComponent {
   }
 
   paymentMethodLabel(method: string): string {
-    switch (method) {
-      case 'CASH':
-        return 'Espèces';
-      case 'ORANGE_MONEY':
-        return 'Orange Money';
-      case 'MOBILE_MONEY':
-        return 'Mobile Money';
-      default:
-        return method;
+    return paymentMethodLabel(method);
+  }
+
+  /** Les règlements fournisseurs ne se modifient / n'annulent qu'avec l'abonnement. */
+  canAct(row: MoneyRow): boolean {
+    return !row.cancelled && (!!row.customerOperation || this.canManageSuppliers());
+  }
+
+  openEdit(row: MoneyRow): void {
+    this.editingPartyName.set(row.partyName);
+    if (row.supplierOperation) {
+      this.editingSupplierOperation.set(row.supplierOperation);
+    } else if (row.customerOperation?.type === 'PAYMENT') {
+      this.editingPayment.set(row.customerOperation);
+    } else if (row.customerOperation) {
+      this.editingMoneyOperation.set(row.customerOperation);
     }
   }
 
-  openEdit(payment: PaymentRow): void {
-    this.editingPayment.set(payment);
-    this.showEditModal.set(true);
+  openCancel(row: MoneyRow): void {
+    this.cancelError.set('');
+    this.cancellingRow.set(row);
   }
 
-  openDeleteConfirm(payment: PaymentRow): void {
-    this.deletingPayment.set(payment);
-    this.showDeleteConfirm.set(true);
+  closeCancel(): void {
+    this.cancellingRow.set(null);
   }
 
-  cancelDelete(): void {
-    this.showDeleteConfirm.set(false);
-    this.deletingPayment.set(null);
-  }
-
-  confirmDelete(): void {
-    const payment = this.deletingPayment();
-    if (!payment || this.deleting()) {
+  confirmCancel(reason: string): void {
+    const row = this.cancellingRow();
+    if (!row || this.cancelling()) {
       return;
     }
-    this.deleting.set(true);
-    this.transactionService.delete(payment.id).subscribe({
+    const request$: Observable<unknown> = row.supplierOperation
+      ? this.supplierTransactionService.cancel(row.id, reason)
+      : this.transactionService.cancel(row.id, reason);
+
+    this.cancelling.set(true);
+    this.cancelError.set('');
+    request$.subscribe({
       next: () => {
-        this.deleting.set(false);
-        this.showDeleteConfirm.set(false);
-        this.deletingPayment.set(null);
+        this.cancelling.set(false);
+        this.cancellingRow.set(null);
       },
       error: err => {
-        this.deleting.set(false);
-        console.error('Échec de la suppression du paiement', err);
+        this.cancelling.set(false);
+        this.cancelError.set("L'annulation a échoué. Réessayez.");
+        console.error("Échec de l'annulation de l'opération", err);
       }
     });
   }

@@ -9,6 +9,9 @@ import { CustomersComponent } from './pages/customers/customers.component';
 import { CustomerDetailComponent } from './pages/customer-detail/customer-detail.component';
 import { ParametresComponent } from './pages/parametres/parametres.component';
 import { PaymentsComponent } from './pages/payments/payments.component';
+import { SuppliersComponent } from './pages/suppliers/suppliers.component';
+import { SupplierDetailComponent } from './pages/supplier-detail/supplier-detail.component';
+import { ReportsComponent } from './pages/reports/reports.component';
 import { ProfileComponent } from './pages/profile/profile.component';
 import { AbonnementComponent } from './pages/abonnement/abonnement.component';
 import { MerciComponent } from './pages/merci/merci.component';
@@ -48,9 +51,29 @@ export const routes: Routes = [
         canActivate: [subscriptionGuard],
       },
       {
+        // Réservé aux abonnés : la page gère elle-même le mode présentation / lecture seule.
+        path:'suppliers',
+        component:SuppliersComponent,
+        title:'Fournisseurs | QuiMeDoit',
+        canActivate: [subscriptionGuard],
+      },
+      {
+        path:'suppliers/:id',
+        component:SupplierDetailComponent,
+        title:'Fiche fournisseur | QuiMeDoit',
+        canActivate: [subscriptionGuard],
+      },
+      {
         path:'payments',
         component:PaymentsComponent,
         title:'Paiements | QuiMeDoit',
+        canActivate: [subscriptionGuard],
+      },
+      {
+        // Pas d'entrée dans le menu : accessible depuis l'Accueil et la page Paiements.
+        path:'reports',
+        component:ReportsComponent,
+        title:'Rapports | QuiMeDoit',
         canActivate: [subscriptionGuard],
       },
       {

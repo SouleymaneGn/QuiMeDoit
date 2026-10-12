@@ -1,0 +1,12 @@
+[
+  { "id": "stx-001", "supplierId": "sup-001", "type": "PURCHASE", "label": "Riz 50 kg x20", "amount": 6400000, "paymentMethod": "CASH", "createdAt": "2026-05-02T10:00:00.000Z" },
+  { "id": "stx-002", "supplierId": "sup-001", "type": "PAYMENT", "label": "Acompte", "amount": 3000000, "paymentMethod": "ORANGE_MONEY", "createdAt": "2026-05-16T14:30:00.000Z" },
+  { "id": "stx-003", "supplierId": "sup-001", "type": "PURCHASE", "label": "Huile 20 L x10", "amount": 2900000, "paymentMethod": "CASH", "createdAt": "2026-06-04T09:45:00.000Z" },
+  { "id": "stx-004", "supplierId": "sup-002", "type": "PURCHASE", "label": "Ciment x100 sacs", "amount": 8500000, "paymentMethod": "CASH", "createdAt": "2026-05-10T08:20:00.000Z" },
+  { "id": "stx-005", "supplierId": "sup-002", "type": "PAYMENT", "label": "Règlement", "amount": 8500000, "paymentMethod": "CASH", "createdAt": "2026-06-01T17:10:00.000Z" },
+  { "id": "stx-006", "supplierId": "sup-003", "type": "PURCHASE", "label": "Boissons gazeuses x50 casiers", "amount": 4250000, "paymentMethod": "CASH", "createdAt": "2026-06-08T11:00:00.000Z" },
+  { "id": "stx-007", "supplierId": "sup-003", "type": "PAYMENT", "label": "Règlement partiel", "amount": 2000000, "paymentMethod": "MOBILE_MONEY", "createdAt": "2026-06-20T12:15:00.000Z" },
+  { "id": "stx-008", "supplierId": "sup-004", "type": "PURCHASE", "label": "Lait en poudre x30 cartons", "amount": 3600000, "paymentMethod": "CASH", "createdAt": "2026-06-11T10:30:00.000Z" },
+  { "id": "stx-009", "supplierId": "sup-004", "type": "PAYMENT", "label": "Avance", "amount": 4000000, "paymentMethod": "ORANGE_MONEY", "createdAt": "2026-06-25T09:00:00.000Z" },
+  { "id": "stx-010", "supplierId": "sup-005", "type": "PURCHASE", "label": "Fer à béton x40", "amount": 1800000, "paymentMethod": "CASH", "createdAt": "2026-07-02T15:40:00.000Z" }
+]

@@ -8,21 +8,80 @@
           id="payment-range"
           mode="range"
           label="Période"
-          [defaultDate]="defaultRange"
+          [defaultDate]="pickerRange()"
           (dateChange)="onRangeChange($event)"
         />
+        <div class="mt-2 flex flex-wrap gap-1.5">
+          @for (option of rangePresets; track option.value) {
+            <button
+              type="button"
+              class="rounded-full border px-2.5 py-1 text-theme-xs font-medium transition-colors"
+              [ngClass]="
+                preset() === option.value
+                  ? 'border-brand-500 bg-brand-50 text-brand-600 dark:bg-brand-500/10 dark:text-brand-400'
+                  : 'border-gray-200 text-gray-500 hover:bg-gray-50 dark:border-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03]'
+              "
+              (click)="selectPreset(option.value)"
+            >
+              {{ option.label }}
+            </button>
+          }
+        </div>
       </div>
 
       <div class="flex items-center gap-6">
-        <div class="text-left sm:text-right">
-          <p class="text-sm text-gray-500 dark:text-gray-400">Total reçu sur la période</p>
-          @if (isLoading()) {
-            <app-skeleton className="mt-1 h-6 w-28" />
-          } @else {
-            <p class="mt-1 text-xl font-semibold text-gray-800 dark:text-white/90">{{ totalReceived() }}</p>
-          }
-        </div>
+        <a routerLink="/app/reports" class="text-xs font-medium text-brand-500 hover:underline">Voir les rapports →</a>
         <app-button (btnClick)="showNewPaymentModal.set(true)">💵 Recevoir un paiement</app-button>
+      </div>
+    </div>
+
+    <!-- Onglets Entrées / Sorties, chacun avec son total sur la période -->
+    <div class="mb-5 grid grid-cols-2 gap-2 rounded-xl bg-gray-100 p-1 dark:bg-white/[0.03] sm:max-w-md">
+      @for (option of [{ value: 'in', label: 'Entrées' }, { value: 'out', label: 'Sorties' }]; track option.value) {
+        <button
+          type="button"
+          class="rounded-lg px-3 py-2 text-left transition-colors"
+          [ngClass]="
+            tab() === option.value
+              ? 'bg-white shadow-theme-xs dark:bg-gray-800'
+              : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
+          "
+          (click)="setTab($any(option.value))"
+        >
+          <span class="block text-xs font-medium text-gray-500 dark:text-gray-400">{{ option.label }}</span>
+          @if (isLoading()) {
+            <app-skeleton className="mt-1 h-5 w-24" />
+          } @else {
+            <span class="block text-base font-semibold text-gray-800 dark:text-white/90">
+              {{ option.value === 'in' ? totalIn() : totalOut() }}
+            </span>
+          }
+        </button>
+      }
+    </div>
+    <div class="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <p class="text-xs text-gray-500 dark:text-gray-400">
+        @if (tab() === 'in') {
+          Paiements reçus et dépôts confiés par vos clients.
+        } @else {
+          Retraits de vos clients et règlements à vos fournisseurs.
+        }
+      </p>
+      <div class="flex flex-wrap gap-1.5">
+        @for (option of methodFilters; track option.value) {
+          <button
+            type="button"
+            class="rounded-full border px-2.5 py-1 text-theme-xs font-medium transition-colors"
+            [ngClass]="
+              methodFilter() === option.value
+                ? 'border-brand-500 bg-brand-50 text-brand-600 dark:bg-brand-500/10 dark:text-brand-400'
+                : 'border-gray-200 text-gray-500 hover:bg-gray-50 dark:border-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03]'
+            "
+            (click)="setMethodFilter(option.value)"
+          >
+            {{ option.label }}
+          </button>
+        }
       </div>
     </div>
 
@@ -37,27 +96,88 @@
           </div>
         }
       </div>
-    } @else if (payments().length === 0) {
+    } @else if (rows().length === 0) {
       <p class="py-8 text-center text-sm text-gray-500 dark:text-gray-400">
-        Aucun paiement sur cette période.
+        {{ tab() === 'in' ? 'Aucune entrée sur cette période.' : 'Aucune sortie sur cette période.' }}
       </p>
     } @else {
-      <div class="max-w-full overflow-x-auto">
-        <table class="min-w-[720px] text-left sm:w-full">
+      <!-- Mobile : cartes -->
+      <div class="space-y-3 sm:hidden">
+        @for (row of pagedRows(); track row.id) {
+          <div class="rounded-xl border border-gray-200 p-4 dark:border-gray-800" [ngClass]="{ 'opacity-60': row.cancelled }">
+            <div class="flex items-start justify-between gap-3">
+              <div class="min-w-0">
+                <a [routerLink]="row.partyLink" class="block truncate text-sm font-semibold text-gray-800 dark:text-white/90">
+                  {{ row.partyName }}
+                </a>
+                <p class="text-xs text-gray-500 dark:text-gray-400">
+                  {{ row.createdAt | date: 'dd/MM/yyyy' }} · {{ paymentMethodLabel(row.paymentMethod) }}
+                </p>
+              </div>
+              <div class="shrink-0 text-right">
+                <span
+                  class="block text-sm font-semibold text-gray-800 dark:text-white/90"
+                  [ngClass]="{ 'line-through': row.cancelled }"
+                >
+                  {{ formatAmount(row.amount) }}
+                </span>
+                <app-badge [color]="row.cancelled ? 'light' : row.typeBadge" size="sm">{{ row.typeLabel }}</app-badge>
+              </div>
+            </div>
+
+            <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">
+              <span [ngClass]="{ 'line-through': row.cancelled }">{{ row.label }}</span>
+              @if (row.paidBy) {
+                · payé par {{ row.paidBy }}
+              }
+            </p>
+            @if (row.cancelled) {
+              <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                <span class="font-medium text-gray-600 dark:text-gray-300">Annulée</span> : {{ row.cancelReason }}
+              </p>
+            }
+
+            @if (canAct(row)) {
+              <div class="mt-3 flex gap-2 border-t border-gray-100 pt-3 dark:border-gray-800">
+                @if (row.receiptLink) {
+                  <a
+                    [href]="row.receiptLink"
+                    target="_blank"
+                    rel="noopener"
+                    class="flex-1 rounded-lg bg-success-50 py-2 text-center text-xs font-medium text-success-700 dark:bg-success-500/10 dark:text-success-500"
+                  >
+                    Reçu WhatsApp
+                  </a>
+                }
+                <button
+                  type="button"
+                  class="flex-1 rounded-lg bg-gray-100 py-2 text-xs font-medium text-gray-700 dark:bg-white/5 dark:text-gray-300"
+                  (click)="openEdit(row)"
+                >
+                  Modifier
+                </button>
+                <button
+                  type="button"
+                  class="flex-1 rounded-lg bg-gray-100 py-2 text-xs font-medium text-gray-700 dark:bg-white/5 dark:text-gray-300"
+                  (click)="openCancel(row)"
+                >
+                  Annuler
+                </button>
+              </div>
+            }
+          </div>
+        }
+      </div>
+
+      <div class="hidden max-w-full overflow-x-auto sm:block">
+        <table class="min-w-[760px] text-left sm:w-full">
           <thead class="border-y border-gray-100 dark:border-gray-800">
             <tr>
-              <th class="py-3 whitespace-nowrap font-medium text-gray-500 text-theme-xs dark:text-gray-400">
-                Client
-              </th>
-              <th class="py-3 whitespace-nowrap font-medium text-gray-500 text-theme-xs dark:text-gray-400">
-                Libellé
-              </th>
-              <th class="py-3 whitespace-nowrap font-medium text-gray-500 text-theme-xs dark:text-gray-400">
-                Mode
-              </th>
-              <th class="py-3 whitespace-nowrap font-medium text-gray-500 text-theme-xs dark:text-gray-400">
-                Date
-              </th>
+              <th class="py-3 whitespace-nowrap font-medium text-gray-500 text-theme-xs dark:text-gray-400">Nom</th>
+              <th class="py-3 whitespace-nowrap font-medium text-gray-500 text-theme-xs dark:text-gray-400">Type</th>
+              <th class="py-3 whitespace-nowrap font-medium text-gray-500 text-theme-xs dark:text-gray-400">Libellé</th>
+              <th class="py-3 whitespace-nowrap font-medium text-gray-500 text-theme-xs dark:text-gray-400">Mode</th>
+              <th class="py-3 whitespace-nowrap font-medium text-gray-500 text-theme-xs dark:text-gray-400">Date</th>
               <th class="py-3 whitespace-nowrap text-right font-medium text-gray-500 text-theme-xs dark:text-gray-400">
                 Montant
               </th>
@@ -67,56 +187,72 @@
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
-            @for (payment of pagedPayments(); track payment.id) {
-              <tr>
-                <td class="py-3 whitespace-nowrap font-medium text-gray-800 text-theme-sm dark:text-white/90">
-                  {{ payment.customerName }}
+            @for (row of pagedRows(); track row.id) {
+              <tr [ngClass]="{ 'opacity-60': row.cancelled }">
+                <td class="py-3 whitespace-nowrap font-medium text-theme-sm">
+                  <a [routerLink]="row.partyLink" class="text-gray-800 hover:underline dark:text-white/90">
+                    {{ row.partyName }}
+                  </a>
+                </td>
+                <td class="py-3 whitespace-nowrap">
+                  <app-badge [color]="row.cancelled ? 'light' : row.typeBadge" size="sm">{{ row.typeLabel }}</app-badge>
                 </td>
                 <td class="max-w-[220px] py-3 break-words whitespace-normal text-gray-500 text-theme-sm dark:text-gray-400">
-                  {{ payment.label }}
+                  <span [ngClass]="{ 'line-through': row.cancelled }">{{ row.label }}</span>
+                  @if (row.paidBy) {
+                    <span class="block text-theme-xs">Payé par {{ row.paidBy }}</span>
+                  }
+                  @if (row.cancelled) {
+                    <span class="block text-theme-xs">
+                      <span class="font-medium text-gray-600 dark:text-gray-300">Annulée</span> : {{ row.cancelReason }}
+                    </span>
+                  }
                 </td>
                 <td class="py-3 whitespace-nowrap text-gray-500 text-theme-sm dark:text-gray-400">
-                  {{ paymentMethodLabel(payment.paymentMethod) }}
+                  {{ paymentMethodLabel(row.paymentMethod) }}
                 </td>
                 <td class="py-3 whitespace-nowrap text-gray-500 text-theme-sm dark:text-gray-400">
-                  {{ payment.createdAt | date: 'dd/MM/yyyy' }}
+                  {{ row.createdAt | date: 'dd/MM/yyyy' }}
                 </td>
                 <td
-                  class="py-3 whitespace-nowrap text-right text-theme-sm font-semibold text-success-600 dark:text-success-500"
+                  class="py-3 whitespace-nowrap text-right text-theme-sm font-semibold text-gray-800 dark:text-white/90"
+                  [ngClass]="{ 'line-through': row.cancelled }"
                 >
-                  {{ formatAmount(payment.amount) }}
+                  {{ formatAmount(row.amount) }}
                 </td>
                 <td class="py-3 whitespace-nowrap text-right">
-                  <div class="flex items-center justify-end gap-2">
-                    <button
-                      type="button"
-                      class="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-white/5 dark:hover:text-gray-300"
-                      aria-label="Modifier"
-                      (click)="openEdit(payment)"
-                    >
-                      <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          d="m16.5 3.5 4 4L9 19H5v-4L16.5 3.5Z"
-                        ></path>
-                      </svg>
-                    </button>
-                    <button
-                      type="button"
-                      class="rounded-lg p-1.5 text-gray-400 hover:bg-error-50 hover:text-error-600 dark:hover:bg-error-500/10 dark:hover:text-error-500"
-                      aria-label="Supprimer"
-                      (click)="openDeleteConfirm(payment)"
-                    >
-                      <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          d="M4 7h16M9.5 7V5a1.5 1.5 0 0 1 1.5-1.5h2A1.5 1.5 0 0 1 14.5 5v2M18 7l-.7 12.1a2 2 0 0 1-2 1.9H8.7a2 2 0 0 1-2-1.9L6 7"
-                        ></path>
-                      </svg>
-                    </button>
-                  </div>
+                  @if (canAct(row)) {
+                    <div class="flex items-center justify-end gap-1">
+                      @if (row.receiptLink) {
+                        <a
+                          [href]="row.receiptLink"
+                          target="_blank"
+                          rel="noopener"
+                          class="rounded-lg px-2 py-1 text-xs font-medium text-success-600 hover:bg-success-50 dark:text-success-500 dark:hover:bg-success-500/10"
+                          title="Envoyer le reçu par WhatsApp"
+                        >
+                          Reçu WhatsApp
+                        </a>
+                      }
+                      <button
+                        type="button"
+                        class="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-white/5 dark:hover:text-gray-300"
+                        aria-label="Modifier"
+                        (click)="openEdit(row)"
+                      >
+                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="m16.5 3.5 4 4L9 19H5v-4L16.5 3.5Z"></path>
+                        </svg>
+                      </button>
+                      <button
+                        type="button"
+                        class="rounded-lg px-2 py-1 text-xs font-medium text-gray-500 hover:bg-error-50 hover:text-error-600 dark:text-gray-400 dark:hover:bg-error-500/10 dark:hover:text-error-500"
+                        (click)="openCancel(row)"
+                      >
+                        Annuler
+                      </button>
+                    </div>
+                  }
                 </td>
               </tr>
             }
@@ -128,7 +264,7 @@
         class="mt-4 block"
         [page]="page()"
         [pageSize]="pageSize"
-        [totalItems]="payments().length"
+        [totalItems]="rows().length"
         (pageChange)="onPageChange($event)"
       />
     }
@@ -137,23 +273,31 @@
   <app-new-payment-modal [isOpen]="showNewPaymentModal()" (close)="showNewPaymentModal.set(false)" />
 
   <app-edit-payment-modal
-    [isOpen]="showEditModal()"
+    [isOpen]="editingPayment() !== null"
     [payment]="editingPayment()"
-    [customerName]="editingPayment()?.customerName ?? ''"
-    (close)="showEditModal.set(false)"
+    [customerName]="editingPartyName()"
+    (close)="editingPayment.set(null)"
+  />
+  <app-customer-operation-modal
+    [isOpen]="editingMoneyOperation() !== null"
+    [operation]="editingMoneyOperation()"
+    [customerName]="editingPartyName()"
+    (close)="editingMoneyOperation.set(null)"
+  />
+  <app-supplier-operation-modal
+    [isOpen]="editingSupplierOperation() !== null"
+    [operation]="editingSupplierOperation()"
+    [supplierId]="editingSupplierOperation()?.supplierId ?? ''"
+    [supplierName]="editingPartyName()"
+    (close)="editingSupplierOperation.set(null)"
   />
 
-  <app-confirm-dialog
-    [isOpen]="showDeleteConfirm()"
-    title="Supprimer ce paiement ?"
-    [message]="
-      'Le paiement' +
-      (deletingPayment() ? ' de ' + deletingPayment()!.customerName : '') +
-      ' sera définitivement supprimé. Cette action est irréversible.'
-    "
-    confirmLabel="Supprimer"
-    [busy]="deleting()"
-    (cancel)="cancelDelete()"
-    (confirm)="confirmDelete()"
+  <app-cancel-operation-dialog
+    [isOpen]="cancellingRow() !== null"
+    [summary]="cancelSummary()"
+    [busy]="cancelling()"
+    [errorMessage]="cancelError()"
+    (cancel)="closeCancel()"
+    (confirm)="confirmCancel($event)"
   />
 </div>

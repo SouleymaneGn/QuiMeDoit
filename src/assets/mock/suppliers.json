@@ -1,0 +1,7 @@
+[
+  { "id": "sup-001", "name": "Dépôt Sow & Frères", "phone": "+224 622 40 18 77", "createdAt": "2026-03-12T09:15:00.000Z" },
+  { "id": "sup-002", "name": "Grossiste Bah Ciment", "phone": "+224 664 02 55 31", "createdAt": "2026-04-03T11:40:00.000Z" },
+  { "id": "sup-003", "name": "Sotragui Boissons", "phone": "+224 657 89 12 04", "createdAt": "2026-04-21T15:05:00.000Z" },
+  { "id": "sup-004", "name": "Alimentation Condé", "phone": "+224 625 33 70 92", "createdAt": "2026-05-08T08:30:00.000Z" },
+  { "id": "sup-005", "name": "Quincaillerie Camara", "createdAt": "2026-06-14T16:20:00.000Z" }
+]

@@ -6,6 +6,8 @@ export interface Profile {
   businessName: string;
   phone: string;
   currency: string;
+  /** Message de rappel WhatsApp ({prenom}, {montant}, {commerce}) ; vide = message par défaut. */
+  reminderTemplate?: string | null;
   role: UserRole;
 }
 

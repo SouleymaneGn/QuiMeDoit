@@ -2,7 +2,7 @@ import { Injectable, computed, signal } from '@angular/core';
 import { Observable, tap } from 'rxjs';
 import { Transaction, TransactionInput } from '../models/transaction.model';
 import { TransactionRepository } from '../repositories/transaction.repository';
-import { computeBalance } from '../utils/balance.util';
+import { computeBalance, isCancelled } from '../utils/balance.util';
 import { SupabaseService } from './supabase.service';
 
 @Injectable({ providedIn: 'root' })
@@ -13,7 +13,10 @@ export class TransactionService {
   readonly transactions = this.transactionsSignal.asReadonly();
   readonly loaded = this.loadedSignal.asReadonly();
 
-  /** Solde courant par client (somme DEBT − somme PAYMENT). */
+  /** Opérations non annulées : base de toutes les listes et de tous les totaux. */
+  readonly activeTransactions = computed(() => this.transactionsSignal().filter(t => !isCancelled(t)));
+
+  /** Solde courant par client (DEBT + WITHDRAWAL − PAYMENT − DEPOSIT, annulations exclues). */
   readonly balancesByCustomer = computed<Map<string, number>>(() => {
     const byCustomer = new Map<string, Transaction[]>();
     for (const t of this.transactionsSignal()) {
@@ -63,8 +66,21 @@ export class TransactionService {
     return count;
   });
 
+  /** Date (ISO) de la dernière opération non annulée de chaque client. */
+  readonly lastActivityByCustomer = computed<Map<string, string>>(() => {
+    const last = new Map<string, string>();
+    for (const t of this.activeTransactions()) {
+      const current = last.get(t.customerId);
+      // Comparaison en dates : Supabase (+00:00) et le navigateur (Z) n'écrivent pas l'ISO pareil.
+      if (!current || new Date(t.createdAt).getTime() > new Date(current).getTime()) {
+        last.set(t.customerId, t.createdAt);
+      }
+    }
+    return last;
+  });
+
   readonly recentActivity = computed(() => {
-    return [...this.transactionsSignal()].sort(
+    return [...this.activeTransactions()].sort(
       (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
     );
   });
@@ -96,6 +112,13 @@ export class TransactionService {
     return this.balancesByCustomer().get(customerId) ?? 0;
   }
 
+  /** Historique complet d'un client, opérations annulées comprises (affichées barrées). */
+  historyForCustomer(customerId: string): Transaction[] {
+    return this.transactionsSignal()
+      .filter(t => t.customerId === customerId)
+      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  }
+
   transactionsForCustomer(customerId: string): Transaction[] {
     return this.recentActivity().filter(t => t.customerId === customerId);
   }
@@ -112,9 +135,10 @@ export class TransactionService {
     );
   }
 
-  delete(id: string): Observable<void> {
-    return this.repository.delete(id).pipe(
-      tap(() => this.transactionsSignal.update(list => list.filter(t => t.id !== id)))
+  /** Annule (jamais de suppression) : l'opération reste en base avec son motif. */
+  cancel(id: string, reason: string): Observable<Transaction> {
+    return this.repository.cancel(id, reason).pipe(
+      tap(cancelled => this.transactionsSignal.update(list => list.map(t => (t.id === id ? cancelled : t))))
     );
   }
 }

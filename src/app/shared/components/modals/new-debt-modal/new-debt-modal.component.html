@@ -40,10 +40,16 @@
         />
       </div>
 
+      @if (creditLimitWarning()) {
+        <div class="mb-6">
+          <app-alert variant="warning" title="Plafond de crédit dépassé" [message]="creditLimitWarning()" />
+        </div>
+      }
+
       <div class="flex justify-end gap-3">
         <app-button variant="outline" (btnClick)="onClose()">Annuler</app-button>
         <app-button [disabled]="!canSubmit() || submitting()" (btnClick)="submit()">
-          Enregistrer la dette
+          {{ creditLimitWarning() ? 'Enregistrer quand même' : 'Enregistrer la dette' }}
         </app-button>
       </div>
     }

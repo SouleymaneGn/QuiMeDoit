@@ -44,6 +44,7 @@ Je veux seulement :
 
 - Accueil
 - Clients
+- Fournisseurs (réservé aux abonnés : achats à crédit et règlements fournisseurs)
 - Paiements
 - Paramètres
 

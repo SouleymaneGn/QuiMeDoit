@@ -1,7 +1,7 @@
 <div class="min-h-screen xl:flex">
-  <div>
+  <!-- Barre latérale : ordinateur uniquement (sur mobile, navigation en bas) -->
+  <div class="hidden xl:block">
     <app-sidebar></app-sidebar>
-    <app-backdrop></app-backdrop>
   </div>
   <div
       class="flex-1 transition-all duration-300 ease-in-out"
@@ -14,8 +14,10 @@
     <!-- app header start -->
     <app-header/>
     <!-- app header end -->
-    <div class="p-4 mx-auto max-w-(--breakpoint-2xl) md:p-6">
+    <!-- pb-24 : place pour la barre de navigation du bas (mobile) -->
+    <div class="p-4 pb-24 mx-auto max-w-(--breakpoint-2xl) md:p-6 md:pb-24 xl:pb-6">
       <router-outlet></router-outlet>
     </div>
   </div>
+  <app-mobile-bottom-nav />
 </div>

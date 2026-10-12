@@ -36,6 +36,7 @@ export class NewPaymentModalComponent {
   readonly label = signal('Règlement');
   readonly amount = signal<number | ''>('');
   readonly paymentMethod = signal<PaymentMethod>('CASH');
+  readonly paidBy = signal('');
   readonly submitting = signal(false);
 
   readonly paymentMethodOptions = PAYMENT_METHOD_OPTIONS;
@@ -68,6 +69,10 @@ export class NewPaymentModalComponent {
     this.amount.set(value === '' ? '' : Number(value));
   }
 
+  onPaidByChange(value: string | number): void {
+    this.paidBy.set(String(value));
+  }
+
   onPaymentMethodChange(value: string): void {
     this.paymentMethod.set(value as PaymentMethod);
   }
@@ -84,7 +89,8 @@ export class NewPaymentModalComponent {
         type: 'PAYMENT',
         label: this.label().trim(),
         amount: Number(this.amount()),
-        paymentMethod: this.paymentMethod()
+        paymentMethod: this.paymentMethod(),
+        paidBy: this.paidBy().trim() || undefined
       })
       .subscribe(() => {
         this.submitting.set(false);
@@ -103,5 +109,6 @@ export class NewPaymentModalComponent {
     this.label.set('Règlement');
     this.amount.set('');
     this.paymentMethod.set('CASH');
+    this.paidBy.set('');
   }
 }

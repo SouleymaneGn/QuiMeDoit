@@ -40,13 +40,23 @@
         />
       </div>
 
-      <div class="mb-6">
+      <div class="mb-4">
         <app-label for="payment-label">Libellé</app-label>
         <app-input-field
           id="payment-label"
           placeholder="Ex: Règlement"
           [value]="label()"
           (valueChange)="onLabelChange($event)"
+        />
+      </div>
+
+      <div class="mb-6">
+        <app-label for="payment-paid-by">Payé par (facultatif)</app-label>
+        <app-input-field
+          id="payment-paid-by"
+          placeholder="Si ce n’est pas le client lui-même"
+          [value]="paidBy()"
+          (valueChange)="onPaidByChange($event)"
         />
       </div>
 

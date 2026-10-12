@@ -69,9 +69,14 @@ export class JsonTransactionRepository extends TransactionRepository {
     return of(updated);
   }
 
-  delete(id: string): Observable<void> {
+  cancel(id: string, reason: string): Observable<Transaction> {
     const current = this.transactions$.value ?? [];
-    this.transactions$.next(current.filter(t => t.id !== id));
-    return of(undefined);
+    const cancelled = current.find(t => t.id === id);
+    if (!cancelled) {
+      throw new Error(`Transaction ${id} introuvable`);
+    }
+    const updated = { ...cancelled, cancelledAt: new Date().toISOString(), cancelReason: reason.trim() };
+    this.transactions$.next(current.map(t => (t.id === id ? updated : t)));
+    return of(updated);
   }
 }

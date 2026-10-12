@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, Output, computed, signal } from '@angular/core';
 import { DropdownComponent } from '../../../ui/dropdown/dropdown.component';
 import { PHONE_COUNTRIES, PhoneCountry } from './phone-countries';
+import { MISSING_PHONE_WARNING, phoneErrorMessage } from '../../../../../core/utils/phone.util';
 
 function digitsOnly(value: string): string {
   return value.replace(/\D/g, '');
@@ -15,6 +16,10 @@ export class PhoneInputComponent {
   @Input() id?: string;
   @Input() placeholder = '622 12 34 56';
   @Input() disabled = false;
+  /** Affiche « Sans numéro, vous ne pourrez pas envoyer de rappel » quand le champ est vide. */
+  @Input() warnIfEmpty = false;
+  /** Texte d'aide affiché sous le champ quand il n'y a ni erreur ni avertissement. */
+  @Input() hint = '';
 
   @Input()
   set value(val: string | undefined) {
@@ -28,6 +33,14 @@ export class PhoneInputComponent {
   readonly localNumber = signal('');
   readonly dropdownOpen = signal(false);
   readonly search = signal('');
+
+  /** Numéro tel qu'il sera enregistré (indicatif + chiffres). */
+  private readonly composed = computed(() => {
+    const digits = digitsOnly(this.localNumber());
+    return digits ? `${this.selectedCountry().dialCode}${digits}` : '';
+  });
+  readonly errorMessage = computed(() => phoneErrorMessage(this.composed()));
+  readonly emptyWarning = computed(() => (this.warnIfEmpty && !this.composed() ? MISSING_PHONE_WARNING : ''));
 
   readonly filteredCountries = computed(() => {
     const term = this.search().trim().toLowerCase();

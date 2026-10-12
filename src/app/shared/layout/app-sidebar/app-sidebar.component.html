@@ -225,6 +225,14 @@
                     {{ nav.name }}
                     }
                   </span>
+                  @if (nav.pro && !subscriptionService.hasPaidAccess() && ((isExpanded$ | async) || (isHovered$ | async) || (isMobileOpen$ | async))) {
+                  <span
+                    class="ml-auto menu-dropdown-badge-pro"
+                    [ngClass]="isActive(nav.path) ? 'menu-dropdown-badge-pro-active' : 'menu-dropdown-badge-pro-inactive'"
+                  >
+                    pro
+                  </span>
+                  }
                 </a>
                 }
               }

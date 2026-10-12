@@ -81,6 +81,10 @@ export class SupabaseService {
     return await this.supabase.auth.signOut();
   }
 
+  async updatePassword(password: string) {
+    return await this.supabase.auth.updateUser({ password });
+  }
+
   get client(): SupabaseClient {
     return this.supabase;
   }

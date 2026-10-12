@@ -68,3 +68,10 @@
     </ul>
   </app-dropdown>
 </div>
+@if (errorMessage()) {
+  <p class="mt-1.5 text-xs text-error-500">{{ errorMessage() }}</p>
+} @else if (emptyWarning()) {
+  <p class="mt-1.5 text-xs text-warning-600 dark:text-warning-500">{{ emptyWarning() }}</p>
+} @else if (hint) {
+  <p class="mt-1.5 text-xs text-gray-500 dark:text-gray-400">{{ hint }}</p>
+}

@@ -5,6 +5,8 @@ import { LabelComponent } from '../../form/label/label.component';
 import { InputFieldComponent } from '../../form/input/input-field.component';
 import { PhoneInputComponent } from '../../form/group-input/phone-input/phone-input.component';
 import { CustomerService } from '../../../../core/services/customer.service';
+import { isAcceptablePhone } from '../../../../core/utils/phone.util';
+import { toTitleCase } from '../../../../core/utils/text.util';
 import { Customer } from '../../../../core/models/customer.model';
 
 @Component({
@@ -20,10 +22,13 @@ export class EditCustomerModalComponent implements OnChanges {
 
   readonly name = signal('');
   readonly phone = signal('');
+  readonly creditLimit = signal<number | ''>('');
   readonly submitting = signal(false);
   readonly errorMessage = signal('');
 
-  readonly canSubmit = computed(() => !!this.name().trim());
+  readonly canSubmit = computed(
+    () => !!this.name().trim() && Number(this.creditLimit()) >= 0 && isAcceptablePhone(this.phone())
+  );
 
   constructor(private readonly customerService: CustomerService) {}
 
@@ -31,6 +36,7 @@ export class EditCustomerModalComponent implements OnChanges {
     if (changes['isOpen'] && this.isOpen && this.customer) {
       this.name.set(this.customer.name);
       this.phone.set(this.customer.phone ?? '');
+      this.creditLimit.set(this.customer.creditLimit ?? '');
       this.errorMessage.set('');
     }
   }
@@ -43,6 +49,10 @@ export class EditCustomerModalComponent implements OnChanges {
     this.phone.set(String(value));
   }
 
+  onCreditLimitChange(value: string | number): void {
+    this.creditLimit.set(value === '' || value === 0 ? '' : Number(value));
+  }
+
   submit(): void {
     if (!this.canSubmit() || this.submitting() || !this.customer) {
       return;
@@ -51,8 +61,9 @@ export class EditCustomerModalComponent implements OnChanges {
     this.errorMessage.set('');
     this.customerService
       .update(this.customer.id, {
-        name: this.name().trim(),
-        phone: this.phone().trim()
+        name: toTitleCase(this.name()),
+        phone: this.phone().trim(),
+        creditLimit: Number(this.creditLimit()) > 0 ? Number(this.creditLimit()) : null
       })
       .subscribe({
         next: updated => {

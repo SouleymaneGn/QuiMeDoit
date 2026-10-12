@@ -28,6 +28,7 @@ export class EditPaymentModalComponent implements OnChanges {
   readonly label = signal('');
   readonly amount = signal<number | ''>('');
   readonly paymentMethod = signal<PaymentMethod>('CASH');
+  readonly paidBy = signal('');
   readonly submitting = signal(false);
   readonly errorMessage = signal('');
 
@@ -42,6 +43,7 @@ export class EditPaymentModalComponent implements OnChanges {
       this.label.set(this.payment.label);
       this.amount.set(this.payment.amount);
       this.paymentMethod.set(this.payment.paymentMethod);
+      this.paidBy.set(this.payment.paidBy ?? '');
       this.errorMessage.set('');
     }
   }
@@ -52,6 +54,10 @@ export class EditPaymentModalComponent implements OnChanges {
 
   onAmountChange(value: string | number): void {
     this.amount.set(value === '' ? '' : Number(value));
+  }
+
+  onPaidByChange(value: string | number): void {
+    this.paidBy.set(String(value));
   }
 
   onPaymentMethodChange(value: string): void {
@@ -68,7 +74,9 @@ export class EditPaymentModalComponent implements OnChanges {
       .update(this.payment.id, {
         label: this.label().trim(),
         amount: Number(this.amount()),
-        paymentMethod: this.paymentMethod()
+        paymentMethod: this.paymentMethod(),
+        // Envoyé seulement s'il change, comme à la création.
+        ...(this.paidBy().trim() !== (this.payment.paidBy ?? '') ? { paidBy: this.paidBy().trim() || null } : {})
       })
       .subscribe({
         next: updated => {

@@ -10,6 +10,7 @@ interface ProfileRow {
   business_name: string;
   phone: string;
   currency: string;
+  reminder_template: string | null;
   role: UserRole;
 }
 
@@ -20,6 +21,7 @@ function toProfile(row: ProfileRow): Profile {
     businessName: row.business_name,
     phone: row.phone,
     currency: row.currency,
+    reminderTemplate: row.reminder_template ?? null,
     role: row.role
   };
 }
@@ -63,6 +65,7 @@ export class SupabaseProfileRepository extends ProfileRepository {
     if (patch.businessName !== undefined) row['business_name'] = patch.businessName;
     if (patch.phone !== undefined) row['phone'] = patch.phone;
     if (patch.currency !== undefined) row['currency'] = patch.currency;
+    if (patch.reminderTemplate !== undefined) row['reminder_template'] = patch.reminderTemplate;
 
     return from(
       this.supabaseService.getUser().then(async ({ data: userData }) => {

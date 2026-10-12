@@ -2,7 +2,7 @@ import { Injectable, computed, signal } from '@angular/core';
 import { Observable, firstValueFrom } from 'rxjs';
 import { CheckoutSession, Subscription } from '../models/subscription.model';
 import { CheckoutSessionInput, SubscriptionRepository } from '../repositories/subscription.repository';
-import { hasAppAccess } from '../utils/subscription.util';
+import { hasAppAccess, hasPaidAccess } from '../utils/subscription.util';
 import { CustomerService } from './customer.service';
 import { ProfileService } from './profile.service';
 import { SupabaseService } from './supabase.service';
@@ -22,6 +22,11 @@ export class SubscriptionService {
       this.customerService.customers().length,
       this.profileService.profile()?.role
     )
+  );
+
+  /** Vrai si ADMIN/EMPLOYEE ou abonnement actif non expiré — le quota gratuit ne suffit pas. */
+  readonly hasPaidAccess = computed(() =>
+    hasPaidAccess(this.subscriptionSignal(), this.profileService.profile()?.role)
   );
 
   constructor(

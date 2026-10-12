@@ -32,24 +32,51 @@
           <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ customer()!.phone || 'Téléphone non renseigné' }}</p>
         </div>
         <div class="text-left sm:text-right">
-          <p class="text-sm text-gray-500 dark:text-gray-400">Dette actuelle</p>
-          <p
-            class="mt-1 text-2xl font-semibold"
-            [ngClass]="
-              balance() > 0 ? 'text-error-600 dark:text-error-500' : 'text-gray-800 dark:text-white/90'
-            "
-          >
-            {{ formatAmount(balance()) }}
-          </p>
+          <p class="text-sm font-medium" [ngClass]="balanceDisplay().textClass">{{ balanceDisplay().label }}</p>
+          @if (balanceDisplay().tone !== 'settled') {
+            <p class="mt-1 text-2xl font-semibold" [ngClass]="balanceDisplay().textClass">
+              {{ formatAmount(balanceDisplay().amount) }}
+            </p>
+          }
+          @if (creditLimit() !== null) {
+            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+              Plafond : {{ formatAmount(creditLimit()!) }}
+              @if (!overCreditLimit()) {
+                · Disponible : {{ formatAmount(availableCredit()) }}
+              }
+            </p>
+          }
         </div>
       </div>
+
+      @if (overCreditLimit()) {
+        <div class="mt-5">
+          <app-alert variant="warning" title="Plafond de crédit dépassé" [message]="overCreditLimitMessage()" />
+        </div>
+      }
 
       <div class="mt-5 flex flex-col gap-3 sm:flex-row">
         <app-button (btnClick)="showNewDebtModal.set(true)">+ Nouvelle dette</app-button>
         <app-button variant="outline" (btnClick)="showNewPaymentModal.set(true)">💵 Paiement</app-button>
-        <app-button variant="outline" [disabled]="history().length === 0" (btnClick)="showStatementModal.set(true)">
+        <app-button variant="outline" [disabled]="!hasActiveOperations()" (btnClick)="showStatementModal.set(true)">
           📄 Relevé
         </app-button>
+      </div>
+      <div class="mt-3 flex flex-wrap gap-x-4 gap-y-2 text-sm">
+        <button
+          type="button"
+          class="font-medium text-brand-500 hover:underline"
+          (click)="openMoneyOperation('DEPOSIT')"
+        >
+          Enregistrer un dépôt
+        </button>
+        <button
+          type="button"
+          class="font-medium text-brand-500 hover:underline"
+          (click)="openMoneyOperation('WITHDRAWAL')"
+        >
+          Enregistrer un retrait
+        </button>
       </div>
     </div>
 
@@ -61,49 +88,57 @@
       } @else {
         <div class="divide-y divide-gray-100 dark:divide-gray-800">
           @for (item of history(); track item.id) {
-            <div class="flex items-center justify-between py-3">
-              <div>
-                <p class="text-sm font-medium text-gray-800 dark:text-white/90">{{ item.label }}</p>
-                <p class="text-xs text-gray-500 dark:text-gray-400">{{ item.createdAt | date: 'dd/MM/yyyy' }}</p>
+            @let cancelled = isCancelled(item);
+            <div class="flex flex-col gap-2 py-3 sm:flex-row sm:items-center sm:justify-between sm:gap-3" [ngClass]="{ 'opacity-60': cancelled }">
+              <div class="min-w-0">
+                <p
+                  class="truncate text-sm font-medium text-gray-800 dark:text-white/90"
+                  [ngClass]="{ 'line-through': cancelled }"
+                >
+                  {{ item.label }}
+                </p>
+                <p class="text-xs text-gray-500 dark:text-gray-400">
+                  {{ item.createdAt | date: 'dd/MM/yyyy' }}
+                  @if (item.paidBy) {
+                    · payé par {{ item.paidBy }}
+                  }
+                  @if (cancelled) {
+                    · <span class="font-medium text-gray-600 dark:text-gray-300">Annulée</span> : {{ item.cancelReason }}
+                  }
+                </p>
               </div>
-              <div class="flex items-center gap-3">
-                <app-badge [color]="item.type === 'DEBT' ? 'error' : 'success'" size="sm">
-                  {{ item.type === 'DEBT' ? 'Dette' : 'Paiement' }}
+              <div class="flex shrink-0 items-center justify-between gap-3 sm:justify-end">
+                <app-badge [color]="cancelled ? 'light' : typeBadge(item.type)" size="sm">
+                  {{ typeLabel(item.type) }}
                 </app-badge>
-                <span class="text-sm font-semibold text-gray-800 dark:text-white/90">
+                <span
+                  class="text-sm font-semibold text-gray-800 dark:text-white/90"
+                  [ngClass]="{ 'line-through': cancelled }"
+                >
                   {{ formatAmount(item.amount) }}
                 </span>
-                @if (item.type === 'DEBT') {
+                @if (!cancelled) {
                   <div class="flex items-center gap-1">
                     <button
                       type="button"
                       class="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-white/5 dark:hover:text-gray-300"
                       aria-label="Modifier"
-                      (click)="openEditDebt(item)"
+                      (click)="openEdit(item)"
                     >
                       <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          d="m16.5 3.5 4 4L9 19H5v-4L16.5 3.5Z"
-                        ></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m16.5 3.5 4 4L9 19H5v-4L16.5 3.5Z"></path>
                       </svg>
                     </button>
                     <button
                       type="button"
-                      class="rounded-lg p-1.5 text-gray-400 hover:bg-error-50 hover:text-error-600 dark:hover:bg-error-500/10 dark:hover:text-error-500"
-                      aria-label="Supprimer"
-                      (click)="openDeleteConfirm(item)"
+                      class="rounded-lg px-2 py-1 text-xs font-medium text-gray-500 hover:bg-error-50 hover:text-error-600 dark:text-gray-400 dark:hover:bg-error-500/10 dark:hover:text-error-500"
+                      (click)="openCancel(item)"
                     >
-                      <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          d="M4 7h16M9.5 7V5a1.5 1.5 0 0 1 1.5-1.5h2A1.5 1.5 0 0 1 14.5 5v2M18 7l-.7 12.1a2 2 0 0 1-2 1.9H8.7a2 2 0 0 1-2-1.9L6 7"
-                        ></path>
-                      </svg>
+                      Annuler
                     </button>
                   </div>
+                } @else {
+                  <span class="w-[92px]" aria-hidden="true"></span>
                 }
               </div>
             </div>
@@ -124,6 +159,14 @@
       [presetCustomerName]="customer()!.name"
       (close)="showNewPaymentModal.set(false)"
     />
+    <app-customer-operation-modal
+      [isOpen]="showMoneyOperationModal()"
+      [type]="moneyOperationType()"
+      [operation]="editingMoneyOperation()"
+      [customerId]="customerId()"
+      [customerName]="customer()!.name"
+      (close)="closeMoneyOperationModal()"
+    />
     <app-edit-customer-modal
       [isOpen]="showEditModal()"
       [customer]="customer()!"
@@ -135,19 +178,24 @@
       [customerName]="customer()!.name"
       (close)="showEditDebtModal.set(false)"
     />
+    <app-edit-payment-modal
+      [isOpen]="showEditPaymentModal()"
+      [payment]="editingPayment()"
+      [customerName]="customer()!.name"
+      (close)="showEditPaymentModal.set(false)"
+    />
     <app-statement-preview-modal
       [isOpen]="showStatementModal()"
       [customerId]="customerId()"
       (close)="showStatementModal.set(false)"
     />
-    <app-confirm-dialog
-      [isOpen]="showDeleteConfirm()"
-      title="Supprimer cette dette ?"
-      message="Cette dette sera définitivement supprimée. Cette action est irréversible."
-      confirmLabel="Supprimer"
-      [busy]="deleting()"
-      (cancel)="cancelDelete()"
-      (confirm)="confirmDelete()"
+    <app-cancel-operation-dialog
+      [isOpen]="cancellingOperation() !== null"
+      [summary]="cancelSummary()"
+      [busy]="cancelling()"
+      [errorMessage]="cancelError()"
+      (cancel)="closeCancel()"
+      (confirm)="confirmCancel($event)"
     />
   }
 </div>
