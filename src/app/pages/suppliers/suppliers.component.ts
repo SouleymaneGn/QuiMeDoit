@@ -1,7 +1,6 @@
 import { NgClass } from '@angular/common';
 import { Component, computed, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-import { PageBreadcrumbComponent } from '../../shared/components/common/page-breadcrumb/page-breadcrumb.component';
 import { AlertComponent } from '../../shared/components/ui/alert/alert.component';
 import { ButtonComponent } from '../../shared/components/ui/button/button.component';
 import { InputFieldComponent } from '../../shared/components/form/input/input-field.component';
@@ -30,7 +29,6 @@ type BalanceFilter = 'all' | 'to-pay';
   imports: [
     NgClass,
     RouterLink,
-    PageBreadcrumbComponent,
     AlertComponent,
     ButtonComponent,
     InputFieldComponent,

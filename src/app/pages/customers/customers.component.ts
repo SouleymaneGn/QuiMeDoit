@@ -1,7 +1,6 @@
 import { LowerCasePipe, NgClass } from '@angular/common';
 import { Component, computed, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { PageBreadcrumbComponent } from '../../shared/components/common/page-breadcrumb/page-breadcrumb.component';
 import { ButtonComponent } from '../../shared/components/ui/button/button.component';
 import { InputFieldComponent } from '../../shared/components/form/input/input-field.component';
 import { NewCustomerModalComponent } from '../../shared/components/modals/new-customer-modal/new-customer-modal.component';
@@ -43,7 +42,6 @@ function sinceLabel(days: number | null): string {
   imports: [
     NgClass,
     LowerCasePipe,
-    PageBreadcrumbComponent,
     ButtonComponent,
     BadgeComponent,
     InputFieldComponent,

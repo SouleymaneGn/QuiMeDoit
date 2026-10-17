@@ -62,9 +62,9 @@
     <div class="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
       <p class="text-xs text-gray-500 dark:text-gray-400">
         @if (tab() === 'in') {
-          Paiements reçus et dépôts confiés par vos clients.
+          Paiements reçus de vos clients.
         } @else {
-          Retraits de vos clients et règlements à vos fournisseurs.
+          Règlements à vos fournisseurs.
         }
       </p>
       <div class="flex flex-wrap gap-1.5">
@@ -277,12 +277,6 @@
     [payment]="editingPayment()"
     [customerName]="editingPartyName()"
     (close)="editingPayment.set(null)"
-  />
-  <app-customer-operation-modal
-    [isOpen]="editingMoneyOperation() !== null"
-    [operation]="editingMoneyOperation()"
-    [customerName]="editingPartyName()"
-    (close)="editingMoneyOperation.set(null)"
   />
   <app-supplier-operation-modal
     [isOpen]="editingSupplierOperation() !== null"

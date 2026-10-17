@@ -1,0 +1,22 @@
+<div>
+  <app-page-breadcrumb pageTitle="Dettes" />
+
+  <nav class="mb-5 grid grid-cols-2 gap-1 rounded-xl bg-gray-100 p-1 dark:bg-white/[0.03] sm:max-w-md" aria-label="Dettes">
+    @for (tab of tabs; track tab.path) {
+      <a
+        [routerLink]="tab.path"
+        routerLinkActive="bg-white shadow-theme-xs dark:bg-gray-800 [&_.tab-label]:text-gray-800 dark:[&_.tab-label]:text-white/90"
+        class="rounded-lg px-3 py-2 text-left transition-colors hover:bg-white/60 dark:hover:bg-white/5"
+      >
+        <span class="tab-label flex items-center gap-2 text-sm font-medium text-gray-500 dark:text-gray-400">
+          {{ tab.label }}
+          @if (tab.pro && !subscriptionService.hasPaidAccess()) {
+            <span class="rounded-full bg-brand-50 px-2 py-0.5 text-theme-xs font-medium text-brand-600 dark:bg-brand-500/15 dark:text-brand-400">pro</span>
+          }
+        </span>
+      </a>
+    }
+  </nav>
+
+  <router-outlet />
+</div>

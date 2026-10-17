@@ -16,7 +16,7 @@ export class TransactionService {
   /** Opérations non annulées : base de toutes les listes et de tous les totaux. */
   readonly activeTransactions = computed(() => this.transactionsSignal().filter(t => !isCancelled(t)));
 
-  /** Solde courant par client (DEBT + WITHDRAWAL − PAYMENT − DEPOSIT, annulations exclues). */
+  /** Solde courant par client (DEBT − PAYMENT, annulations exclues). */
   readonly balancesByCustomer = computed<Map<string, number>>(() => {
     const byCustomer = new Map<string, Transaction[]>();
     for (const t of this.transactionsSignal()) {

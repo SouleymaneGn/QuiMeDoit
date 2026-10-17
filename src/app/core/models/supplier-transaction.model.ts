@@ -11,6 +11,8 @@ export interface SupplierTransaction {
   amount: number;
   paymentMethod: PaymentMethod;
   createdAt: string;
+  /** Photo justificative d'un achat (facture, bon) : chemin dans le stockage. */
+  photoPath?: string | null;
   cancelledAt?: string | null;
   cancelReason?: string | null;
 }

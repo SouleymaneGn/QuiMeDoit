@@ -11,6 +11,7 @@ import { ParametresComponent } from './pages/parametres/parametres.component';
 import { PaymentsComponent } from './pages/payments/payments.component';
 import { SuppliersComponent } from './pages/suppliers/suppliers.component';
 import { SupplierDetailComponent } from './pages/supplier-detail/supplier-detail.component';
+import { DebtsComponent } from './pages/debts/debts.component';
 import { ReportsComponent } from './pages/reports/reports.component';
 import { ProfileComponent } from './pages/profile/profile.component';
 import { AbonnementComponent } from './pages/abonnement/abonnement.component';
@@ -39,22 +40,28 @@ export const routes: Routes = [
         canActivate: [subscriptionGuard],
       },
       {
-        path:'customers',
-        component:CustomersComponent,
-        title:'Clients | QuiMeDoit',
+        // Page « Dettes » : onglets Clients / Fournisseurs, adresses inchangées.
+        path: '',
+        component: DebtsComponent,
         canActivate: [subscriptionGuard],
+        children: [
+          {
+            path:'customers',
+            component:CustomersComponent,
+            title:'Dettes clients | QuiMeDoit',
+          },
+          {
+            // Réservé aux abonnés : la page gère elle-même le mode présentation / lecture seule.
+            path:'suppliers',
+            component:SuppliersComponent,
+            title:'Dettes fournisseurs | QuiMeDoit',
+          },
+        ]
       },
       {
         path:'customers/:id',
         component:CustomerDetailComponent,
         title:'Fiche client | QuiMeDoit',
-        canActivate: [subscriptionGuard],
-      },
-      {
-        // Réservé aux abonnés : la page gère elle-même le mode présentation / lecture seule.
-        path:'suppliers',
-        component:SuppliersComponent,
-        title:'Fournisseurs | QuiMeDoit',
         canActivate: [subscriptionGuard],
       },
       {

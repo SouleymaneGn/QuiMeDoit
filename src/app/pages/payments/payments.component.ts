@@ -8,7 +8,6 @@ import { BadgeComponent } from '../../shared/components/ui/badge/badge.component
 import { DatePickerComponent } from '../../shared/components/form/date-picker/date-picker.component';
 import { NewPaymentModalComponent } from '../../shared/components/modals/new-payment-modal/new-payment-modal.component';
 import { EditPaymentModalComponent } from '../../shared/components/modals/edit-payment-modal/edit-payment-modal.component';
-import { CustomerOperationModalComponent } from '../../shared/components/modals/customer-operation-modal/customer-operation-modal.component';
 import { SupplierOperationModalComponent } from '../../shared/components/modals/supplier-operation-modal/supplier-operation-modal.component';
 import { CancelOperationDialogComponent } from '../../shared/components/modals/cancel-operation-dialog/cancel-operation-dialog.component';
 import { PaginationComponent } from '../../shared/components/ui/pagination/pagination.component';
@@ -91,8 +90,8 @@ interface DatePickerChangeEvent {
 }
 
 /**
- * Entrées : paiements et dépôts des clients.
- * Sorties : retraits des clients et règlements aux fournisseurs.
+ * Entrées : paiements des clients.
+ * Sorties : règlements aux fournisseurs.
  * Les opérations annulées restent listées (barrées) mais ne comptent pas dans les totaux.
  */
 @Component({
@@ -107,7 +106,6 @@ interface DatePickerChangeEvent {
     DatePickerComponent,
     NewPaymentModalComponent,
     EditPaymentModalComponent,
-    CustomerOperationModalComponent,
     SupplierOperationModalComponent,
     CancelOperationDialogComponent,
     PaginationComponent,
@@ -154,7 +152,7 @@ export class PaymentsComponent {
   private readonly customerRows = computed<MoneyRow[]>(() =>
     this.transactionService
       .transactions()
-      .filter(t => t.type !== 'DEBT' && this.matches(t.createdAt, t.paymentMethod))
+      .filter(t => t.type === 'PAYMENT' && this.matches(t.createdAt, t.paymentMethod))
       .map(t => {
         const customer = this.customerService.getById(t.customerId);
         const cancelled = isCancelled(t);
@@ -172,7 +170,7 @@ export class PaymentsComponent {
           cancelled,
           cancelReason: t.cancelReason ?? null,
           receiptLink:
-            !cancelled && (t.type === 'PAYMENT' || t.type === 'DEPOSIT') && phoneStatus(customer?.phone) === 'valid'
+            !cancelled && phoneStatus(customer?.phone) === 'valid'
               ? this.receiptLink(t, customer!.name, customer!.phone!)
               : null,
           customerOperation: t
@@ -202,17 +200,8 @@ export class PaymentsComponent {
       }))
   );
 
-  private readonly incoming = computed(() =>
-    this.customerRows().filter(r => r.customerOperation!.type === 'PAYMENT' || r.customerOperation!.type === 'DEPOSIT')
-  );
-
-  private readonly outgoing = computed(() => [
-    ...this.customerRows().filter(r => r.customerOperation!.type === 'WITHDRAWAL'),
-    ...this.supplierRows()
-  ]);
-
   readonly rows = computed(() =>
-    [...(this.tab() === 'in' ? this.incoming() : this.outgoing())].sort(
+    [...(this.tab() === 'in' ? this.customerRows() : this.supplierRows())].sort(
       (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
     )
   );
@@ -221,8 +210,8 @@ export class PaymentsComponent {
     return rows.filter(r => !r.cancelled).reduce((sum, r) => sum + r.amount, 0);
   }
 
-  readonly totalIn = computed(() => this.formatAmount(this.sumActive(this.incoming())));
-  readonly totalOut = computed(() => this.formatAmount(this.sumActive(this.outgoing())));
+  readonly totalIn = computed(() => this.formatAmount(this.sumActive(this.customerRows())));
+  readonly totalOut = computed(() => this.formatAmount(this.sumActive(this.supplierRows())));
 
   readonly pagedRows = computed(() => {
     const start = (this.page() - 1) * this.pageSize;
@@ -233,7 +222,6 @@ export class PaymentsComponent {
 
   // Modification : chaque type a sa fenêtre.
   readonly editingPayment = signal<Transaction | null>(null);
-  readonly editingMoneyOperation = signal<Transaction | null>(null);
   readonly editingSupplierOperation = signal<SupplierTransaction | null>(null);
   readonly editingPartyName = signal('');
 
@@ -287,7 +275,6 @@ export class PaymentsComponent {
     const balance = this.transactionService.balanceForCustomer(t.customerId);
     const message = receiptMessage({
       customerName,
-      kind: t.type === 'DEPOSIT' ? 'DEPOSIT' : 'PAYMENT',
       formattedAmount: this.formatAmount(t.amount),
       date: t.createdAt,
       paymentMethod: paymentMethodLabel(t.paymentMethod),
@@ -320,10 +307,8 @@ export class PaymentsComponent {
     this.editingPartyName.set(row.partyName);
     if (row.supplierOperation) {
       this.editingSupplierOperation.set(row.supplierOperation);
-    } else if (row.customerOperation?.type === 'PAYMENT') {
-      this.editingPayment.set(row.customerOperation);
     } else if (row.customerOperation) {
-      this.editingMoneyOperation.set(row.customerOperation);
+      this.editingPayment.set(row.customerOperation);
     }
   }
 

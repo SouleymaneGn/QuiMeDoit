@@ -10,7 +10,7 @@ type Sheet = 'actions' | 'more' | null;
 
 /**
  * Navigation mobile (sous le breakpoint xl, là où la barre latérale disparaît) :
- * Accueil · Clients · [ + ] · Paiements · Plus.
+ * Accueil · Dettes · [ + ] · Paiements · Plus.
  * Le « + » ouvre les actions rapides ; « Plus » les pages secondaires.
  */
 @Component({
@@ -22,13 +22,20 @@ export class MobileBottomNavComponent {
   readonly sheet = signal<Sheet>(null);
   readonly showNewDebtModal = signal(false);
   readonly showNewPaymentModal = signal(false);
+  /** Onglet « Dettes » allumé sur les listes et fiches clients comme fournisseurs. */
+  readonly debtsActive = signal(false);
 
   constructor(
     readonly subscriptionService: SubscriptionService,
     router: Router
   ) {
+    const isDebtsUrl = (url: string) => url.startsWith('/app/customers') || url.startsWith('/app/suppliers');
+    this.debtsActive.set(isDebtsUrl(router.url));
     // Une navigation ferme le panneau ouvert.
-    router.events.pipe(filter(e => e instanceof NavigationEnd)).subscribe(() => this.sheet.set(null));
+    router.events.pipe(filter(e => e instanceof NavigationEnd)).subscribe(e => {
+      this.sheet.set(null);
+      this.debtsActive.set(isDebtsUrl(e.urlAfterRedirects));
+    });
   }
 
   @HostListener('document:keydown.escape')

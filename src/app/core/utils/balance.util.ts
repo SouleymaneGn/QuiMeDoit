@@ -6,13 +6,13 @@ export function isCancelled(op: { cancelledAt?: string | null }): boolean {
 }
 
 /** Types qui augmentent ce que le client me doit (colonne « débit » du relevé). */
-const DEBIT_TYPES: ReadonlySet<TransactionType> = new Set<TransactionType>(['DEBT', 'WITHDRAWAL']);
+const DEBIT_TYPES: ReadonlySet<TransactionType> = new Set<TransactionType>(['DEBT']);
 
 export function isDebitType(type: TransactionType): boolean {
   return DEBIT_TYPES.has(type);
 }
 
-/** Effet d'une opération client sur son solde : + pour DEBT/WITHDRAWAL, − pour PAYMENT/DEPOSIT, 0 si annulée. */
+/** Effet d'une opération client sur son solde : + pour DEBT, − pour PAYMENT, 0 si annulée. */
 export function balanceDelta(t: Pick<Transaction, 'type' | 'amount' | 'cancelledAt'>): number {
   if (isCancelled(t)) return 0;
   return isDebitType(t.type) ? t.amount : -t.amount;
@@ -32,7 +32,7 @@ export function computeSignedBalance<T extends string>(
   }, 0);
 }
 
-/** Solde client : DETTES + RETRAITS − PAIEMENTS − DÉPÔTS (jamais stocké). */
+/** Solde client : DETTES − PAIEMENTS (jamais stocké). */
 export function computeBalance(transactions: Transaction[]): number {
   return transactions.reduce((balance, t) => balance + balanceDelta(t), 0);
 }

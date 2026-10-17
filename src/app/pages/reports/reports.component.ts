@@ -37,7 +37,7 @@ export class ReportsComponent {
   readonly previousLabel = computed(() => (this.period() === 'week' ? 'la semaine dernière' : 'le mois dernier'));
 
   // — Encaissé —
-  /** Encaissé = paiements reçus + dépôts confiés (toute entrée d'argent). */
+  /** Encaissé = paiements reçus des clients. */
   readonly collected = computed(() => this.incomingSum(this.currentRange()));
   readonly collectedCount = computed(() =>
     INCOMING_TYPES.reduce((n, type) => n + countInRange(this.transactions(), type, this.currentRange()), 0)

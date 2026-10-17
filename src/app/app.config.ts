@@ -17,6 +17,8 @@ import { SupplierRepository } from './core/repositories/supplier.repository';
 import { SupabaseSupplierRepository } from './core/repositories/supabase/supabase-supplier.repository';
 import { SupplierTransactionRepository } from './core/repositories/supplier-transaction.repository';
 import { SupabaseSupplierTransactionRepository } from './core/repositories/supabase/supabase-supplier-transaction.repository';
+import { DebtPhotoRepository } from './core/repositories/debt-photo.repository';
+import { SupabaseDebtPhotoRepository } from './core/repositories/supabase/supabase-debt-photo.repository';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -29,6 +31,7 @@ export const appConfig: ApplicationConfig = {
     { provide: SubscriptionRepository, useClass: SupabaseSubscriptionRepository },
     { provide: StatementShareRepository, useClass: SupabaseStatementShareRepository },
     { provide: SupplierRepository, useClass: SupabaseSupplierRepository },
-    { provide: SupplierTransactionRepository, useClass: SupabaseSupplierTransactionRepository }
+    { provide: SupplierTransactionRepository, useClass: SupabaseSupplierTransactionRepository },
+    { provide: DebtPhotoRepository, useClass: SupabaseDebtPhotoRepository }
   ]
 };

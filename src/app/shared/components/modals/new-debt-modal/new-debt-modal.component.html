@@ -1,57 +1,90 @@
-<app-modal [isOpen]="isOpen" (close)="onClose()" className="max-w-md m-4">
+<app-modal [isOpen]="isOpen" (close)="onClose()" className="max-w-lg m-4">
   <div class="p-6">
     <h4 class="mb-6 text-lg font-semibold text-gray-800 dark:text-white/90">Nouvelle dette</h4>
 
-    @if (!effectiveClient()) {
-      <app-client-picker-step (clientReady)="onClientReady($event)" />
-    } @else {
+    <!-- Client : recherche intégrée au formulaire (une seule étape, quel que soit le bouton d'ouverture) -->
+    @if (effectiveClient(); as client) {
       <div class="mb-4">
         <app-label>Client</app-label>
-        <p class="text-sm font-medium text-gray-800 dark:text-white/90">{{ effectiveClient()!.name }}</p>
-        @if (!presetCustomerId) {
-          <button
-            type="button"
-            class="mt-1 text-xs font-medium text-brand-500 hover:underline"
-            (click)="changeClient()"
-          >
-            Changer de client
-          </button>
-        }
+        <div class="flex h-11 items-center justify-between gap-3 rounded-lg border border-gray-300 px-4 dark:border-gray-700">
+          <span class="truncate text-sm font-medium text-gray-800 dark:text-white/90">{{ client.name }}</span>
+          @if (!presetCustomerId) {
+            <button
+              type="button"
+              class="shrink-0 text-xs font-medium text-brand-500 hover:underline"
+              (click)="changeClient()"
+            >
+              Changer
+            </button>
+          }
+        </div>
+      </div>
+    } @else {
+      <div class="mb-4">
+        <app-client-picker-step (clientReady)="onClientReady($event)" />
+      </div>
+    }
+
+    <div>
+
+      <div class="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div>
+          <app-label for="debt-amount">Montant ({{ currency() }})</app-label>
+          <app-input-field
+            id="debt-amount"
+            type="number"
+            placeholder="0"
+            [value]="amount()"
+            (valueChange)="onAmountChange($event)"
+          />
+        </div>
+        <app-date-picker
+          id="debt-date"
+          label="Date"
+          maxDate="today"
+          [defaultDate]="date()"
+          (dateChange)="onDateChange($event)"
+        />
       </div>
 
       <div class="mb-4">
-        <app-label for="debt-label">Libellé</app-label>
-        <app-input-field
-          id="debt-label"
+        <app-label for="debt-label">Détails (articles, remarque)</app-label>
+        <app-text-area
           placeholder="Ex: Ciment + fer"
+          [rows]="2"
           [value]="label()"
           (valueChange)="onLabelChange($event)"
         />
       </div>
 
-      <div class="mb-6">
-        <app-label for="debt-amount">Montant (CFA)</app-label>
-        <app-input-field
-          id="debt-amount"
-          type="number"
-          placeholder="0"
-          [value]="amount()"
-          (valueChange)="onAmountChange($event)"
+      <!-- Justificatif : photo du carnet, d'un reçu ou d'une facture -->
+      <div class="mb-5">
+        <app-photo-attachment
+          id="debt-attach-photo"
+          (photoChange)="photoFile.set($event)"
+          (zoomOpenChange)="photoZoomOpen.set($event)"
         />
       </div>
 
       @if (creditLimitWarning()) {
-        <div class="mb-6">
+        <div class="mb-5">
           <app-alert variant="warning" title="Plafond de crédit dépassé" [message]="creditLimitWarning()" />
+        </div>
+      }
+
+      @if (errorMessage()) {
+        <div class="mb-5">
+          <app-alert variant="error" title="Dette non enregistrée" [message]="errorMessage()" />
         </div>
       }
 
       <div class="flex justify-end gap-3">
         <app-button variant="outline" (btnClick)="onClose()">Annuler</app-button>
         <app-button [disabled]="!canSubmit() || submitting()" (btnClick)="submit()">
-          {{ creditLimitWarning() ? 'Enregistrer quand même' : 'Enregistrer la dette' }}
+          {{ submitLabel() }}
         </app-button>
       </div>
-    }
+    </div>
   </div>
 </app-modal>
+

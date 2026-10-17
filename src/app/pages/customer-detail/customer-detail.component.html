@@ -62,67 +62,86 @@
           📄 Relevé
         </app-button>
       </div>
-      <div class="mt-3 flex flex-wrap gap-x-4 gap-y-2 text-sm">
-        <button
-          type="button"
-          class="font-medium text-brand-500 hover:underline"
-          (click)="openMoneyOperation('DEPOSIT')"
-        >
-          Enregistrer un dépôt
-        </button>
-        <button
-          type="button"
-          class="font-medium text-brand-500 hover:underline"
-          (click)="openMoneyOperation('WITHDRAWAL')"
-        >
-          Enregistrer un retrait
-        </button>
-      </div>
     </div>
 
-    <div class="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/[0.03]">
-      <h2 class="mb-4 text-base font-semibold text-gray-800 dark:text-white/90">Historique des transactions</h2>
+    <div class="grid grid-cols-1 items-start gap-6 lg:grid-cols-2">
+      <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+        <div class="flex items-center justify-between gap-3 border-b border-gray-100 px-5 py-4 dark:border-gray-800">
+          <h2 class="text-base font-semibold text-gray-800 dark:text-white/90">Opérations</h2>
+          <span class="text-sm text-gray-500 dark:text-gray-400">
+            {{ photoOperations().length }} {{ photoOperations().length > 1 ? 'photos jointes' : 'photo jointe' }}
+          </span>
+        </div>
 
-      @if (history().length === 0) {
-        <p class="text-sm text-gray-500 dark:text-gray-400">Aucune transaction pour ce client.</p>
-      } @else {
-        <div class="divide-y divide-gray-100 dark:divide-gray-800">
-          @for (item of history(); track item.id) {
-            @let cancelled = isCancelled(item);
-            <div class="flex flex-col gap-2 py-3 sm:flex-row sm:items-center sm:justify-between sm:gap-3" [ngClass]="{ 'opacity-60': cancelled }">
-              <div class="min-w-0">
-                <p
-                  class="truncate text-sm font-medium text-gray-800 dark:text-white/90"
-                  [ngClass]="{ 'line-through': cancelled }"
+        @if (history().length === 0) {
+          <p class="px-5 py-6 text-sm text-gray-500 dark:text-gray-400">Aucune transaction pour ce client.</p>
+        } @else {
+          <div class="divide-y divide-gray-100 dark:divide-gray-800">
+            @for (item of history(); track item.id) {
+              @let cancelled = isCancelled(item);
+              @let selected = selectedOperation()?.id === item.id;
+              <div
+                class="flex items-center gap-2 border-l-2 pr-3 transition-colors"
+                [ngClass]="selected ? 'border-brand-500 bg-brand-50 dark:bg-brand-500/10' : 'border-transparent hover:bg-gray-50 dark:hover:bg-white/[0.02]'"
+              >
+                <button
+                  type="button"
+                  class="flex min-w-0 flex-1 items-center gap-3 py-3 pl-4 text-left"
+                  [ngClass]="{ 'opacity-60': cancelled }"
+                  [attr.aria-pressed]="selected"
+                  (click)="selectOperation(item)"
                 >
-                  {{ item.label }}
-                </p>
-                <p class="text-xs text-gray-500 dark:text-gray-400">
-                  {{ item.createdAt | date: 'dd/MM/yyyy' }}
-                  @if (item.paidBy) {
-                    · payé par {{ item.paidBy }}
+                  @if (item.photoPath) {
+                    <span class="flex h-12 w-12 shrink-0 flex-col justify-center gap-1 rounded-lg border border-gray-200 bg-[#f3eee6] px-2.5 dark:border-gray-700 dark:bg-white/10" aria-label="Photo jointe">
+                      <span class="h-0.5 w-5 rounded bg-[#b9ad92]"></span>
+                      <span class="h-0.5 w-4 rounded bg-[#b9ad92]"></span>
+                      <span class="h-0.5 w-6 rounded bg-[#b9ad92]"></span>
+                      <span class="h-0.5 w-3 rounded bg-[#b9ad92]"></span>
+                    </span>
+                  } @else {
+                    <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg border border-dashed border-gray-300 text-center text-[10px] leading-tight text-gray-500 dark:border-gray-700 dark:text-gray-400">
+                      Sans<br />photo
+                    </span>
                   }
-                  @if (cancelled) {
-                    · <span class="font-medium text-gray-600 dark:text-gray-300">Annulée</span> : {{ item.cancelReason }}
-                  }
-                </p>
-              </div>
-              <div class="flex shrink-0 items-center justify-between gap-3 sm:justify-end">
-                <app-badge [color]="cancelled ? 'light' : typeBadge(item.type)" size="sm">
-                  {{ typeLabel(item.type) }}
-                </app-badge>
-                <span
-                  class="text-sm font-semibold text-gray-800 dark:text-white/90"
-                  [ngClass]="{ 'line-through': cancelled }"
-                >
-                  {{ formatAmount(item.amount) }}
-                </span>
+                  <span class="min-w-0 flex-1">
+                    <span class="block text-sm font-medium text-gray-800 dark:text-white/90" [ngClass]="{ 'line-through': cancelled }">
+                      {{ typeLabel(item.type) }}
+                    </span>
+                    <span class="block truncate text-xs text-gray-500 dark:text-gray-400">
+                      {{ item.createdAt | date: 'dd/MM/yyyy' }} · {{ item.label }}
+                      @if (item.type === 'PAYMENT') {
+                        · {{ methodLabel(item.paymentMethod) }}
+                      }
+                      @if (item.paidBy) {
+                        · payé par {{ item.paidBy }}
+                      }
+                    </span>
+                    @if (cancelled) {
+                      <span class="block truncate text-xs text-gray-500 dark:text-gray-400">
+                        <span class="font-medium text-gray-600 dark:text-gray-300">Annulée</span> : {{ item.cancelReason }}
+                      </span>
+                    }
+                  </span>
+                  <span
+                    class="shrink-0 text-sm font-semibold"
+                    [ngClass]="
+                      cancelled
+                        ? 'text-gray-500 line-through dark:text-gray-400'
+                        : item.type === 'DEBT'
+                          ? 'text-error-600 dark:text-error-500'
+                          : 'text-success-600 dark:text-success-500'
+                    "
+                  >
+                    {{ item.type === 'DEBT' ? '+' : '−' }} {{ formatAmount(item.amount) }}
+                  </span>
+                </button>
                 @if (!cancelled) {
-                  <div class="flex items-center gap-1">
+                  <div class="flex shrink-0 flex-col gap-0.5">
                     <button
                       type="button"
-                      class="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-white/5 dark:hover:text-gray-300"
+                      class="rounded-md p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-white/5 dark:hover:text-gray-300"
                       aria-label="Modifier"
+                      title="Modifier"
                       (click)="openEdit(item)"
                     >
                       <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -131,20 +150,40 @@
                     </button>
                     <button
                       type="button"
-                      class="rounded-lg px-2 py-1 text-xs font-medium text-gray-500 hover:bg-error-50 hover:text-error-600 dark:text-gray-400 dark:hover:bg-error-500/10 dark:hover:text-error-500"
+                      class="rounded-md p-1 text-gray-400 hover:bg-error-50 hover:text-error-600 dark:hover:bg-error-500/10 dark:hover:text-error-500"
+                      aria-label="Annuler l'opération"
+                      title="Annuler l'opération"
                       (click)="openCancel(item)"
                     >
-                      Annuler
+                      <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <circle cx="12" cy="12" r="8.25"></circle>
+                        <path stroke-linecap="round" d="m6.5 6.5 11 11"></path>
+                      </svg>
                     </button>
                   </div>
                 } @else {
-                  <span class="w-[92px]" aria-hidden="true"></span>
+                  <span class="w-6 shrink-0" aria-hidden="true"></span>
                 }
               </div>
-            </div>
-          }
-        </div>
-      }
+            }
+          </div>
+        }
+      </div>
+
+      <div #proofPanel class="scroll-mt-24">
+        <app-photo-proof-panel
+          [operation]="selectedProof()"
+          recipientLabel="client"
+          [recipientPhone]="customer()!.phone"
+          [shareMessage]="proofShareMessage"
+          [savePhoto]="saveProofPhoto"
+          [hasPrevious]="previousPhotoOperation() !== null"
+          [hasNext]="nextPhotoOperation() !== null"
+          (previous)="selectOperation(previousPhotoOperation()!, false)"
+          (next)="selectOperation(nextPhotoOperation()!, false)"
+          (zoom)="viewingPhoto.set(selectedOperation())"
+        />
+      </div>
     </div>
 
     <app-new-debt-modal
@@ -159,13 +198,11 @@
       [presetCustomerName]="customer()!.name"
       (close)="showNewPaymentModal.set(false)"
     />
-    <app-customer-operation-modal
-      [isOpen]="showMoneyOperationModal()"
-      [type]="moneyOperationType()"
-      [operation]="editingMoneyOperation()"
-      [customerId]="customerId()"
-      [customerName]="customer()!.name"
-      (close)="closeMoneyOperationModal()"
+    <app-photo-viewer-modal
+      [isOpen]="viewingPhoto() !== null"
+      [photoPath]="viewingPhoto()?.photoPath ?? null"
+      [title]="viewingPhoto()?.label ?? 'Justificatif'"
+      (close)="viewingPhoto.set(null)"
     />
     <app-edit-customer-modal
       [isOpen]="showEditModal()"

@@ -1,25 +1,11 @@
+import { loadImage } from './image.util';
+
 /** Côté le plus long du cachet enregistré : assez net pour un PDF A4, assez léger pour la base. */
 const MAX_SIZE = 400;
 /** Au-delà de cette luminosité, un pixel est considéré comme le papier blanc de la photo. */
 const PAPER_LUMINANCE = 205;
 /** Marge (px) conservée autour du cachet après recadrage. */
 const CROP_PADDING = 8;
-
-function loadImage(file: File): Promise<HTMLImageElement> {
-  return new Promise((resolve, reject) => {
-    const url = URL.createObjectURL(file);
-    const img = new Image();
-    img.onload = () => {
-      URL.revokeObjectURL(url);
-      resolve(img);
-    };
-    img.onerror = () => {
-      URL.revokeObjectURL(url);
-      reject(new Error("Impossible de lire l'image."));
-    };
-    img.src = url;
-  });
-}
 
 /**
  * Prépare un cachet à partir d'une photo ou d'un fichier :

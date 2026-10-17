@@ -1,0 +1,18 @@
+<app-modal [isOpen]="isOpen" (close)="close.emit()" className="max-w-3xl m-4">
+  <div class="p-4 sm:p-6">
+    <h4 class="mb-4 pr-12 text-lg font-semibold text-gray-800 dark:text-white/90">{{ title }}</h4>
+
+    @if (loading()) {
+      <div class="flex h-64 items-center justify-center text-sm text-gray-500 dark:text-gray-400">Chargement de la photo...</div>
+    } @else if (errorMessage()) {
+      <p class="py-10 text-center text-sm text-error-500">{{ errorMessage() }}</p>
+    } @else if (url(); as src) {
+      <img [src]="src" alt="Photo justificative" class="mx-auto max-h-[70vh] w-auto rounded-lg object-contain" />
+      <div class="mt-4 text-right">
+        <a [href]="src" target="_blank" rel="noopener" class="text-sm font-medium text-brand-500 hover:underline">
+          Ouvrir en grand
+        </a>
+      </div>
+    }
+  </div>
+</app-modal>

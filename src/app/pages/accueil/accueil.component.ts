@@ -90,7 +90,7 @@ export class AccueilComponent {
     () => this.overLimitCount() > 0 || this.creditorsCount() > 0 || this.showSuppliersLine()
   );
 
-  // — Encaissé (paiements + dépôts, hors annulations) —
+  // — Encaissé (paiements, hors annulations) —
   readonly collectedToday = computed(() => this.formatAmount(this.incomingSince(startOfDay(new Date()))));
   readonly collectedThisWeek = computed(() =>
     this.formatAmount(this.incomingSince(periodRange('week', new Date()).start.getTime()))

@@ -18,8 +18,8 @@
         />
       </div>
 
-      <div class="mb-6">
-        <app-label for="supplier-op-amount">Montant (CFA)</app-label>
+      <div class="mb-4">
+        <app-label for="supplier-op-amount">Montant ({{ currency() }})</app-label>
         <app-input-field
           id="supplier-op-amount"
           type="number"
@@ -28,9 +28,21 @@
           (valueChange)="onAmountChange($event)"
         />
       </div>
+
+      @if (canAttachPhoto()) {
+        <!-- Justificatif : photo de la facture ou du bon -->
+        <div class="mb-6">
+          <app-photo-attachment
+            id="supplier-attach-photo"
+            hint="La facture ou le bon du fournisseur."
+            (photoChange)="photoFile.set($event)"
+            (zoomOpenChange)="photoZoomOpen.set($event)"
+          />
+        </div>
+      }
     } @else {
       <div class="mb-4">
-        <app-label for="supplier-op-amount">Montant (CFA)</app-label>
+        <app-label for="supplier-op-amount">Montant ({{ currency() }})</app-label>
         <app-input-field
           id="supplier-op-amount"
           type="number"
@@ -68,7 +80,7 @@
     <div class="flex justify-end gap-3">
       <app-button variant="outline" (btnClick)="onClose()">Annuler</app-button>
       <app-button [disabled]="!canSubmit() || submitting()" (btnClick)="submit()">
-        {{ submitting() ? 'Enregistrement...' : 'Enregistrer' }}
+        {{ submitting() ? (willUploadPhoto() ? 'Envoi de la photo...' : 'Enregistrement...') : 'Enregistrer' }}
       </app-button>
     </div>
   </div>

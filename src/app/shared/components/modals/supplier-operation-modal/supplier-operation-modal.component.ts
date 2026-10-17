@@ -4,7 +4,11 @@ import { ButtonComponent } from '../../ui/button/button.component';
 import { LabelComponent } from '../../form/label/label.component';
 import { InputFieldComponent } from '../../form/input/input-field.component';
 import { SelectComponent, Option } from '../../form/select/select.component';
+import { Observable, of, switchMap } from 'rxjs';
+import { PhotoAttachmentComponent } from '../../form/photo-attachment/photo-attachment.component';
 import { SupplierTransactionService } from '../../../../core/services/supplier-transaction.service';
+import { DebtPhotoService } from '../../../../core/services/debt-photo.service';
+import { ProfileService } from '../../../../core/services/profile.service';
 import { PaymentMethod } from '../../../../core/models/transaction.model';
 import { SupplierTransaction, SupplierTransactionType } from '../../../../core/models/supplier-transaction.model';
 
@@ -24,7 +28,7 @@ const DEFAULT_PAYMENT_LABEL = 'Règlement';
  */
 @Component({
   selector: 'app-supplier-operation-modal',
-  imports: [ModalComponent, ButtonComponent, LabelComponent, InputFieldComponent, SelectComponent],
+  imports: [ModalComponent, ButtonComponent, LabelComponent, InputFieldComponent, SelectComponent, PhotoAttachmentComponent],
   templateUrl: './supplier-operation-modal.component.html'
 })
 export class SupplierOperationModalComponent implements OnChanges {
@@ -43,8 +47,12 @@ export class SupplierOperationModalComponent implements OnChanges {
   readonly paymentMethod = signal<PaymentMethod>('CASH');
   readonly submitting = signal(false);
   readonly errorMessage = signal('');
+  /** Photo justificative d'un nouvel achat (case cochée + photo choisie), sinon null. */
+  readonly photoFile = signal<File | null>(null);
+  readonly photoZoomOpen = signal(false);
 
   readonly paymentMethodOptions = PAYMENT_METHOD_OPTIONS;
+  readonly currency = computed(() => this.profileService.profile()?.currency ?? 'CFA');
 
   readonly title = computed(() => {
     const purchase = this.effectiveType() === 'PURCHASE';
@@ -56,13 +64,23 @@ export class SupplierOperationModalComponent implements OnChanges {
 
   readonly canSubmit = computed(() => !!this.label().trim() && Number(this.amount()) > 0);
 
-  constructor(private readonly supplierTransactionService: SupplierTransactionService) {}
+  /** Justificatif proposé seulement à la création d'un achat à crédit. */
+  readonly canAttachPhoto = computed(() => !this.isEdit() && this.effectiveType() === 'PURCHASE');
+  readonly willUploadPhoto = computed(() => this.canAttachPhoto() && !!this.photoFile());
+
+  constructor(
+    private readonly supplierTransactionService: SupplierTransactionService,
+    private readonly debtPhotoService: DebtPhotoService,
+    private readonly profileService: ProfileService
+  ) {}
 
   ngOnChanges(changes: SimpleChanges): void {
     if (!changes['isOpen'] || !this.isOpen) {
       return;
     }
     this.errorMessage.set('');
+    this.photoFile.set(null);
+    this.photoZoomOpen.set(false);
     if (this.operation) {
       this.isEdit.set(true);
       this.effectiveType.set(this.operation.type);
@@ -100,13 +118,22 @@ export class SupplierOperationModalComponent implements OnChanges {
       // Un achat n'a pas de mode de paiement réel : CASH par défaut, comme les dettes clients.
       paymentMethod: this.effectiveType() === 'PAYMENT' ? this.paymentMethod() : ('CASH' as PaymentMethod)
     };
+    // Photo d'abord : si l'envoi échoue, l'achat n'est pas créé.
+    const photoPath$: Observable<string | null> = this.willUploadPhoto()
+      ? this.debtPhotoService.upload(this.photoFile()!)
+      : of(null);
     const request$ = this.operation
       ? this.supplierTransactionService.update(this.operation.id, fields)
-      : this.supplierTransactionService.create({
-          ...fields,
-          supplierId: this.supplierId,
-          type: this.effectiveType()
-        });
+      : photoPath$.pipe(
+          switchMap(photoPath =>
+            this.supplierTransactionService.create({
+              ...fields,
+              supplierId: this.supplierId,
+              type: this.effectiveType(),
+              ...(photoPath ? { photoPath } : {})
+            })
+          )
+        );
 
     this.submitting.set(true);
     this.errorMessage.set('');
@@ -117,13 +144,21 @@ export class SupplierOperationModalComponent implements OnChanges {
       },
       error: err => {
         this.submitting.set(false);
-        this.errorMessage.set("Erreur lors de l'enregistrement. Réessayez.");
+        this.errorMessage.set(
+          this.willUploadPhoto()
+            ? "L'envoi de la photo ou l'enregistrement a échoué. Vérifiez votre connexion et réessayez."
+            : "Erreur lors de l'enregistrement. Réessayez."
+        );
         console.error("Échec de l'enregistrement de l'opération fournisseur", err);
       }
     });
   }
 
   onClose(): void {
+    // Échap ferme d'abord l'aperçu agrandi de la photo, sans perdre la saisie.
+    if (this.photoZoomOpen()) {
+      return;
+    }
     this.errorMessage.set('');
     this.close.emit();
   }

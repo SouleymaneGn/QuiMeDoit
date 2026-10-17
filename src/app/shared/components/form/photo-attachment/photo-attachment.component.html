@@ -1,0 +1,65 @@
+<app-checkbox
+  [id]="id"
+  label="Joindre une photo comme justificatif"
+  [checked]="attach()"
+  (checkedChange)="onAttachChange($event)"
+/>
+
+@if (attach()) {
+  <div class="mt-3">
+    @if (preview(); as src) {
+      <div class="flex items-center gap-3 rounded-xl border border-gray-200 p-2 dark:border-gray-800">
+        <button
+          type="button"
+          class="h-16 w-16 shrink-0 overflow-hidden rounded-lg bg-gray-50 dark:bg-white/[0.03]"
+          aria-label="Agrandir la photo"
+          (click)="setZoom(true)"
+        >
+          <img [src]="src" alt="Photo justificative" class="h-full w-full object-cover" />
+        </button>
+        <div class="flex min-w-0 flex-1 flex-wrap gap-x-4 gap-y-1 text-sm">
+          <button type="button" class="font-medium text-brand-500 hover:underline" (click)="setZoom(true)">
+            Agrandir
+          </button>
+          <label class="cursor-pointer font-medium text-brand-500 hover:underline">
+            Changer
+            <input type="file" accept="image/*" class="hidden" (change)="onFileSelected($event)" />
+          </label>
+          <button type="button" class="font-medium text-error-600 hover:underline dark:text-error-500" (click)="remove()">
+            Retirer
+          </button>
+        </div>
+      </div>
+    } @else {
+      <div class="grid grid-cols-2 gap-2">
+        <label class="flex cursor-pointer items-center justify-center gap-2 rounded-lg bg-gray-900 px-3 py-2.5 text-sm font-medium text-white hover:bg-gray-800 dark:bg-white dark:text-gray-900 dark:hover:bg-gray-100">
+          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 8.5A1.5 1.5 0 0 1 5.5 7h2l1.5-2h6l1.5 2h2A1.5 1.5 0 0 1 20 8.5v9a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 17.5z" />
+            <circle cx="12" cy="13" r="3.25" />
+          </svg>
+          Prendre une photo
+          <input type="file" accept="image/*" capture="environment" class="hidden" (change)="onFileSelected($event)" />
+        </label>
+        <label class="flex cursor-pointer items-center justify-center rounded-lg border border-gray-300 px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-white/[0.03]">
+          Importer
+          <input type="file" accept="image/png,image/jpeg,image/webp" class="hidden" (change)="onFileSelected($event)" />
+        </label>
+      </div>
+      @if (hint) {
+        <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">{{ hint }}</p>
+      }
+    }
+    @if (error()) {
+      <p class="mt-2 text-xs text-error-500">{{ error() }}</p>
+    }
+  </div>
+}
+
+<!-- Photo en grand -->
+<app-modal [isOpen]="zoomOpen()" (close)="setZoom(false)" className="max-w-3xl m-4">
+  @if (preview(); as src) {
+    <div class="p-4 pt-16 sm:p-6 sm:pt-20">
+      <img [src]="src" alt="Photo justificative" class="mx-auto max-h-[75vh] w-auto rounded-lg object-contain" />
+    </div>
+  }
+</app-modal>

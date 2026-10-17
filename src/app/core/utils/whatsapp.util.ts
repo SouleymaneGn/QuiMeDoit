@@ -57,22 +57,19 @@ export function reminderMessage(
 
 export interface ReceiptDetails {
   customerName: string;
-  /** « Paiement » ou « Dépôt ». */
-  kind: 'PAYMENT' | 'DEPOSIT';
   formattedAmount: string;
   date: string;
   paymentMethod: string;
   paidBy?: string | null;
   businessName: string;
-  /** Solde actuel du client (DETTES − PAIEMENTS…), déjà formaté côté appelant. */
+  /** Solde actuel du client (DETTES − PAIEMENTS), déjà formaté côté appelant. */
   balance: number;
   formattedBalance: string;
 }
 
-/** Reçu envoyé au client après un paiement ou un dépôt. */
+/** Reçu envoyé au client après un paiement. */
 export function receiptMessage(details: ReceiptDetails): string {
   const shop = details.businessName.trim() ? ` chez ${details.businessName.trim()}` : '';
-  const what = details.kind === 'DEPOSIT' ? 'votre dépôt' : 'votre paiement';
   const date = new Date(details.date).toLocaleDateString('fr-FR');
   const by = details.paidBy?.trim() ? ` (apporté par ${details.paidBy.trim()})` : '';
   const balanceLine =
@@ -83,8 +80,50 @@ export function receiptMessage(details: ReceiptDetails): string {
         : 'Votre compte est soldé.';
   return [
     `Bonjour ${firstNameOf(details.customerName)},`,
-    `Nous confirmons la réception de ${what} de ${details.formattedAmount}${by} le ${date}${shop} (${details.paymentMethod}).`,
+    `Nous confirmons la réception de votre paiement de ${details.formattedAmount}${by} le ${date}${shop} (${details.paymentMethod}).`,
     balanceLine,
     'Merci !'
   ].join('\n');
+}
+
+/** Message accompagnant la photo justificative d'une opération envoyée au client. */
+export function proofMessage(
+  customerName: string,
+  operationLabel: string,
+  date: string,
+  formattedAmount: string,
+  businessName: string,
+  link?: string
+): string {
+  const shop = businessName.trim() ? ` chez ${businessName.trim()}` : '';
+  const day = new Date(date).toLocaleDateString('fr-FR');
+  const lines = [
+    `Bonjour ${firstNameOf(customerName)},`,
+    `Voici le justificatif de votre ${operationLabel.toLowerCase()} du ${day} (${formattedAmount})${shop}.`
+  ];
+  if (link) {
+    lines.push('', `Photo : ${link}`);
+  }
+  return lines.join('\n');
+}
+
+/** Message accompagnant la photo d'un achat ou d'un règlement envoyée au fournisseur. */
+export function supplierProofMessage(
+  supplierName: string,
+  operationLabel: string,
+  date: string,
+  formattedAmount: string,
+  businessName: string,
+  link?: string
+): string {
+  const shop = businessName.trim() ? ` (${businessName.trim()})` : '';
+  const day = new Date(date).toLocaleDateString('fr-FR');
+  const lines = [
+    `Bonjour ${firstNameOf(supplierName)},`,
+    `Voici le justificatif de notre ${operationLabel.toLowerCase()} du ${day} (${formattedAmount})${shop}.`
+  ];
+  if (link) {
+    lines.push('', `Photo : ${link}`);
+  }
+  return lines.join('\n');
 }

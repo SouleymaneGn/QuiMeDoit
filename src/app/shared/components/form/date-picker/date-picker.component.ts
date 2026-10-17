@@ -17,6 +17,8 @@ export class DatePickerComponent implements OnChanges {
   @Input() defaultDate?: string | Date | string[] | Date[];
   @Input() label?: string;
   @Input() placeholder?: string;
+  /** Date maximale sélectionnable (ex. 'today' pour interdire le futur). */
+  @Input() maxDate?: string | Date;
   @Output() dateChange = new EventEmitter<any>();
 
   @ViewChild('dateInput', { static: false }) dateInput!: ElementRef<HTMLInputElement>;
@@ -31,6 +33,7 @@ export class DatePickerComponent implements OnChanges {
       dateFormat: 'Y-m-d',
       locale: French,
       defaultDate: this.defaultDate,
+      maxDate: this.maxDate,
       onChange: (selectedDates, dateStr, instance) => {
         this.dateChange.emit({ selectedDates, dateStr, instance });
       }

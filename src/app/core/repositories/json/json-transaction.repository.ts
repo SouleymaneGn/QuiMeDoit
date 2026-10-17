@@ -51,8 +51,8 @@ export class JsonTransactionRepository extends TransactionRepository {
     const current = this.transactions$.value ?? [];
     const transaction: Transaction = {
       id: crypto.randomUUID(),
-      createdAt: new Date().toISOString(),
-      ...input
+      ...input,
+      createdAt: input.createdAt ?? new Date().toISOString()
     };
     this.transactions$.next([...current, transaction]);
     return of(transaction);

@@ -15,6 +15,7 @@ interface TransactionRow {
   cancelled_at: string | null;
   cancel_reason: string | null;
   paid_by: string | null;
+  photo_path: string | null;
 }
 
 function toTransaction(row: TransactionRow): Transaction {
@@ -28,7 +29,8 @@ function toTransaction(row: TransactionRow): Transaction {
     createdAt: row.created_at,
     cancelledAt: row.cancelled_at ?? null,
     cancelReason: row.cancel_reason ?? null,
-    paidBy: row.paid_by ?? null
+    paidBy: row.paid_by ?? null,
+    photoPath: row.photo_path ?? null
   };
 }
 
@@ -94,7 +96,9 @@ export class SupabaseTransactionRepository extends TransactionRepository {
             amount: input.amount,
             payment_method: input.paymentMethod,
             // Colonne envoyée seulement si renseignée : les dettes n'en dépendent pas.
-            ...(input.paidBy?.trim() ? { paid_by: input.paidBy.trim() } : {})
+            ...(input.paidBy?.trim() ? { paid_by: input.paidBy.trim() } : {}),
+            ...(input.photoPath ? { photo_path: input.photoPath } : {}),
+            ...(input.createdAt ? { created_at: input.createdAt } : {})
           })
           .select()
           .single();
@@ -112,6 +116,7 @@ export class SupabaseTransactionRepository extends TransactionRepository {
     if (patch.amount !== undefined) row['amount'] = patch.amount;
     if (patch.paymentMethod !== undefined) row['payment_method'] = patch.paymentMethod;
     if ('paidBy' in patch) row['paid_by'] = patch.paidBy?.trim() || null;
+    if ('photoPath' in patch) row['photo_path'] = patch.photoPath || null;
 
     return from(
       this.supabaseService.client.from('transactions').update(row).eq('id', id).select().single()
